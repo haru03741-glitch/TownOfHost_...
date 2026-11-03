@@ -1,6 +1,6 @@
-# Town Of Host_Y
+# TownOfHost_hamo
 
-## TOH_Yへようこそ！
+## TOH_hmへようこそ！
 ### よくある質問
 - 公開ルームは使えないの？
   - innersloth公式からホストMOD各種〈TOH_Y,本家TOH,TOH4E,TOH-K,TOHEシリーズ,SNR(SHR)など〉へのアナウンスに基づいて、TOH系列は**公開ルーム(野良)で使用出来ないように**MODで制限をかけています。
@@ -20,18 +20,17 @@
 - ペットの問題は？
   - MOD側で制御しているため、死亡した方についていたペットは生存者には見えなくなります。現在のバニラの仕様とは異なりますのでご注意ください。
 
-- TOHとなにがちがうの？
-  - 様々な役職や機能がたくさん追加されています。本家TOHの機能も一部を除いて同じように使用できます。本家TOHの仕様についてはTOH_Yでは現在WIKIWIKIなどでは記載を省略しているため、本家TOHのGitHubをご確認ください。<br>
+- TOH_Yとなにがちがうの？
+  - 様々な役職や機能がたくさん追加されています。本家TOH、TOH_Yの機能も一部を除いて同じように使用できます。本家TOH、TOH_Yの仕様についてはTOH_Yでは現在WIKIWIKIなどでは記載を省略しているため、本家TOH、TOH_YのGitHub・WIKIWIKIをご確認ください。<br>
 
 ## ★この Mod について
 
 この Mod は非公式のものであり、この Mod の開発に関して Among Us の開発元である"Innersloth"は一切関与していません。<br>
 この Mod の問題などに関して公式に問い合わせないでください。<br>
 
-このMODはTownOfHostの機能・役職はそのままに、若干の機能追加や新役職を追加したMODとなります。追加された内容については、下記をご覧ください。<br>
-また、**本家TOHを含む**、別MODとの共存はできません。必ず1つのMODを共有して使用してください。<br>
-本家TOHと別の開発者が作成しているので、TOH_Yの問題などに関して本家TOHの方に問い合わせないでください。<br>
-英語は一応対応。適当な翻訳ではあるので何卒。<br>
+このMODはTownOfHost_Yの機能・役職はそのままに、若干の機能追加や新役職を追加したMODとなります。追加された内容については、下記をご覧ください。<br>
+また、**本家TOH、TOH_Yを含む**、別MODとの共存はできません。必ず1つのMODを共有して使用してください。<br>
+本家TOH、TOH_Yと別の開発者が作成しているので、TOH_hmの問題などに関して本家TOH、TOH_Yの方に問い合わせないでください。<br>
 
 基本、このMODのバグ報告や質問などは[Discord]()でのみ対応しております。<br>
 
@@ -46,20 +45,21 @@ Thank you for finding and using TOH_Y!<br>
 **最新バージョンは[こちらからダウンロード]()**<br>
 
 ※[TownOfHost](https://github.com/tukasa0001/TownOfHost) Fork<br>
+※[TownOfHost_Y]([https://github.com/tukasa0001/TownOfHost](https://github.com/Yumenopai/TownOfHost_Y)) Fork<br>
 
-本家TOHで搭載されている機能の説明は[本家TOH/GitHub](https://github.com/tukasa0001/TownOfHost#readme)からReadMeをご覧ください。<br>
-<ins>TOH_Yの追加要素の説明は[WIKIWIKI]()に移行しました。</ins>
+本家TOHで搭載されている機能の説明は[本家TOH/GitHub](https://github.com/tukasa0001/TownOfHost#readme)からReadMeをご覧ください。
+TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwiki.jp/tohy_amongus/)をご覧ください。<br>
 
-## TOH_Y外部サイト
+## TOH_hm外部サイト
 [WIKIWIKI]()・[Discord]()・[X/Twitter]()
 
 ## 開発者
 - 
 - TownOfHostの開発者様は省略。
-
+- TownOfHost_Yの開発者様は省略。
 
 ## 移植・参考クレジット
-- [本家TOH](https://github.com/tukasa0001/TownOfHost)・[TOH_H](https://github.com/Hyz-sui/TownOfHost-H)
+- [本家TOH](https://github.com/tukasa0001/TownOfHost)・[TOH_H](https://github.com/Hyz-sui/TownOfHost-H)・[TOH_Y](https://github.com/Yumenopai/TownOfHost_Y)
   - Fork元であり、様々な機能の参考にしています。
 - [TownOfPlus](https://github.com/tugaru1975/TownOfPlus)
   - MODクライアント視点霊界での視界ズーム
