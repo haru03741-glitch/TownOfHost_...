@@ -8,7 +8,7 @@
   - 非公開ルームでコードを共有して遊ぶのには問題ありませんが、公開ルームでのMOD部屋への誘導を促すための部屋作成はおやめ下さい。
 
 - 役職の説明はどこを見ればいい？
-  - ゲーム内のヘルプコマンドや、[WIKIWIKI](https://wikiwiki.jp/tohy_amongus)をご覧ください。
+  - ゲーム内のヘルプコマンドや、[WIKIWIKI]()をご覧ください。
   - 自身の役職説明が一番初めの会議にチャットで表示される設定もあります。
 
 - マッドの道連れないの？
@@ -33,7 +33,7 @@
 本家TOHと別の開発者が作成しているので、TOH_Yの問題などに関して本家TOHの方に問い合わせないでください。<br>
 英語は一応対応。適当な翻訳ではあるので何卒。<br>
 
-基本、このMODのバグ報告や質問などは[Discord](https://discord.gg/PekjJscTT6)でのみ対応しております。<br>
+基本、このMODのバグ報告や質問などは[Discord]()でのみ対応しております。<br>
 
 ### English
 This Readme is basically for Japanese only, and you may not be able to read it even though you came to this, sorry.<br>
@@ -43,23 +43,20 @@ We also use a translator for all in-game translations into English. If there is 
 Thank you for finding and using TOH_Y!<br>
 
 ## ★リリース
-**最新バージョンは[こちらからダウンロード](https://github.com/Yumenopai/TownOfHost_Y/releases/latest)**<br>
+**最新バージョンは[こちらからダウンロード]()**<br>
 
 ※[TownOfHost](https://github.com/tukasa0001/TownOfHost) Fork<br>
 
 本家TOHで搭載されている機能の説明は[本家TOH/GitHub](https://github.com/tukasa0001/TownOfHost#readme)からReadMeをご覧ください。<br>
-<ins>TOH_Yの追加要素の説明は[WIKIWIKI](https://wikiwiki.jp/tohy_amongus/)に移行しました。</ins>
+<ins>TOH_Yの追加要素の説明は[WIKIWIKI]()に移行しました。</ins>
 
 ## TOH_Y外部サイト
-[WIKIWIKI](https://wikiwiki.jp/tohy_amongus)・[Discord](https://discord.gg/YCUY8b3jew)・[X/Twitter](https://twitter.com/yumeno_AmongUs)
+[WIKIWIKI]()・[Discord]()・[X/Twitter]()
 
 ## 開発者
-- [ゆめの/Yumenopai](https://github.com/Yumenopai) ([X/Twitter雑多垢](https://twitter.com/Yumepai_houchi), [Youtube](https://www.youtube.com/@Yumenopai))
+- 
 - TownOfHostの開発者様は省略。
 
-## TOH_Y助っ人
-- [くろにゃんこ](https://github.com/schwKatz) ([X/Twitter](https://twitter.com/KatzeSw), [Youtube](https://www.youtube.com/@SwKatz))
-- [希氷](https://github.com/Kihi1120) ([X/Twitter](https://twitter.com/AmongUs000A), [Youtube]( https://www.youtube.com/@lion1120_ ))
 
 ## 移植・参考クレジット
 - [本家TOH](https://github.com/tukasa0001/TownOfHost)・[TOH_H](https://github.com/Hyz-sui/TownOfHost-H)
