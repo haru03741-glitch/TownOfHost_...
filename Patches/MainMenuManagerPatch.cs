@@ -65,7 +65,7 @@ namespace TownOfHostY
                     new(2.35f, -2.7f, 1f),
                     new(153, 153, 153, byte.MaxValue),
                     new(209, 209, 209, byte.MaxValue),
-                    () => Application.OpenURL("https://github.com/Yumenopai/TownOfHost_Y"),
+                    () => Application.OpenURL("https://github.com/haru03741-glitch/TownOfHost_L"),
                     "GitHub",
                     new(1.85f, 0.5f));
             }

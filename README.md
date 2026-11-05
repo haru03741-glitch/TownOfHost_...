@@ -32,7 +32,7 @@
 また、**本家TOH、TOH_Yを含む**、別MODとの共存はできません。必ず1つのMODを共有して使用してください。<br>
 本家TOH、TOH_Yと別の開発者が作成しているので、_の問題などに関して本家TOH、TOH_Yの方に問い合わせないでください。<br>
 
-基本、このMODのバグ報告や質問などは[Discord]()でのみ対応しております。<br>
+基本、このMODのバグ報告や質問などは[Discord](https://discord.gg/Bv8XRBvCXW)でのみ対応しております。<br>
 
 ### English
 This Readme is basically for Japanese only, and you may not be able to read it even though you came to this, sorry.<br>
@@ -51,7 +51,7 @@ Thank you for finding and using TOH_L!<br>
 TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwiki.jp/tohy_amongus/)をご覧ください。<br>
 
 ## TOH_L外部サイト
-[WIKIWIKI]()・[Discord]()・[X/Twitter]()
+[WIKIWIKI]()・[Discord](https://discord.gg/Bv8XRBvCXW)・[X/Twitter]()
 
 ## 開発者
 - 

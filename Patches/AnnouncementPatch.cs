@@ -55,7 +55,7 @@ public class ModNews
 
 
     public const string ModNewsURL =
-        "https://raw.githubusercontent.com/Yumenopai/TownOfHost_Y/main/modNews.json";
+        "https://raw.githubusercontent.com/haru03741-glitch/TownOfHost_L/main/modNews.json";
 
     static bool downloaded = false;
 

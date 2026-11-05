@@ -14,7 +14,7 @@ namespace TownOfHostY
     [HarmonyPatch]
     public class ModUpdater
     {
-        private static readonly string URL = "https://api.github.com/repos/Yumenopai/TownOfHost_Y";
+        private static readonly string URL = "https://api.github.com/repos/haru03741-glitch/TownOfHost_L";
         public static bool hasUpdate = false;
         public static bool isBroken = false;
         public static bool isChecked = false;
@@ -35,7 +35,7 @@ namespace TownOfHostY
                 CheckRelease(Main.BetaBuildURL.Value != "").GetAwaiter().GetResult();
             }
             MainMenuManagerPatch.UpdateButton.Button.gameObject.SetActive(hasUpdate);
-            MainMenuManagerPatch.UpdateButton.Button.transform.Find("FontPlacer/Text_TMP").GetComponent<TMPro.TMP_Text>().SetText($"<size=7><color=#00bfff>TownOfHost</color>_<color=#ffff00>Y\n★ UPDATE ★</color>\n[ <color=#73e673>{latestTitle}</color> ]</size>");
+            MainMenuManagerPatch.UpdateButton.Button.transform.Find("FontPlacer/Text_TMP").GetComponent<TMPro.TMP_Text>().SetText($"<size=7><color=#00bfff>TownOfHost</color>_<color=#ffff00>L\n★ UPDATE ★</color>\n[ <color=#73e673>{latestTitle}</color> ]</size>");
         }
         public static async Task<bool> CheckRelease(bool beta = false)
         {
@@ -68,17 +68,17 @@ namespace TownOfHostY
                     JArray assets = data["assets"].Cast<JArray>();
                     for (int i = 0; i < assets.Count; i++)
                     {
-                        if (assets[i]["name"].ToString() == "TownOfHost_Y-Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
+                        if (assets[i]["name"].ToString() == "TownOfHost_L-Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
                         {
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                             break;
                         }
-                        if (assets[i]["name"].ToString() == "TownOfHost_Y-Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
+                        if (assets[i]["name"].ToString() == "TownOfHost_L-Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
                         {
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                             break;
                         }
-                        if (assets[i]["name"].ToString() == $"TownOfHost_Y-v{latestVersion}.dll")
+                        if (assets[i]["name"].ToString() == $"TownOfHost_L-v{latestVersion}.dll")
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                     }
                     hasUpdate = latestVersion.CompareTo(Main.version) > 0;
@@ -149,7 +149,7 @@ namespace TownOfHostY
                 {
                     using var content = response.Content;
                     using var stream = content.ReadAsStream();
-                    using var file = new FileStream($"BepInEx/plugins/TownOfHost_Y-v{latestVersion}.dll", FileMode.Create, FileAccess.Write);
+                    using var file = new FileStream($"BepInEx/plugins/TownOfHost_L-v{latestVersion}.dll", FileMode.Create, FileAccess.Write);
                     stream.CopyTo(file);
                     ShowPopup(GetString("updateRestart"), true);
                     return true;
@@ -179,7 +179,7 @@ namespace TownOfHostY
                     button.GetComponent<PassiveButton>().OnClick = new();
                     button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                     {
-                        Application.OpenURL("https://github.com/Yumenopai/TownOfHost_Y/releases/latest");
+                        Application.OpenURL("https://github.com/haru03741-glitch/TownOfHost_L/releases/latest");
                         Application.Quit();
                     }));
                 }

@@ -328,7 +328,7 @@ class BeginCrewmatePatch
         {
             __instance.TeamTitle.text = "Discord Server";
             __instance.ImpostorText.gameObject.SetActive(true);
-            __instance.ImpostorText.text = "https://discord.gg/v8SFfdebpz";
+            __instance.ImpostorText.text = "https://discord.gg/Bv8XRBvCXW";
             __instance.TeamTitle.color = Color.magenta;
             StartFadeIntro(__instance, Color.magenta, Color.magenta);
         }

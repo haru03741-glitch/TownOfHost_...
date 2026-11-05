@@ -152,7 +152,7 @@ namespace TownOfHostY
                             if (Regex.IsMatch(hostName?.ToLower() ?? "", line))
                             {
                                 __instance.StartButton.gameObject.SetActive(false);
-                                warningMessage = Utils.ColorString(Color.red, "MOD内でエラーが発生しています。\nY鯖のDiscordまでご連絡ください。");
+                                warningMessage = Utils.ColorString(Color.red, "MOD内でエラーが発生しています。\nTOH_LのDiscordまでご連絡ください。");
                             }
                         }
                         if (!canStartGame)
