@@ -99,9 +99,12 @@ public static class Blacklist
     {
         if (clientData == null)
         {
+            // 一覧に出てこないまま抜けた人を永久に待たない (約 10 秒で諦める)
+            int waitFrames = 0;
             do
             {
                 yield return null;
+                if (++waitFrames > 600 || AmongUsClient.Instance == null) yield break;
                 clientData = AmongUsClient.Instance
                                         .allClients
                                         .ToArray()

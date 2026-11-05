@@ -47,6 +47,11 @@ public sealed class Janitor : RoleBase, IImpostor
     // murderPlayerの無限ループ防止
     private static bool isSuiside;
 
+    // 試合を跨いで前の試合のプレイヤーを指さないようにする
+    public override void OnDestroy()
+    {
+        janitor = null;
+    }
     public override void Add()
     {
         janitor = Player;

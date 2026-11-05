@@ -39,6 +39,11 @@ public sealed class Jack : RoleBase, IImpostor
 
     int removeKillLimit;
 
+    // 試合を跨いで前の試合のプレイヤーを指さないようにする
+    public override void OnDestroy()
+    {
+        jack = null;
+    }
     public override void Add()
     {
         Player.AddDoubleTrigger();

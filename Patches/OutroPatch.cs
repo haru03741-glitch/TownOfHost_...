@@ -151,6 +151,9 @@ class EndGamePatch
         {
             Logger.Error($"EndGamePatch.Postfix で例外: {ex.Message}", "EndGamePatch");
             Logger.Exception(ex, "EndGamePatch");
+            // 途中で失敗しても役職インスタンスを次の試合に残さない
+            try { CustomRoleManager.Dispose(); }
+            catch (Exception e) { Logger.Exception(e, "EndGamePatch.Dispose"); }
         }
     }
 }

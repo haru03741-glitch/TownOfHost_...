@@ -71,8 +71,16 @@ namespace TownOfHostY
             {
                 Logger.Info($"切断(理由:{reason}:{stringReason}, ping:{__instance?.Ping})", "Session");
 
-                if (AmongUsClient.Instance.AmHost && GameStates.InGame)
-                    GameManager.Instance.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
+                // 終了の送信が失敗しても役職の後始末は必ず行う
+                try
+                {
+                    if (AmongUsClient.Instance.AmHost && GameStates.InGame)
+                        GameManager.Instance.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn($"RpcEndGame on disconnect failed: {ex.Message}", "DisconnectInternalPatch");
+                }
 
                 CustomRoleManager.Dispose();
             }
@@ -150,7 +158,7 @@ namespace TownOfHostY
                     {
                         if (data.Character.Is(CustomRoles.Lovers) && !data.Character.Data.IsDead)
                         {
-                            foreach (var lovers in Lovers.playersList)
+                            foreach (var lovers in Lovers.playersList.ToArray())
                             {
                                 Lovers.playersList.Remove(lovers);
                                 PlayerState.GetByPlayerId(lovers.PlayerId).RemoveSubRole(CustomRoles.Lovers);

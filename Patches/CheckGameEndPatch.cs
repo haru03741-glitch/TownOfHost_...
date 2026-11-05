@@ -271,6 +271,8 @@ namespace TownOfHostY
                 {
                     var playerId = ReviveRequiredPlayerIds[i];
                     var playerInfo = GameData.Instance.GetPlayerById(playerId);
+                    // 終了待ちの間に抜けた人は飛ばす (ここで止まると RpcEndGame が呼ばれず試合が終わらない)
+                    if (playerInfo == null) continue;
                     // 蘇生
                     playerInfo.IsDead = false;
                     // 送信

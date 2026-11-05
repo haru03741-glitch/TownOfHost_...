@@ -108,6 +108,12 @@ public sealed class BestieWolf : RoleBase, IImpostor
             BuffAddonAssignTarget[i] = StringOptionItem.Create(RoleInfo, 13 + i, name, selectStringArray, 0, false);
         }
     }
+    // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override void OnDestroy()
+    {
+        EnableKillFlash = null;
+    }
+
     public override void Add()
     {
         killCount = 0;

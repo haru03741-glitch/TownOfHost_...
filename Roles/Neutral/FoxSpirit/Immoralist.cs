@@ -75,6 +75,12 @@ public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateH
         OptionCanAlsoBeExposedToJackal = BooleanOptionItem.Create(RoleInfo, 12, OptionName.ImmoralistCanAlsoBeExposedToFox, false, false);
         Tasks = Options.OverrideTasksData.Create(RoleInfo, 20);
     }
+    // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override void OnDestroy()
+    {
+        Immoralists.Remove(this);
+    }
+
     public override void Add()
     {
 

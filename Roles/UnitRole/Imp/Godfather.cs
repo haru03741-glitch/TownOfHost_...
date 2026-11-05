@@ -35,6 +35,7 @@ public sealed class Godfather : RoleBase, IImpostor
     public override void OnDestroy()
     {
         CustomRoleManager.MarkOthers.Remove(GetMarkOthers);
+        godfather = null;
     }
 
     private static float GodfatherKillCooldown;
@@ -130,6 +131,8 @@ public sealed class Godfather : RoleBase, IImpostor
     {
         if (!GameStates.IsInTask || !Player.IsAlive()) return;
 
+        // ジャニターがいない・抜けた時は何もしない (毎フレーム例外になる)
+        if (janitor == null || godfather == null) return;
         var pc = janitor;
         if (pc.inVent) return;
         bool isChange = false;

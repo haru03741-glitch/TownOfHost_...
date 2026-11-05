@@ -46,6 +46,12 @@ public sealed class Medic : RoleBase
         OptionTaskTrigger = IntegerOptionItem.Create(RoleInfo, 10, OptionName.TaskTrigger, new(0, 20, 1), 3, false)
             .SetValueFormat(OptionFormat.Pieces);
     }
+    // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override void OnDestroy()
+    {
+        Medics.Remove(this);
+    }
+
     public override void Add()
     {
         Medics.Add(this);

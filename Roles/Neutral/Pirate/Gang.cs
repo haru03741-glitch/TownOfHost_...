@@ -37,6 +37,12 @@ public sealed class Gang : RoleBase, IAdditionalWinner
     bool canUseKill = false;
     bool grantAddon = false;
     bool isComplete = false;
+    // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override void OnDestroy()
+    {
+        Gangs.Remove(this);
+    }
+
     public override void Add()
     {
         Gangs.Add(this);

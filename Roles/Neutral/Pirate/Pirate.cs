@@ -105,6 +105,12 @@ public sealed class Pirate : RoleBase, IKiller
     public PlayerControl Gang;
     bool isMadeGang = false;
 
+    // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override void OnDestroy()
+    {
+        Pirates.Remove(this);
+    }
+
     public override void Add()
     {
         var playerId = Player.PlayerId;
