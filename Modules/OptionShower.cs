@@ -17,29 +17,66 @@ namespace TownOfHostY
         {
 
         }
-        // 全設定を文字列に組み立て直すのは重い (1 回 70KB 前後のゴミ) ので、毎フレームではなく 0.5 秒ごとにする。
-        // ページ切り替え (Tab / 数字キー) はすぐ反映する。
-        static float nextBuildAt;
+        // 全設定を文字列に組み立て直すのは重い (役職を多く有効にすると 1 回 3ms・1MB 前後) ので、毎フレームは行わない。
+        // 0.5 秒ごとに「表示の元になる値」の要約 (全オプションの値・本編の設定文・言語・人数・ホストか) だけを調べ、
+        // 変わった時だけ組み立て直す。ページ切り替え (Tab / 数字キー) はすぐ反映する。
+        static float nextCheckAt;
         static int builtPage = -1;
+        static int builtSignature;
+        static bool built;
         static string cachedText = "";
         public static string GetText()
         {
             float now = Time.unscaledTime;
-            if (now < nextBuildAt && builtPage == currentPage) return cachedText;
-            nextBuildAt = now + 0.5f;
-            string text = BuildText();
-            builtPage = currentPage;
-            if (!string.Equals(text, cachedText, System.StringComparison.Ordinal)) cachedText = text;
+            if (built && builtPage == currentPage && now < nextCheckAt) return cachedText;
+            if (now >= nextCheckAt || !built)
+            {
+                nextCheckAt = now + 0.5f;
+                int playerCount = GameData.Instance ? GameData.Instance.PlayerCount : 10;
+                string hudText = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(playerCount);
+                int signature = Signature(hudText);
+                if (!built || signature != builtSignature)
+                {
+                    BuildPages(hudText);
+                    builtSignature = signature;
+                    built = true;
+                    builtPage = -1;
+                }
+            }
+            if (builtPage != currentPage)
+            {
+                string text = ComposePage();
+                builtPage = currentPage;
+                if (!string.Equals(text, cachedText, System.StringComparison.Ordinal)) cachedText = text;
+            }
             return cachedText;
         }
-        static string BuildText()
+        static int Signature(string hudText)
+        {
+            var h = new System.HashCode();
+            h.Add(hudText);
+            h.Add(TranslationController.Instance.currentLanguage.languageID);
+            h.Add(Main.ForceJapanese.Value);
+            h.Add(Main.JapaneseRoleName.Value);
+            h.Add(AmongUsClient.Instance.AmHost);
+            h.Add(OptionItem.CurrentPreset);
+            var all = OptionItem.AllOptions;
+            for (int i = 0; i < all.Count; i++) h.Add(all[i].GetValue());
+            return h.ToHashCode();
+        }
+        static string ComposePage()
+        {
+            if (currentPage >= pages.Count) currentPage = pages.Count - 1; //現在のページが最大ページ数を超えていれば最後のページに修正
+            return $"{pages[currentPage]}{GetString("PressTabToNextPage")}({currentPage + 1}/{pages.Count})";
+        }
+        static void BuildPages(string hudText)
         {
             //初期化
             StringBuilder sb = new();
             pages = new()
             {
                 //1ページに基本ゲーム設定を格納
-                GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10) + "\n\n"
+                hudText + "\n\n"
             };
             //ゲームモードの表示
             sb.Append($"{Options.GameMode.GetName()}: {Options.GameMode.GetString()}\n\n");
@@ -139,15 +176,30 @@ namespace TownOfHostY
                 void nameAndValue(OptionItem o) => sb.Append($"{o.GetName()}: {o.GetString()}\n");
             }
             //1ページにつき35行までにする処理
-            List<string> tmp = new(sb.ToString().Split("\n\n"));
-            for (var i = 0; i < tmp.Count; i++)
+            // (最後のページを文字列の足し算で伸ばして毎回数え直すと、役職が多い時に二乗で重くなるので、行数を持ち回る)
+            var tmp = sb.ToString().Split("\n\n");
+            var cur = new StringBuilder(pages[^1]);
+            int curLines = CountNewLines(pages[^1]);
+            for (var i = 0; i < tmp.Length; i++)
             {
-                if (pages[^1].Count(c => c == '\n') + 1 + tmp[i].Count(c => c == '\n') + 1 > 35)
-                    pages.Add(tmp[i] + "\n\n");
-                else pages[^1] += tmp[i] + "\n\n";
+                int chunkLines = CountNewLines(tmp[i]);
+                if (curLines + 1 + chunkLines + 1 > 35)
+                {
+                    pages[^1] = cur.ToString();
+                    pages.Add("");
+                    cur.Clear();
+                    curLines = 0;
+                }
+                cur.Append(tmp[i]).Append("\n\n");
+                curLines += chunkLines + 2;
             }
-            if (currentPage >= pages.Count) currentPage = pages.Count - 1; //現在のページが最大ページ数を超えていれば最後のページに修正
-            return $"{pages[currentPage]}{GetString("PressTabToNextPage")}({currentPage + 1}/{pages.Count})";
+            pages[^1] = cur.ToString();
+        }
+        static int CountNewLines(string s)
+        {
+            int n = 0;
+            foreach (char c in s) if (c == '\n') n++;
+            return n;
         }
         public static void Next()
         {
