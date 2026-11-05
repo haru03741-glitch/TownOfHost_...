@@ -17,7 +17,22 @@ namespace TownOfHostY
         {
 
         }
+        // 全設定を文字列に組み立て直すのは重い (1 回 70KB 前後のゴミ) ので、毎フレームではなく 0.5 秒ごとにする。
+        // ページ切り替え (Tab / 数字キー) はすぐ反映する。
+        static float nextBuildAt;
+        static int builtPage = -1;
+        static string cachedText = "";
         public static string GetText()
+        {
+            float now = Time.unscaledTime;
+            if (now < nextBuildAt && builtPage == currentPage) return cachedText;
+            nextBuildAt = now + 0.5f;
+            string text = BuildText();
+            builtPage = currentPage;
+            if (!string.Equals(text, cachedText, System.StringComparison.Ordinal)) cachedText = text;
+            return cachedText;
+        }
+        static string BuildText()
         {
             //初期化
             StringBuilder sb = new();

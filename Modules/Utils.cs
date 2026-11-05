@@ -286,13 +286,16 @@ public static class Utils
     {
         return GetString("DeathReason." + Enum.GetName(typeof(CustomDeathReason), status));
     }
+    // 役職の色は起動後に変わらないので、読み取れた色は覚えておく (毎回の色コード解析はゲーム側の呼び出しになる)
+    private static readonly Dictionary<CustomRoles, Color> RoleColorCache = new();
     public static Color GetRoleColor(CustomRoles role)
     {
+        if (RoleColorCache.TryGetValue(role, out var cached)) return cached;
         if (!Main.roleColors.TryGetValue(role, out var hexColor))
         {
             hexColor = role.GetRoleInfo()?.RoleColorCode;
         }
-        _ = ColorUtility.TryParseHtmlString(hexColor, out Color c);
+        if (ColorUtility.TryParseHtmlString(hexColor, out Color c)) RoleColorCache[role] = c;
         return c;
     }
     public static string GetRoleColorCode(CustomRoles role)
@@ -469,22 +472,27 @@ public static class Utils
             return "";
         }
 
-        Color TextColor = Color.yellow;
+        Color TextColor;
         var info = GetPlayerInfoById(playerId);
-        var TaskCompleteColor = HasTasks(info) ? Color.green : GetRoleColor(state.GetNowMainRole()).ShadeColor(0.5f);
+        var TaskCompleteColor = HasTasks(info) ? ColorGreen : GetRoleColor(state.GetNowMainRole()).ShadeColor(0.5f);
         //タスク完了後の色
-        var NonCompleteColor = HasTasks(info) ? Color.yellow : Color.white;
+        var NonCompleteColor = HasTasks(info) ? ColorYellow : ColorWhite;
         //カウントされない人外は白色
         if (Workhorse.IsThisRole(playerId))
             NonCompleteColor = Workhorse.RoleColor;
 
         var NormalColor = state.taskState.IsTaskFinished ? TaskCompleteColor : NonCompleteColor;
 
-        TextColor = comms ? Color.gray : NormalColor;
+        TextColor = comms ? ColorGray : NormalColor;
         string Completed = comms ? "?" : $"{state.taskState.CompletedTasksCount}";
         return ColorString(TextColor, $"({Completed}/{state.taskState.AllTasksCount})");
 
     }
+    // Color.yellow などの static プロパティは呼ぶたびにゲーム側を通るので、値で持っておく (Unity の定義と同じ値)
+    private static readonly Color ColorYellow = new() { r = 1f, g = 0.92156863f, b = 0.015686275f, a = 1f };
+    private static readonly Color ColorGreen = new() { r = 0f, g = 1f, b = 0f, a = 1f };
+    private static readonly Color ColorWhite = new() { r = 1f, g = 1f, b = 1f, a = 1f };
+    private static readonly Color ColorGray = new() { r = 0.5f, g = 0.5f, b = 0.5f, a = 1f };
     public static (int, int) GetTasksState()
     {
         var completed = 0;
@@ -1877,6 +1885,10 @@ public static class Utils
 
 
     public static string ColorString(Color32 color, string str) => $"<color=#{color.r:x2}{color.g:x2}{color.b:x2}{color.a:x2}>{str}</color>";
+    // Color → Color32 の変換 (Unity の暗黙変換と同じ丸め) をゲーム側を呼ばずに行う
+    public static string ColorString(Color color, string str) => ColorString(ToColor32(color), str);
+    public static Color32 ToColor32(Color c) => new() { r = ToByte(c.r), g = ToByte(c.g), b = ToByte(c.b), a = ToByte(c.a) };
+    private static byte ToByte(float v) => (byte)Math.Round(v < 0f ? 0f : v > 1f ? 255f : v * 255f);
     /// <summary>
     /// Darkness:１の比率で黒色と元の色を混ぜる。マイナスだと白色と混ぜる。
     /// </summary>
@@ -1888,7 +1900,7 @@ public static class Utils
         float R = (color.r + Weight) / (Darkness + 1);
         float G = (color.g + Weight) / (Darkness + 1);
         float B = (color.b + Weight) / (Darkness + 1);
-        return new Color(R, G, B, color.a);
+        return new Color { r = R, g = G, b = B, a = color.a }; // コンストラクタはゲーム側の呼び出しになるので項目を直接入れる
     }
 
     /// <summary>

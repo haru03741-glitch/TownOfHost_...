@@ -7,6 +7,7 @@ using TownOfHostY.Roles.Core.Interfaces;
 using static TownOfHostY.Translator;
 using TMPro;
 using TownOfHostY.Templates;
+using TownOfHostY.Modules;
 
 namespace TownOfHostY;
 
@@ -14,6 +15,20 @@ namespace TownOfHostY;
 class HudManagerPatch
 {
     static TextMeshPro optionShowerText;
+    static string lastOptionText;
+    // 「キル」の文字は言語が変わらない限り同じなので、毎フレーム本編の翻訳を引かない
+    static string killLabelCache;
+    static SupportedLangs killLabelLang;
+    static string KillLabel()
+    {
+        var lang = TranslationController.Instance.currentLanguage.languageID;
+        if (killLabelCache == null || lang != killLabelLang)
+        {
+            killLabelCache = GetString(StringNames.KillLabel);
+            killLabelLang = lang;
+        }
+        return killLabelCache;
+    }
 
     public static bool ShowDebugText = false;
     public static int LastCallNotifyRolesPerSecond = 0;
@@ -34,12 +49,14 @@ class HudManagerPatch
             alignment: TextAlignmentOptions.TopLeft,
             setActive: false,
             parent: __instance.transform);
+        lastOptionText = null;
         optionShowerText.transform.position = new Vector3(-3.3f, 2.85f, 1f);
     }
     [HarmonyPatch(nameof(HudManager.Update)), HarmonyPostfix]
     public static void UpdatePostfix(HudManager __instance)
     {
         if (!GameStates.IsModHost) return;
+        LobbyPreJit.Tick();
         var player = PlayerControl.LocalPlayer;
         if (player == null) return;
         var TaskTextPrefix = "";
@@ -78,9 +95,14 @@ class HudManagerPatch
                     optionText = warn + "\n" + optionText;
                 }
             }
-            optionShowerText.text = optionText;
-            optionShowerText.fontSizeMin =
-            optionShowerText.fontSizeMax = (TranslationController.Instance.currentLanguage.languageID == SupportedLangs.Japanese || Main.ForceJapanese.Value) ? 1.05f : 1.2f;
+            // 中身が変わった時だけ書き込む (毎フレーム同じ長文をゲーム側へ写していた)
+            if (!ReferenceEquals(optionText, lastOptionText) && !string.Equals(optionText, lastOptionText, StringComparison.Ordinal))
+            {
+                lastOptionText = optionText;
+                optionShowerText.text = optionText;
+                optionShowerText.fontSizeMin =
+                optionShowerText.fontSizeMax = (TranslationController.Instance.currentLanguage.languageID == SupportedLangs.Japanese || Main.ForceJapanese.Value) ? 1.05f : 1.2f;
+            }
         }
         else
         { optionShowerText.gameObject.SetActive(false); }
@@ -96,7 +118,7 @@ class HudManagerPatch
                 var roleClass = player.GetRoleClass();
                 if (roleClass != null)
                 {
-                    var killLabel = (roleClass as IKiller)?.OverrideKillButtonText(out string text) == true ? text : GetString(StringNames.KillLabel);
+                    var killLabel = (roleClass as IKiller)?.OverrideKillButtonText(out string text) == true ? text : KillLabel();
                     __instance.KillButton.OverrideText(killLabel);
                     if (roleClass.HasAbility)
                     {
@@ -123,10 +145,12 @@ class HudManagerPatch
                     LowerInfoText.fontSizeMax = 2.0f;
                 }
 
-                LowerInfoText.text = VentEnterTask.GetLowerText(player, isForMeeting: GameStates.IsMeeting, isForHud: true);
-                LowerInfoText.text += LowerInfoText.text != "" ? '\n' : "";
-              　LowerInfoText.text += roleClass?.GetLowerText(player, isForMeeting: GameStates.IsMeeting, isForHud: true) ?? "";
-                LowerInfoText.enabled = LowerInfoText.text != "";
+                // 組み立ててから 1 回だけ書く (以前は書いては読み戻すのを毎フレーム 3 回していた)
+                string lowerText = VentEnterTask.GetLowerText(player, isForMeeting: GameStates.IsMeeting, isForHud: true) ?? "";
+                if (lowerText != "") lowerText += "\n";
+                lowerText += roleClass?.GetLowerText(player, isForMeeting: GameStates.IsMeeting, isForHud: true) ?? "";
+                TextWriteCache.SetText(LowerInfoText, lowerText);
+                LowerInfoText.enabled = lowerText != "";
 
                 if (!AmongUsClient.Instance.IsGameStarted && AmongUsClient.Instance.NetworkMode != NetworkModes.FreePlay)
                 {

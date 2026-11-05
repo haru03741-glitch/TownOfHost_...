@@ -16,6 +16,9 @@ namespace TownOfHostY
         private static StringBuilder Mark = new(20);
         private static StringBuilder Suffix = new(120);       
         private static float OptionsSendTimer = 1f;
+        private const int NameUpdateInterval = 3;
+        // RoleText は名前の子に一度作られたら変わらないので、毎フレーム探し直さずに覚えておく (nameText の場所で引く)
+        private static readonly System.Collections.Generic.Dictionary<IntPtr, TMPro.TextMeshPro> RoleTextCache = new();
         private static void PeriodicSendDirtyGameOptions()
         {
             OptionsSendTimer -= Time.fixedDeltaTime;
@@ -98,14 +101,26 @@ namespace TownOfHostY
                 var nameTextObj = __instance?.cosmetics?.nameText;
                 if (nameTextObj == null) return;
 
-                var RoleTextTransform = nameTextObj.transform.Find("RoleText");
+                // 名前と役職表示の組み立ては重い (人数に比例する) ので、各プレイヤーにつき 3 回に 1 回 (約 10 回/秒) にする。
+                // PlayerId でずらして、同じ回に全員分が集中しないようにする。
+                int step = (int)Math.Round(Time.fixedTime / Time.fixedDeltaTime);
+                if ((step + __instance.PlayerId) % NameUpdateInterval != 0) return;
+
                 TMPro.TextMeshPro RoleText = null;
+                if (RoleTextCache.TryGetValue(nameTextObj.Pointer, out var cachedRoleText) && TextWriteCache.IsAlive(cachedRoleText))
+                    RoleText = cachedRoleText;
+                var RoleTextTransform = RoleText is not null ? null : nameTextObj.transform.Find("RoleText");
                 if (RoleTextTransform != null)
                 {
                     // GetComponent が null 参照を投げないようチェック
                     try
                     {
                         RoleText = RoleTextTransform.GetComponent<TMPro.TextMeshPro>();
+                        if (RoleText != null)
+                        {
+                            if (RoleTextCache.Count > 64) RoleTextCache.Clear();
+                            RoleTextCache[nameTextObj.Pointer] = RoleText;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -128,11 +143,11 @@ namespace TownOfHostY
                         try
                         {
                             if (Main.ForkId != ver.forkId) // フォークIDが違う場合
-                                __instance.cosmetics.nameText.text = $"<color=#ff0000><size=1.2>{ver.forkId}</size>\n{__instance?.name}</color>";
+                                TextWriteCache.SetText(nameTextObj, $"<color=#ff0000><size=1.2>{ver.forkId}</size>\n{__instance?.name}</color>");
                             else if (Main.version.CompareTo(ver.version) != 0)
-                                __instance.cosmetics.nameText.text = $"<color=#ff0000><size=1.2>v{ver.version}</size>\n{__instance?.name}</color>";
+                                TextWriteCache.SetText(nameTextObj, $"<color=#ff0000><size=1.2>v{ver.version}</size>\n{__instance?.name}</color>");
                             else
-                                __instance.cosmetics.nameText.text = __instance?.Data?.PlayerName;
+                                TextWriteCache.SetText(nameTextObj, __instance?.Data?.PlayerName);
                         }
                         catch (Exception ex)
                         {
@@ -141,7 +156,7 @@ namespace TownOfHostY
                     }
                     else
                     {
-                        try { __instance.cosmetics.nameText.text = __instance?.Data?.PlayerName; } catch { }
+                        try { TextWriteCache.SetText(nameTextObj, __instance?.Data?.PlayerName); } catch { }
                     }
                 }
 
@@ -172,14 +187,14 @@ namespace TownOfHostY
                     }
 
                     RoleText.enabled = enabled;
-                    RoleText.text = roleTextStr;
+                    TextWriteCache.SetText(RoleText, roleTextStr);
 
                     if (!AmongUsClient.Instance.IsGameStarted && AmongUsClient.Instance.NetworkMode != NetworkModes.FreePlay)
                     {
                         RoleText.enabled = false; // ゲームが始まっておらずフリープレイでなければロールを非表示
                         if (!__instance.AmOwner)
                         {
-                            try { __instance.cosmetics.nameText.text = __instance?.Data?.PlayerName; } catch { }
+                            try { TextWriteCache.SetText(nameTextObj, __instance?.Data?.PlayerName); } catch { }
                         }
                     }
 
@@ -226,10 +241,11 @@ namespace TownOfHostY
                     // trueRoleName の color 上書き（null 安全に）
                     try
                     {
-                        (Color c, string t) = (Color.clear, "");
+                        // Color.clear や Color の比較演算子はゲーム側を呼ぶので、成分を直接比べる
+                        (Color c, string t) = (default(Color), "");
                         var targetRoleClass = target.GetRoleClass();
                         targetRoleClass?.OverrideShowMainRoleText(ref c, ref t);
-                        if (c != Color.clear)
+                        if (c.r != 0f || c.g != 0f || c.b != 0f || c.a != 0f)
                         {
                             RealName = RealName.Color(c); // 既存の Color 拡張を利用
                         }
@@ -292,16 +308,16 @@ namespace TownOfHostY
                     // 画面反映
                     try
                     {
-                        target.cosmetics.nameText.text = $"{RealName}{DeathReason}{Mark}";
-
+                        // 書き込みは 1 回にまとめる (以前は書いた後に読み戻して足していた)
                         if (Suffix.Length != 0)
                         {
                             RoleText.transform.SetLocalY(0.45f);
-                            target.cosmetics.nameText.text += "\r\n" + Suffix.ToString();
+                            TextWriteCache.SetText(nameTextObj, $"{RealName}{DeathReason}{Mark}\r\n{Suffix}");
                         }
                         else
                         {
                             RoleText.transform.SetLocalY(0.3f);
+                            TextWriteCache.SetText(nameTextObj, $"{RealName}{DeathReason}{Mark}");
                         }
                     }
                     catch (Exception ex)
