@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # GitInfo が履歴からバージョン情報を作る
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build (Release)
+        run: dotnet build TownOfHost.csproj -c Release -o build/
+
+      - name: Upload TownOfHost_L.dll
+        uses: actions/upload-artifact@v4
+        with:
+          name: TownOfHost_L-${{ github.sha }}
+          path: build/TownOfHost_L.dll
+          retention-days: 30
+          if-no-files-found: error

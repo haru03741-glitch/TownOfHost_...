@@ -17,9 +17,19 @@
 		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<!-- 手元では -p:AmongUs=<Among Us のフォルダ> を付けて、入っている BepInEx の DLL を参照する。
+	     付けない時 (CI など) は NuGet のゲーム DLL と BepInEx を参照する。 -->
+	<ItemGroup Condition="'$(AmongUs)' != ''">
 		<Reference Include="$(AmongUs)\BepInEx\core\*.dll" />
 		<Reference Include="$(AmongUs)\BepInEx\interop\*.dll" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(AmongUs)' == ''">
+		<PackageReference Include="AmongUs.GameLibs.Steam" Version="2026.9.29" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.735" Private="false" ExcludeAssets="runtime;native" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include=".\Resources\*.png" />
 		<EmbeddedResource Include=".\Resources\string.csv" />
 	</ItemGroup>
