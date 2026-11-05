@@ -18,7 +18,33 @@ namespace TownOfHostY
     class GameEndChecker
     {
         private static GameEndPredicate predicate;
+        private static GameOverReason lastReason = GameOverReason.ImpostorsByKill;
+        private static int errorLogCount;
         public static bool Prefix()
+        {
+            try
+            {
+                return PrefixCore();
+            }
+            catch (System.Exception ex)
+            {
+                // ここで例外を外へ出すと毎フレーム同じ例外になり、試合が終わらなくなる
+                if (errorLogCount++ < 5) Logger.Exception(ex, "GameEndChecker");
+                if (predicate != null && CustomWinnerHolder.WinnerTeam != CustomWinner.Default)
+                {
+                    // 勝者は決まっているので、後の処理が失敗しても試合は終わらせる
+                    predicate = null;
+                    try { ShipStatus.Instance.enabled = false; } catch { }
+                    var reason = lastReason;
+                    if (CustomWinnerHolder.WinnerTeam != CustomWinner.Crewmate
+                        && (reason.Equals(GameOverReason.CrewmatesByTask) || reason.Equals(GameOverReason.CrewmatesByVote)))
+                        reason = GameOverReason.ImpostorsByVote;
+                    StartEndGame(reason);
+                }
+                return false;
+            }
+        }
+        private static bool PrefixCore()
         {
             if (!AmongUsClient.Instance.AmHost) return true;
 
@@ -33,6 +59,7 @@ namespace TownOfHostY
 
             //ゲーム終了判定
             predicate.CheckForEndGame(out reason);
+            lastReason = reason;
 
             //ゲーム終了時
             if (CustomWinnerHolder.WinnerTeam != CustomWinner.Default)
@@ -405,9 +432,9 @@ namespace TownOfHostY
         private const float EndGameDelay = 0.2f;
         private const int PostEndGameResendCount = 8;
 
-        public static void SetPredicateToNormal() => predicate = new NormalGameEndPredicate();
-        public static void SetPredicateToHideAndSeek() => predicate = new HideAndSeekGameEndPredicate();
-        public static void SetPredicateToCatchCat() => predicate = new CatchCat.GameEndPredicate();
+        public static void SetPredicateToNormal() { predicate = new NormalGameEndPredicate(); errorLogCount = 0; }
+        public static void SetPredicateToHideAndSeek() { predicate = new HideAndSeekGameEndPredicate(); errorLogCount = 0; }
+        public static void SetPredicateToCatchCat() { predicate = new CatchCat.GameEndPredicate(); errorLogCount = 0; }
 
         // ===== ゲーム終了条件 =====
         // 通常ゲーム用

@@ -21,9 +21,9 @@ namespace TownOfHostY
         {
             try
             {
-                // wait for options loaded in a non-blocking manner
-                var sw = System.Diagnostics.Stopwatch.StartNew();
-                while (!Options.IsLoaded && sw.ElapsedMilliseconds < 5000) System.Threading.Thread.Sleep(1);
+                // 設定は起動時にメインスレッドで読み込み終わっている。ここで待っても (メインスレッドを止めるだけで)
+                // 読み込みは進まないので、終わっていなければ記録だけ残す
+                if (!Options.IsLoaded) Logger.Warn("設定の読み込みが完了していない状態で部屋に入りました", "OnGameJoined");
 
                 Logger.Info($"{__instance?.GameId}に参加", "OnGameJoined");
                 Main.playerVersion = new Dictionary<byte, PlayerVersion>();

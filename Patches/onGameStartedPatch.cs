@@ -244,6 +244,25 @@ class SelectRolesPatch
 
     public static bool Prefix()
     {
+        try
+        {
+            return PrefixCore();
+        }
+        catch (Exception ex)
+        {
+            // 割り当ての途中で例外を外へ出すと、勝敗判定が用意されないまま試合が始まり、二度と終わらなくなる。
+            // 送信の差し替えを止め、廃村にして次の判定で試合を終わらせる。
+            Logger.Error($"役職の割り当てに失敗したため廃村にします: {ex.Message}", "SelectRoles");
+            Logger.Exception(ex, "SelectRoles");
+            RpcSetRoleReplacer.doReplace = false;
+            GameEndChecker.SetPredicateToNormal();
+            CustomWinnerHolder.ResetAndSetWinner(CustomWinner.Draw);
+            return false;
+        }
+    }
+
+    private static bool PrefixCore()
+    {
         if (!AmongUsClient.Instance.AmHost) return true;
 
         if (Options.CurrentGameMode != CustomGameMode.Standard) return true;
