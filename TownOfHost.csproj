@@ -3,14 +3,14 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
 		<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-		<Description>Town Of Host_Y</Description>
+		<Description>Town Of Host_L</Description>
 		<Authors>tukasa0001(EmptyBottle), integral0131, yumenopai</Authors>
 		<langVersion>preview</langVersion>
 		<NoWarn>MSB3246</NoWarn>
-		<PackageId>TownOfHost_Y</PackageId>
+		<PackageId>TownOfHost_L</PackageId>
 		<Company>tukasa0001(EmptyBottle), integral0131, yumenopai</Company>
-		<Product>TownOfHost_Y</Product>
-		<AssemblyName>TownOfHost_Y</AssemblyName>
+		<Product>TownOfHost_L</Product>
+		<AssemblyName>TownOfHost_L</AssemblyName>
 		<RootNamespace>TownOfHost_Y</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

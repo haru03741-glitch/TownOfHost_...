@@ -17,7 +17,8 @@ using UnityEngine;
 [assembly: AssemblyInformationalVersionAttribute(TownOfHostY.Main.PluginVersion)]
 namespace TownOfHostY;
 
-[BepInPlugin(PluginGuid, "Town Of Host_Y", PluginVersion)]
+[BepInPlugin(PluginGuid, "Town Of Host_L", PluginVersion)]
+[BepInIncompatibility("com.yumenopai.townofhosty")]
 [BepInIncompatibility("jp.ykundesu.supernewroles")]
 [BepInIncompatibility("com.emptybottle.townofhost")]
 [BepInIncompatibility("com.AsumuAkaguma.townofhostfore")]
@@ -27,13 +28,13 @@ public class Main : BasePlugin
 {
     // == プログラム設定 / Program Config ==
     // modの名前 / Mod Name (Default: Town Of Host)
-    public static readonly string ModName = "Town Of Host_Y";
+    public static readonly string ModName = "Town Of Host_L";
     // modの色 / Mod Color (Default: #00bfff)
     public static readonly string ModColor = "#ffff00";
     // 公開ルームを許可する / Allow Public Room (Default: true)
     public static readonly bool AllowPublicRoom = true;
     // フォークID / ForkId (Default: OriginalTOH)
-    public static readonly string ForkId = "TOH_Y";
+    public static readonly string ForkId = "TOH_L";
     // Discordボタンを表示するか / Show Discord Button (Default: true)
     public static readonly bool ShowDiscordButton = true;
     // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/W5ug6hXB9V)
@@ -52,7 +53,7 @@ public class Main : BasePlugin
 
     // ==========
     //Sorry for many Japanese comments.
-    public const string PluginGuid = "com.yumenopai.townofhosty";
+    public const string PluginGuid = "6bc9fc19-1629-412a-989d-acf4e12140ff";
     public const string PluginVersion = "2026.11.2";
     // サポートされている最低のAmongUsバージョン
     public static readonly string LowestSupportedVersion = "2026.9.29";
