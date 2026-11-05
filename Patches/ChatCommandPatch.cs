@@ -805,7 +805,10 @@ namespace TownOfHostY
         public static bool DoBlockChat = false;
         public static void Postfix(ChatController __instance)
         {
-            if (!AmongUsClient.Instance.AmHost || Main.MessagesToSend.Count < 1 || (Main.MessagesToSend[0].Item2 == byte.MaxValue && Main.MessageWait.Value > __instance.timeSinceLastMessage)) return;
+            if (!AmongUsClient.Instance.AmHost || Main.MessagesToSend.Count < 1) return;
+            // 個別宛てでも最低 0.1 秒は空ける (毎フレーム連射しない)
+            float wait = Main.MessagesToSend[0].Item2 == byte.MaxValue ? Main.MessageWait.Value : 0.1f;
+            if (wait > __instance.timeSinceLastMessage) return;
             if (DoBlockChat) return;
             var player = PlayerControl.LocalPlayer;
             if (player == null) return;
@@ -815,6 +818,7 @@ namespace TownOfHostY
             if (custom)
             {
                 SendCustomChat(msg, sendTo: sendTo);
+                __instance.timeSinceLastMessage = 0f;
                 return;
             }
 

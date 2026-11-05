@@ -43,6 +43,7 @@ namespace TownOfHostY
         }
 
         private static List<byte> DesyncComms = new();
+        private static readonly Dictionary<byte, float> LastCommsSent = new();
         private static int frame = 0;
         public static readonly Dictionary<string, Vector2> DevicePos = new()
         {
@@ -188,10 +189,16 @@ namespace TownOfHostY
                     doComms &= !ignore;
                     if (doComms && !pc.inVent && GameStates.IsInTask)
                     {
-                        if (!DesyncComms.Contains(pc.PlayerId))
+                        // 入った時に送り、居続ける間は 1 秒ごとの再送だけにする (4 フレームごとに送ると同種 Reliable の連射になる)
+                        bool entered = !DesyncComms.Contains(pc.PlayerId);
+                        if (entered)
                             DesyncComms.Add(pc.PlayerId);
 
-                        pc.RpcDesyncUpdateSystem(SystemTypes.Comms, 128);
+                        if (entered || !LastCommsSent.TryGetValue(pc.PlayerId, out var last) || Time.time - last >= 1f)
+                        {
+                            LastCommsSent[pc.PlayerId] = Time.time;
+                            pc.RpcDesyncUpdateSystem(SystemTypes.Comms, 128);
+                        }
                     }
                     else if (!Utils.IsActive(SystemTypes.Comms) && DesyncComms.Contains(pc.PlayerId))
                     {

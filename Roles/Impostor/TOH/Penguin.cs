@@ -175,6 +175,8 @@ class Penguin : RoleBase, IImpostor
         AbductStates.Remove(Player.PlayerId);
         AbductTimer = 255f;
         killScheduled = false;
+        snapCooldown = 0f;
+        lastSnapPosition = new(float.MaxValue, float.MaxValue);
         PushShapeshiftCooldown();
         SendRPC();
     }
@@ -238,6 +240,9 @@ class Penguin : RoleBase, IImpostor
     {
         RemoveVictim();
     }
+    private float snapCooldown;
+    private Vector2 lastSnapPosition = new(float.MaxValue, float.MaxValue);
+
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
@@ -312,6 +317,11 @@ class Penguin : RoleBase, IImpostor
         if (!AbductVictim.MyPhysics.Animations.IsPlayingAnyLadderAnimation())
         {
             var position = Player.transform.position;
+            // 毎フレームの SnapTo は同種 Reliable の連射で公式鯖に切断されるので、0.2 秒間隔かつ 0.3 以上動いた時だけ送る
+            snapCooldown -= Time.fixedDeltaTime;
+            if (snapCooldown > 0f || ((Vector2)position - lastSnapPosition).sqrMagnitude < 0.09f) return;
+            snapCooldown = 0.2f;
+            lastSnapPosition = position;
             if (Player.PlayerId != 0)
             {
                 AbductVictim.RpcSnapTo(position);
