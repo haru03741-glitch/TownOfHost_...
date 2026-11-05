@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Csv;
 using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfHostY.Attributes;
+using TownOfHostY.Modules;
 
 namespace TownOfHostY
 {
@@ -28,12 +28,7 @@ namespace TownOfHostY
             var stream = assembly.GetManifestResourceStream("TownOfHost_Y.Resources.string.csv");
             translateMaps = new Dictionary<string, Dictionary<int, string>>();
 
-            var options = new CsvOptions()
-            {
-                HeaderMode = HeaderMode.HeaderPresent,
-                AllowNewLineInEnclosedFieldValues = false,
-            };
-            foreach (var line in CsvReader.ReadFromStream(stream, options))
+            foreach (var line in CsvLite.Read(stream))
             {
                 if (line.Values[0][0] == '#') continue;
                 try
