@@ -1,6 +1,6 @@
-# _
+# TownOfHost-L
 
-## _へようこそ！
+## TownOfHost-Lへようこそ！
 ### よくある質問
 - 公開ルームは使えないの？
   - innersloth公式からホストMOD各種〈TOH_Y,本家TOH,TOH4E,TOH-K,TOHEシリーズ,SNR(SHR)など〉へのアナウンスに基づいて、TOH系列は**公開ルーム(野良)で使用出来ないように**MODで制限をかけています。
@@ -39,7 +39,7 @@ This Readme is basically for Japanese only, and you may not be able to read it e
 
 We also use a translator for all in-game translations into English. If there is something wrong, please write in discord with the changed words and sentences and we may be able to help.<br>
 
-Thank you for finding and using TOH_Y!<br>
+Thank you for finding and using TOH_L!<br>
 
 ## ★リリース
 **最新バージョンは[こちらからダウンロード]()**<br>
@@ -50,7 +50,7 @@ Thank you for finding and using TOH_Y!<br>
 本家TOHで搭載されている機能の説明は[本家TOH/GitHub](https://github.com/tukasa0001/TownOfHost#readme)からReadMeをご覧ください。
 TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwiki.jp/tohy_amongus/)をご覧ください。<br>
 
-## TOH_hm外部サイト
+## TOH_L外部サイト
 [WIKIWIKI]()・[Discord]()・[X/Twitter]()
 
 ## 開発者
