@@ -26,6 +26,11 @@ namespace TownOfHostL
         public string Key => key ??= BuildKey();
         private string key;
         public string Name { get; }
+        /// <summary>
+        /// キーの道筋で Name の代わりに使う名前。%role% などの置き換えで役職ごとに表示が変わり、
+        /// 同じ親の下に同じ Name が並ぶ設定に、言語に依らない名前を与える。
+        /// </summary>
+        public string KeyName { get; private set; }
         public int DefaultValue { get; }
         public TabGroup Tab { get; }
         public bool IsSingleValue { get; }
@@ -145,6 +150,7 @@ namespace TownOfHostL
         public OptionItem SetFixValue(bool value) => Do(i => i.IsFixValue = value);
         public OptionItem SetText(bool value) => Do(i => i.IsText = value);
         public OptionItem SetReplacementDictionary(Dictionary<string, string> value) => Do(i => i.ReplacementDictionary = value);
+        public OptionItem SetKeyName(string value) => Do(i => i.KeyName = value);
 
         public OptionItem SetParent(OptionItem parent) => Do(i =>
         {
@@ -247,7 +253,7 @@ namespace TownOfHostL
         // ---- キー ----
         private static Dictionary<string, OptionItem> byKey;
 
-        private string KeyPath => Parent == null ? Name : $"{Parent.Key}/{Name}";
+        private string KeyPath => Parent == null ? KeyName ?? Name : $"{Parent.Key}/{KeyName ?? Name}";
         private string BuildKey()
         {
             // 確定の後に作られた設定。道筋が既にあれば #ID で区別する

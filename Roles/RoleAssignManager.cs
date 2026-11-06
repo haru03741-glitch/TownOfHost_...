@@ -25,9 +25,11 @@ namespace TownOfHostL.Roles
 
                 var minOption = IntegerOptionItem.Create(idStart + id + 1, "RoleTypeMin", new(0, maxCount, 1), 0, TabGroup.ModMainSettings, false)
                     .SetParent(parent)
+                    .SetKeyName($"RoleTypeMin.{roleTypes}")
                     .SetValueFormat(OptionFormat.Players);
                 var maxOption = IntegerOptionItem.Create(idStart + id + 2, "RoleTypeMax", new(0, maxCount, 1), 0, TabGroup.ModMainSettings, false)
                     .SetParent(parent)
+                    .SetKeyName($"RoleTypeMax.{roleTypes}")
                     .SetValueFormat(OptionFormat.Players);
 
                 minOption.ReplacementDictionary =
