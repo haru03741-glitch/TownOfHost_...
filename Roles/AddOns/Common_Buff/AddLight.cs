@@ -9,9 +9,16 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class AddLight
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.AddLight,
+        AddOnGroup.Buff,
+        "#eee5be",
+        "Ｌ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add,
+        applyGameOptions: ApplyGameOptions);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 0;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.AddLight);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｌ");
     private static List<byte> playerIdList = new();
 
     private static OptionItem OptionAddCrewmateVision;

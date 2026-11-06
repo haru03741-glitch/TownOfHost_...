@@ -8,9 +8,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class Revealer
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Revealer,
+        AddOnGroup.Buff,
+        "#e478ff",
+        "Rv",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 1300;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Revealer);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Rv");
     private static List<byte> playerIdList = new();
     private static HashSet<byte> SeenIdList = new();
     private static HashSet<byte> pendingRevealList = new();

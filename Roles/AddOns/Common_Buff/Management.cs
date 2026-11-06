@@ -8,9 +8,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class Management
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Management,
+        AddOnGroup.Buff,
+        "#80ffdd",
+        "Ｍ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 100;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Management);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｍ");
     private static List<byte> playerIdList = new();
 
     private static OptionItem OptionSeeNowtask;

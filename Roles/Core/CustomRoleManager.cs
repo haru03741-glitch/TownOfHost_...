@@ -13,6 +13,7 @@ using TownOfHostY.Roles.Impostor;
 using TownOfHostY.Roles.Neutral;
 using TownOfHostY.Roles.Unit;
 using TownOfHostY.Roles.AddOns.Common;
+using TownOfHostY.Roles.AddOns;
 
 namespace TownOfHostY.Roles.Core;
 
@@ -304,34 +305,7 @@ public static class CustomRoleManager
         }
     }
     public static void SubRoleAdd(byte playerId, CustomRoles subRole)
-    {
-        switch (subRole)
-        {
-            case CustomRoles.Lovers: Lovers.Add(playerId); break;
-            case CustomRoles.ChainShifterAddon: ChainShifterAddon.Add(playerId); break;
-
-            case CustomRoles.AddWatch: AddWatch.Add(playerId); break;
-            case CustomRoles.AddLight: AddLight.Add(playerId); break;
-            case CustomRoles.AddSeer: AddSeer.Add(playerId); break;
-            case CustomRoles.Autopsy: Autopsy.Add(playerId); break;
-            case CustomRoles.VIP: VIP.Add(playerId); break;
-            case CustomRoles.Revenger: Revenger.Add(playerId); break;
-            case CustomRoles.Management: Management.Add(playerId); break;
-            case CustomRoles.Sending: Sending.Add(playerId); break;
-            case CustomRoles.TieBreaker: TieBreaker.Add(playerId); break;
-            case CustomRoles.Loyalty: Loyalty.Add(playerId); break;
-            case CustomRoles.PlusVote: PlusVote.Add(playerId); break;
-            case CustomRoles.Guarding: Guarding.Add(playerId); break;
-            case CustomRoles.AddBait: AddBait.Add(playerId); break;
-            case CustomRoles.Refusing: Refusing.Add(playerId); break;
-            case CustomRoles.Revealer: Revealer.Add(playerId); break;
-
-            case CustomRoles.Sunglasses: Sunglasses.Add(playerId); break;
-            case CustomRoles.Clumsy: Clumsy.Add(playerId); break;
-            case CustomRoles.InfoPoor: InfoPoor.Add(playerId); break;
-            case CustomRoles.NonReport: NonReport.Add(playerId); break;
-        }
-    }
+        => AddOnList.Get(subRole)?.OnAdd?.Invoke(playerId);
     /// <summary>
     /// 受信したRPCから送信先を読み取ってRoleClassに配信する
     /// </summary>

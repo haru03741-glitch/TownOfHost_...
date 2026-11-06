@@ -10,6 +10,7 @@ using TownOfHostY.Roles.Core;
 using TownOfHostY.Roles.Neutral;
 using TownOfHostY.Roles.Crewmate;
 using TownOfHostY.Roles.AddOns.Common;
+using TownOfHostY.Roles.AddOns;
 
 namespace TownOfHostY.Modules
 {
@@ -145,14 +146,7 @@ namespace TownOfHostY.Modules
                 pc.GetCustomRole().GetRoleTypes() == RoleTypes.Noisemaker);
             noisemaker?.GetRoleClass()?.ApplyGameOptions(opt);
             foreach (var subRole in player.GetCustomSubRoles())
-            {
-                switch (subRole)
-                {
-                    case CustomRoles.AddWatch: AddWatch.ApplyGameOptions(opt); break;
-                    case CustomRoles.AddLight: AddLight.ApplyGameOptions(opt); break;
-                    case CustomRoles.Sunglasses: Sunglasses.ApplyGameOptions(opt); break;
-                }
-            }
+                AddOnList.Get(subRole)?.ApplyGameOptions?.Invoke(opt);
             Blinder.ApplyGameOptionsByOther(player.PlayerId, opt);
 
             if (Main.AllPlayerKillCooldown.TryGetValue(player.PlayerId, out var killCooldown))

@@ -10,9 +10,16 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class AddWatch
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.AddWatch,
+        AddOnGroup.Buff,
+        "#800080",
+        "Ｗ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add,
+        applyGameOptions: ApplyGameOptions);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 200;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.AddWatch);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｗ");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

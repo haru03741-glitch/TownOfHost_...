@@ -4,6 +4,7 @@ using System.Text;
 using UnityEngine;
 using TownOfHostY.Roles.AddOns.Common;
 using TownOfHostY.Roles.Core;
+using TownOfHostY.Roles.AddOns;
 
 namespace TownOfHostY;
 public static class RoleText
@@ -224,29 +225,8 @@ public static class RoleText
             foreach (var subRole in subRolesList)
             {
                 if (subRole.IsFirstWriteAddOn()) continue;
-                switch (subRole)
-                {
-                    case CustomRoles.AddWatch: sb.Append(AddWatch.SubRoleMark); break;
-                    case CustomRoles.AddLight: sb.Append(AddLight.SubRoleMark); break;
-                    case CustomRoles.AddSeer: sb.Append(AddSeer.SubRoleMark); break;
-                    case CustomRoles.Autopsy: sb.Append(Autopsy.SubRoleMark); break;
-                    case CustomRoles.VIP: sb.Append(VIP.SubRoleMark); break;
-                    case CustomRoles.Revenger: sb.Append(Revenger.SubRoleMark); break;
-                    case CustomRoles.Management: sb.Append(Management.SubRoleMark); break;
-                    case CustomRoles.Sending: sb.Append(Sending.SubRoleMark); break;
-                    case CustomRoles.TieBreaker: sb.Append(TieBreaker.SubRoleMark); break;
-                    case CustomRoles.Loyalty: sb.Append(Loyalty.SubRoleMark); break;
-                    case CustomRoles.PlusVote: sb.Append(PlusVote.SubRoleMark); break;
-                    case CustomRoles.Guarding: sb.Append(Guarding.SubRoleMark); break;
-                    case CustomRoles.AddBait: sb.Append(AddBait.SubRoleMark); break;
-                    case CustomRoles.Refusing: sb.Append(Refusing.SubRoleMark); break;
-                    case CustomRoles.Revealer: sb.Append(Revealer.SubRoleMark); break;
-
-                    case CustomRoles.Sunglasses: sb.Append(Sunglasses.SubRoleMark); break;
-                    case CustomRoles.Clumsy: sb.Append(Clumsy.SubRoleMark); break;
-                    case CustomRoles.InfoPoor: sb.Append(InfoPoor.SubRoleMark); break;
-                    case CustomRoles.NonReport: sb.Append(NonReport.SubRoleMark); break;
-                }
+                var mark = AddOnList.Get(subRole)?.Mark;
+                if (mark != null) sb.Append(mark);
             }
         }
         return sb.ToString();

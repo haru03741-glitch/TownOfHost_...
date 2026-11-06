@@ -9,9 +9,16 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class Sunglasses
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Sunglasses,
+        AddOnGroup.Debuff,
+        "#883fd1",
+        "Sg",
+        setupOptions: SetupCustomOption,
+        onAdd: Add,
+        applyGameOptions: ApplyGameOptions);
+
     private static readonly int Id = (int)offsetId.AddonDebuff + 0;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Sunglasses);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Sg");
     private static List<byte> playerIdList = new();
 
     private static OptionItem OptionSubCrewmateVision;

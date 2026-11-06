@@ -3,6 +3,7 @@ using UnityEngine;
 
 using TownOfHostY;
 using TownOfHostY.Roles.Core;
+using TownOfHostY.Roles.AddOns;
 
 namespace TownOfHostL.Core;
 
@@ -32,14 +33,14 @@ public sealed class RoleDef
 }
 
 /// <summary>
-/// 役職ごとの分類の表。役職クラスを持つ役職は SimpleRoleInfo から、持たない役職は下の Unclassed から組む。
+/// 役職ごとの分類の表。役職クラスを持つ役職は SimpleRoleInfo から、属性は AddOnInfo から、どちらも持たない役職は下の Unclassed から組む。
 /// 起動時に全役職クラスの登録が済んだ所で Build し、以降は enum の値で配列を引くだけにする。
 /// </summary>
 public static class RoleCatalog
 {
     private const CustomRoleTypes Crew = CustomRoleTypes.Crewmate;
 
-    /// <summary>役職クラスを持たない役職の陣営・色・分類</summary>
+    /// <summary>役職クラスも属性の定義も持たない役職の陣営・色・分類</summary>
     private static readonly (CustomRoles role, CustomRoleTypes team, string color, RoleFlags flags)[] Unclassed =
     {
         (CustomRoles.NotAssigned, Crew, "#ffffff", RoleFlags.None),
@@ -49,34 +50,7 @@ public static class RoleCatalog
         (CustomRoles.Tracker, Crew, null, RoleFlags.Vanilla),
         (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption),
 
-        // 属性
-        (CustomRoles.LastImpostor, Crew, "#ff1919", RoleFlags.OtherAddOn | RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty),
-        (CustomRoles.Lovers, Crew, "#ff6be4", RoleFlags.OtherAddOn | RoleFlags.FirstWriteAddOn | RoleFlags.Pair),
-        (CustomRoles.Workhorse, Crew, "#00ffff", RoleFlags.OtherAddOn | RoleFlags.FirstWriteAddOn),
-        (CustomRoles.CompleteCrew, Crew, "#ffff00", RoleFlags.OtherAddOn | RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty),
         (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn),
-        (CustomRoles.ChainShifterAddon, Crew, "#666666", RoleFlags.FirstWriteAddOn),
-
-        (CustomRoles.AddWatch, Crew, "#800080", RoleFlags.BuffAddOn),
-        (CustomRoles.AddLight, Crew, "#eee5be", RoleFlags.BuffAddOn),
-        (CustomRoles.AddSeer, Crew, "#61b26c", RoleFlags.BuffAddOn),
-        (CustomRoles.Autopsy, Crew, "#80ffdd", RoleFlags.BuffAddOn),
-        (CustomRoles.VIP, Crew, "#ffff00", RoleFlags.BuffAddOn),
-        (CustomRoles.Revenger, Crew, "#00ffff", RoleFlags.BuffAddOn),
-        (CustomRoles.Management, Crew, "#80ffdd", RoleFlags.BuffAddOn),
-        (CustomRoles.Sending, Crew, "#883fd1", RoleFlags.BuffAddOn),
-        (CustomRoles.TieBreaker, Crew, "#204d42", RoleFlags.BuffAddOn),
-        (CustomRoles.Loyalty, Crew, "#b8fb4f", RoleFlags.BuffAddOn),
-        (CustomRoles.PlusVote, Crew, "#204d42", RoleFlags.BuffAddOn),
-        (CustomRoles.Guarding, Crew, "#8cffff", RoleFlags.BuffAddOn),
-        (CustomRoles.AddBait, Crew, "#00f7ff", RoleFlags.BuffAddOn),
-        (CustomRoles.Refusing, Crew, "#61b26c", RoleFlags.BuffAddOn),
-        (CustomRoles.Revealer, Crew, "#e478ff", RoleFlags.BuffAddOn),
-
-        (CustomRoles.Sunglasses, Crew, "#883fd1", RoleFlags.DebuffAddOn),
-        (CustomRoles.Clumsy, Crew, "#696969", RoleFlags.DebuffAddOn),
-        (CustomRoles.InfoPoor, Crew, "#556b2f", RoleFlags.DebuffAddOn),
-        (CustomRoles.NonReport, Crew, "#883fd1", RoleFlags.DebuffAddOn),
 
         // HideAndSeek
         (CustomRoles.HASFox, CustomRoleTypes.Neutral, "#e478ff", RoleFlags.None),
@@ -122,11 +96,13 @@ public static class RoleCatalog
     private static RoleDef Compose(CustomRoles role)
     {
         var info = role.GetRoleInfo();
+        var addOn = AddOnList.Get(role);
         var hasUnclassed = unclassedMap.TryGetValue(role, out var u);
 
+        // 属性は陣営を決めないのでクルー
         var team = info?.CustomRoleType ?? (hasUnclassed ? u.team : Crew);
-        var flags = (info?.Flags ?? RoleFlags.None) | (hasUnclassed ? u.flags : RoleFlags.None);
-        var color = hasUnclassed && u.color != null ? u.color : info?.RoleColorCode;
+        var flags = (info?.Flags ?? RoleFlags.None) | (addOn?.Flags ?? RoleFlags.None) | (hasUnclassed ? u.flags : RoleFlags.None);
+        var color = addOn?.ColorCode ?? (hasUnclassed && u.color != null ? u.color : info?.RoleColorCode);
         return new RoleDef(role, team, flags, info, color);
     }
 

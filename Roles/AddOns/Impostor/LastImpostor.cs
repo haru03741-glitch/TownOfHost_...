@@ -9,6 +9,13 @@ namespace TownOfHostY.Roles.AddOns.Impostor
 {
     public static class LastImpostor
     {
+        public static readonly AddOnInfo Info = new(
+            CustomRoles.LastImpostor,
+            AddOnGroup.Impostor,
+            "#ff1919",
+            setupOptions: SetupCustomOption,
+            flags: RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty);
+
         private static readonly int Id = (int)offsetId.AddonImp + 0;
         public static byte currentId = byte.MaxValue;
         public static OptionItem IsChangeKillCooldown;

@@ -9,9 +9,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class Guarding
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Guarding,
+        AddOnGroup.Buff,
+        "#8cffff",
+        "Ｇ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 1000;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Guarding);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｇ");
     private static List<byte> playerIdList = new();
 
     /// <summary>

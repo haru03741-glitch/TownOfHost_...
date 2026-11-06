@@ -135,13 +135,11 @@ foreach ($m in [regex]::Matches((Remove-Comments $enumBody), '(\w+)\s*=\s*(\d+)'
 }
 if ($script:offsets.Count -eq 0) { throw 'offsetId を読めませんでした (Modules/OptionHolder.cs)' }
 
-# --- SetUpAddOnOptions が並べるバフ / デバフの数 (RoleCatalog の表の行数) ---
-$catalog = Remove-Comments (Get-Content -Raw -Encoding UTF8 (Join-Path $root 'Core/RoleCatalog.cs'))
-$buffCount = [regex]::Matches($catalog, '\(CustomRoles\.\w+,[^
-]*RoleFlags\.BuffAddOn').Count
-$debuffCount = [regex]::Matches($catalog, '\(CustomRoles\.\w+,[^
-]*RoleFlags\.DebuffAddOn').Count
-if ($buffCount -eq 0 -or $debuffCount -eq 0) { throw 'バフ / デバフの属性を読めませんでした (Core/RoleCatalog.cs)' }
+# --- SetUpAddOnOptions が並べるバフ / デバフの数 (属性の定義 AddOnInfo の見出し) ---
+$addOnText = (Get-ChildItem -Path (Join-Path $root 'Roles/AddOns') -Recurse -Filter *.cs | ForEach-Object { Remove-Comments (Get-Content -Raw -Encoding UTF8 $_.FullName) }) -join "`n"
+$buffCount = [regex]::Matches($addOnText, 'AddOnGroup\.Buff\b').Count
+$debuffCount = [regex]::Matches($addOnText, 'AddOnGroup\.Debuff\b').Count
+if ($buffCount -eq 0 -or $debuffCount -eq 0) { throw 'バフ / デバフの属性を読めませんでした (Roles/AddOns)' }
 
 # --- 各ファイルを走査 ---
 $uses = @{}          # id -> 使用箇所の配列

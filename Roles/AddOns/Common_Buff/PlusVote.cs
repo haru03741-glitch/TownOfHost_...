@@ -8,9 +8,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class PlusVote
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.PlusVote,
+        AddOnGroup.Buff,
+        "#204d42",
+        "Pv",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 900;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.PlusVote);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Pv");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

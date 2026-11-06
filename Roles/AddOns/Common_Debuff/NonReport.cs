@@ -8,9 +8,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class NonReport
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.NonReport,
+        AddOnGroup.Debuff,
+        "#883fd1",
+        "Nr",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonDebuff + 300;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.NonReport);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Nr");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

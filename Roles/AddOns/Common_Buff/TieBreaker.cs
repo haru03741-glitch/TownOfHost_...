@@ -9,9 +9,15 @@ namespace TownOfHostY.Roles.AddOns.Common;
 
 public static class TieBreaker
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.TieBreaker,
+        AddOnGroup.Buff,
+        "#204d42",
+        "Tb",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 800;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.TieBreaker);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Tb");
     private static List<byte> playerIdList = new();
     private static Dictionary<byte, byte> TieBreakerVote = new();
 
