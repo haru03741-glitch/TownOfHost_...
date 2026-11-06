@@ -281,6 +281,7 @@ public class Main : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<BooleanOptionItem.BooleanGameSetting>();
         ClassInjector.RegisterTypeInIl2Cpp<LabelHoverBehaviour>();
 
+        TownOfHostY.Modules.DelegateTypeCache.Install(Harmony);
         Harmony.PatchAll();
         Application.quitting += new Action(Utils.SaveNowLog);
     }

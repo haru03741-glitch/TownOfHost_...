@@ -91,6 +91,7 @@ TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwi
   - トトカルチョ
 - [End K not](https://github.com/waffle-ful/Aeterna-End-K-not)
   - 終わったコルーチンが持っていた参照の解放
+  - 起動時のパッチ当てで作る delegate 型の使い回し
 - [TownOfHost-K](https://github.com/KYMario/TownOfHost-K)
   - プレイヤー情報 (NetworkedPlayerInfo) の同期
 - [template-unity](https://github.com/vpmedia/template-unity) (MIT)
