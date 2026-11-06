@@ -56,6 +56,7 @@ public sealed class GameSession
         session.IsClosed = true;
         if (Current == session) Current = null;
         Log.Info("GameSession", $"#{session.Id} を閉じる ({reason})");
+        NotifyRolesQueue.Clear();
         try
         {
             Closed?.Invoke(session);

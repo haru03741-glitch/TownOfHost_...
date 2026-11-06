@@ -208,6 +208,7 @@ namespace TownOfHostY
 
                 LateTask.Update(Time.deltaTime);
                 CheckMurderPatch.Update();
+                TownOfHostL.Core.NotifyRolesQueue.Flush();
             }
             public static void Postfix(ModManager __instance)
             {

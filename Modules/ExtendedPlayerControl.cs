@@ -957,12 +957,3 @@ static class NameRpcBatcher
         }
     }
 }
-
-[HarmonyLib.HarmonyPatch(typeof(Utils), nameof(Utils.NotifyRoles))]
-class NotifyRolesFlushPatch
-{
-    public static void Postfix()
-    {
-        NameRpcBatcher.Flush();
-    }
-}

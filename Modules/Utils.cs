@@ -1401,7 +1401,35 @@ public static class Utils
     private static StringBuilder SelfLower = new(20);
     private static StringBuilder TargetMark = new(20);
     private static StringBuilder TargetSuffix = new(20);
+    /// <summary>
+    /// 名前の表示を送り直す。会議以外の呼び出しはフレームの終わりにまとめて 1 回だけ組み立てる (NotifyRolesQueue)。
+    /// 会議用 (isForMeeting) はその場で組み立てて送る。
+    /// </summary>
     public static void NotifyRoles(bool isForMeeting = false, PlayerControl SpecifySeer = null, bool NoCache = false, bool ForceLoop = false)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!isForMeeting)
+        {
+            TownOfHostL.Core.NotifyRolesQueue.Enqueue(SpecifySeer, NoCache, ForceLoop);
+            return;
+        }
+        // 先に頼まれていた会議外の分を、会議用より前に送る
+        TownOfHostL.Core.NotifyRolesQueue.Flush();
+        NotifyRolesNow(isForMeeting, SpecifySeer, NoCache, ForceLoop);
+    }
+    /// <summary>溜めずにその場で組み立てて送る。</summary>
+    public static void NotifyRolesNow(bool isForMeeting = false, PlayerControl SpecifySeer = null, bool NoCache = false, bool ForceLoop = false)
+    {
+        try
+        {
+            BuildAndSendNames(isForMeeting, SpecifySeer, NoCache, ForceLoop);
+        }
+        finally
+        {
+            NameRpcBatcher.Flush();
+        }
+    }
+    private static void BuildAndSendNames(bool isForMeeting, PlayerControl SpecifySeer, bool NoCache, bool ForceLoop)
     {
         if (!AmongUsClient.Instance.AmHost) return;
         if (Main.AllPlayerControls == null) return;
@@ -1411,12 +1439,13 @@ public static class Utils
 
         if (MushroomMixupUpdateSystemPatch.InSabotage) return; //キノコカオス中は無効
 
-        var caller = new System.Diagnostics.StackFrame(1, false);
-        var callerMethod = caller.GetMethod();
-        string callerMethodName = callerMethod?.Name;
-        string callerClassName = callerMethod?.DeclaringType?.FullName;
         var logger = Logger.Handler("NotifyRoles");
-        logger.Info("NotifyRolesが" + callerClassName + "." + callerMethodName + "から呼び出されました");
+        // 呼び出し元を StackFrame で調べるのは重いので、ログが出る時だけにする
+        if (Logger.IsTagEnabled(logger.Tag))
+        {
+            var callerMethod = new System.Diagnostics.StackFrame(1, false).GetMethod();
+            logger.Info($"NotifyRolesが{callerMethod?.DeclaringType?.FullName}.{callerMethod?.Name}から呼び出されました");
+        }
         HudManagerPatch.NowCallNotifyRolesCount++;
         HudManagerPatch.LastSetNameDesyncCount = 0;
 
@@ -1436,7 +1465,7 @@ public static class Utils
             //if (seer.IsModClient()) continue;
             string fontSize = isForMeeting ? "1.5" : Main.RoleTextSize.ToString();
             if (isForMeeting && (seer.GetClient().PlatformData.Platform is Platforms.Playstation or Platforms.Switch)) fontSize = "70%";
-            logger.Info("NotifyRoles-Loop1-" + seer.GetNameWithRole() + ":START");
+            logger.Info($"NotifyRoles-Loop1-{seer.GetNameWithRole()}:START");
 
             var seerRole = seer.GetRoleClass();
 
@@ -1586,7 +1615,7 @@ public static class Utils
                 {
                     //targetがseer自身の場合は何もしない
                     if (target == seer) continue;
-                    logger.Info("NotifyRoles-Loop2-" + target.GetNameWithRole() + ":START");
+                    logger.Info($"NotifyRoles-Loop2-{target.GetNameWithRole()}:START");
 
                     //名前の後ろに付けるマーカー
                     TargetMark.Clear();
@@ -1641,10 +1670,10 @@ public static class Utils
                     //適用
                     target.RpcSetNamePrivate(TargetName, true, seer, force: NoCache);
 
-                    logger.Info("NotifyRoles-Loop2-" + target.GetNameWithRole() + ":END");
+                    logger.Info($"NotifyRoles-Loop2-{target.GetNameWithRole()}:END");
                 }
             }
-            logger.Info("NotifyRoles-Loop1-" + seer.GetNameWithRole() + ":END");
+            logger.Info($"NotifyRoles-Loop1-{seer.GetNameWithRole()}:END");
         }
     }
     public static void MarkEveryoneDirtySettings()
