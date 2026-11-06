@@ -48,6 +48,7 @@ namespace TownOfHostY
                         sender.AutoStartRpc(player.NetTransform.NetId, (byte)RpcCalls.SnapTo)
                                 .Write(num)
                                 .Write(num2)
+                                .Write((ushort)(player.NetTransform.lastSequenceId + 8)) // 本編の SnapTo は位置の後に sequenceId (ushort) を読む
                         .EndRpc();
                         sender.AutoStartRpc(player.NetId, (byte)RpcCalls.MurderPlayer)
                                 .WriteNetObject(player)

@@ -56,7 +56,7 @@ namespace TownOfHostY
             //Vanilla
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(nt.NetId, (byte)RpcCalls.SnapTo, SendOption.Reliable);
             NetHelpers.WriteVector2(location, writer);
-            writer.Write(nt.lastSequenceId + 10U);
+            writer.Write((ushort)(nt.lastSequenceId + 10)); // 本編は ushort で読む
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
