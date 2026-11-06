@@ -25,7 +25,7 @@ namespace TownOfHostL
                 // 読み込みは進まないので、終わっていなければ記録だけ残す
                 if (!Options.IsLoaded) Logger.Warn("設定の読み込みが完了していない状態で部屋に入りました", "OnGameJoined");
 
-                Logger.Info($"{__instance?.GameId}に参加", "OnGameJoined");
+                Logger.Info($"{__instance?.GameId}に参加 (公式サーバー: {Modules.Net.OfficialServer.IsActive})", "OnGameJoined");
                 Main.playerVersion = new Dictionary<byte, PlayerVersion>();
                 try { RPC.RpcVersionCheck(); } catch { }
                 try { if (SoundManager.Instance != null) SoundManager.Instance.ChangeAmbienceVolume(DataManager.Settings.Audio.AmbienceVolume); } catch { }
