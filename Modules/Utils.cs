@@ -1777,8 +1777,8 @@ public static class Utils
         var logs = GetLogFolder();
         var filename = CopyLog(logs.FullName);
         OpenDirectory(filename);
-        if (PlayerControl.LocalPlayer != null)
-            HudManager.Instance?.Chat?.AddChat(PlayerControl.LocalPlayer, Translator.GetString("Message.LogsSavedInLogsFolder"));
+        if (PlayerControl.LocalPlayer != null && HudManager.InstanceExists)
+            HudManager.Instance.Chat?.AddChat(PlayerControl.LocalPlayer, Translator.GetString("Message.LogsSavedInLogsFolder"));
     }
     public static void SaveNowLog()
     {

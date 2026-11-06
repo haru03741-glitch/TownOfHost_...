@@ -669,7 +669,7 @@ namespace TownOfHostY
 
             if (player.AmOwner)
             {
-                HudManager.Instance?.Chat?.AddChat(player, message);
+                if (HudManager.InstanceExists) HudManager.Instance.Chat?.AddChat(player, message);
                 return;
             }
             if (!AmongUsClient.Instance.AmHost) return;
@@ -1001,7 +1001,7 @@ namespace TownOfHostY
             }
 
             // Local echo (safe guards)
-            if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+            if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.InstanceExists)
             {
                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
             }
@@ -1011,8 +1011,7 @@ namespace TownOfHostY
             {
                 if (chatText.IndexOf("who", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    var ut = DestroyableSingleton<UnityTelemetry>.Instance;
-                    if (ut != null) ut.SendWho();
+                    if (DestroyableSingleton<UnityTelemetry>.InstanceExists) DestroyableSingleton<UnityTelemetry>.Instance.SendWho();
                 }
             }
             catch { /* ignore telemetry issues */ }
