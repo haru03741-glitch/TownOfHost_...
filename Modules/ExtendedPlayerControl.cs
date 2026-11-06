@@ -131,10 +131,7 @@ static class ExtendedPlayerControl
     }
     public static void RpcSetNameEx(this PlayerControl player, string name)
     {
-        foreach (var seer in Main.AllPlayerControls)
-        {
-            Main.LastNotifyNames[(player.PlayerId, seer.PlayerId)] = name;
-        }
+        // 送った名前の覚え書きは RpcSetName の後置 (RpcSetNameMirrorPatch) で全員分を書き換える
         HudManagerPatch.LastSetNameDesyncCount++;
 
         Logger.Info($"Set:{player?.Data?.PlayerName}:{name} for All", "RpcSetNameEx");
@@ -147,7 +144,7 @@ static class ExtendedPlayerControl
         //seer: 上の変更を確認することができるプレイヤー
         if (player == null || name == null || !AmongUsClient.Instance.AmHost) return;
         if (seer == null) seer = player;
-        if (!force && Main.LastNotifyNames[(player.PlayerId, seer.PlayerId)] == name)
+        if (!force && Main.LastNotifyNames.TryGetValue((player.PlayerId, seer.PlayerId), out var lastName) && lastName == name)
         {
             //Logger.info($"Cancel:{player.name}:{name} for {seer.name}", "RpcSetNamePrivate");
             return;
@@ -880,6 +877,22 @@ static class ExtendedPlayerControl
         writer.EndMessage();
         AmongUsClient.Instance.SendOrDisconnect(writer);
         writer.Recycle();
+    }
+}
+
+/// <summary>
+/// 本編の RpcSetName は全員に同じ名前を送る。RpcSetNamePrivate の「前と同じなら送らない」は送った名前の覚え書きを見るので、
+/// 覚え書きを全員分その名前に書き換えておく。書き換えないと、客の画面は変わったのに覚え書きは古いままになり、
+/// 次に同じ名前を組み立てた時に送られず、客の画面が戻らない。
+/// </summary>
+[HarmonyLib.HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSetName))]
+static class RpcSetNameMirrorPatch
+{
+    public static void Postfix(PlayerControl __instance, string name)
+    {
+        if (!AmongUsClient.Instance.AmHost || Main.LastNotifyNames == null || __instance == null) return;
+        foreach (var seer in Main.AllPlayerControls)
+            Main.LastNotifyNames[(__instance.PlayerId, seer.PlayerId)] = name;
     }
 }
 
