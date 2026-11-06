@@ -98,7 +98,7 @@ namespace TownOfHostY
             try
             {
                 if (client == null) return;
-                Logger.Info($"{client.PlayerName}(ClientID:{client.Id}(HashedPUID:{Blacklist.BlacklistHash.ToHash(client.ProductUserId)}))が参加", "Session");
+                Logger.Info($"{client.PlayerName}(ClientID:{client.Id}(HashedPUID:{Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(client.ProductUserId))).ToLowerInvariant()}))が参加", "Session");
                 if (AmongUsClient.Instance.AmHost && client.FriendCode == "" && Options.KickPlayerFriendCodeNotExist.GetBool())
                 {
                     AmongUsClient.Instance.KickPlayer(client.Id, false);
