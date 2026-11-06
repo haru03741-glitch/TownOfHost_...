@@ -1449,44 +1449,13 @@ public static class Utils
             if (isForMeeting && (seer.GetClient().PlatformData.Platform is Platforms.Playstation or Platforms.Switch)) fontSize = "70%";
             logger.Info($"NotifyRoles-Loop1-{seer.GetNameWithRole()}:START");
 
-            var seerRole = seer.GetRoleClass();
-
-            //名前の後ろに付けるマーカー
             SelfMark.Clear();
-
-            //seer役職が対象のMark
-            SelfMark.Append(seerRole?.GetMark(seer, isForMeeting: isForMeeting));
-            //seerに関わらず発動するMark
-            SelfMark.Append(CustomRoleManager.GetMarkOthers(seer, isForMeeting: isForMeeting));
-            //Lovers
-            SelfMark.Append(Lovers.GetMark(seer));
-            //report
-            if (ReportDeadBodyPatch.DontReportMarkList.Contains(seer.PlayerId))
-                SelfMark.Append(ColorString(Palette.Orange, "◀×"));
-
+            TownOfHostL.Core.NameParts.AppendSelfMark(SelfMark, seer, isForMeeting);
             //Markとは違い、改行してから追記されます。
             SelfSuffix.Clear();
-
-            //seer役職が対象のSuffix
-            SelfSuffix.Append(seerRole?.GetSuffix(seer, isForMeeting: isForMeeting));
-            //seerに関わらず発動するSuffix
-            SelfSuffix.Append(CustomRoleManager.GetSuffixOthers(seer, isForMeeting: isForMeeting));
-            // Management
-            if (seer.Is(CustomRoles.Management))
-            {
-                SelfSuffix.Append(Management.GetSuffix(seer, isForMeeting: isForMeeting));
-            }
-
-            //TargetDeadArrow
-            if (!isForMeeting) SelfSuffix.Append(TargetDeadArrow.GetDeadBodiesArrow(seer, seer));
-
+            TownOfHostL.Core.NameParts.AppendSuffix(SelfSuffix, seer, null, isForMeeting);
             SelfLower.Clear();
-            // ベントタスクの対象ベント表示
-            SelfLower.Append(VentEnterTask.GetLowerText(seer, isForMeeting: isForMeeting));
-            //seer役職が対象のLowerText
-            SelfLower.Append(seerRole?.GetLowerText(seer, isForMeeting: isForMeeting));
-            //seerに関わらず発動するLowerText
-            SelfLower.Append(CustomRoleManager.GetLowerTextOthers(seer, isForMeeting: isForMeeting));
+            TownOfHostL.Core.NameParts.AppendSelfLower(SelfLower, seer, isForMeeting);
 
             //RealNameを取得 なければ現在の名前をRealNamesに書き込む
             string SeerRealName = seer.GetRealName(isForMeeting);
@@ -1497,7 +1466,7 @@ public static class Utils
             //seerの役職名とSelfTaskTextとseerのプレイヤー名とSelfMarkを合成
             var (enabled, text) = GetRoleNameAndProgressTextData(isForMeeting, seer);
             string SelfRoleName = enabled ? $"<size={fontSize}>{text}</size>" : "";
-            string SelfDeathReason = seer.KnowDeathReason(seer) ? $"({ColorString(GetRoleColor(CustomRoles.Doctor), GetVitalText(seer.PlayerId))})" : "";
+            string SelfDeathReason = TownOfHostL.Core.NameParts.DeathReason(seer, seer);
 
             StringBuilder SelfName = new();
             if (!(Options.IsSyncColorMode && isForMeeting && seer.IsAlive())
@@ -1599,28 +1568,15 @@ public static class Utils
                     if (target == seer) continue;
                     logger.Info($"NotifyRoles-Loop2-{target.GetNameWithRole()}:START");
 
-                    //名前の後ろに付けるマーカー
                     TargetMark.Clear();
-
-                    //seer役職が対象のMark
-                    TargetMark.Append(seerRole?.GetMark(seer, target, isForMeeting));
-                    //seerに関わらず発動するMark
-                    TargetMark.Append(CustomRoleManager.GetMarkOthers(seer, target, isForMeeting));
-                    //Lovers
-                    TargetMark.Append(Lovers.GetMark(seer, target));
+                    TownOfHostL.Core.NameParts.AppendMark(TargetMark, seer, target, isForMeeting);
 
                     //他人の役職とタスクは幽霊が他人の役職を見れるようになっていてかつ、seerが死んでいる場合のみ表示されます。それ以外の場合は空になります。
                     var targetRoleData = GetRoleNameAndProgressTextData(isForMeeting, seer, target);
                     var TargetRoleText = targetRoleData.enabled ? $"<size={fontSize}>{targetRoleData.text}</size>\r\n" : "";
 
                     TargetSuffix.Clear();
-                    //seerに関わらず発動するLowerText
-                    TargetSuffix.Append(CustomRoleManager.GetLowerTextOthers(seer, target, isForMeeting: isForMeeting));
-
-                    //seer役職が対象のSuffix
-                    TargetSuffix.Append(seerRole?.GetSuffix(seer, target, isForMeeting: isForMeeting));
-                    //seerに関わらず発動するSuffix
-                    TargetSuffix.Append(CustomRoleManager.GetSuffixOthers(seer, target, isForMeeting: isForMeeting));
+                    TownOfHostL.Core.NameParts.AppendSeenSuffix(TargetSuffix, seer, target, isForMeeting);
                     // 空でなければ先頭に改行を挿入
                     if (TargetSuffix.Length > 0)
                     {
@@ -1634,13 +1590,9 @@ public static class Utils
                     //ターゲットのプレイヤー名の色を書き換えます。
                     TargetPlayerName = TargetPlayerName.ApplyNameColorData(seer, target, isForMeeting);
 
-                    string TargetDeathReason = "";
-                    if (seer.KnowDeathReason(target))
-                        TargetDeathReason = $"({ColorString(GetRoleColor(CustomRoles.Doctor), GetVitalText(target.PlayerId))})";
+                    string TargetDeathReason = TownOfHostL.Core.NameParts.DeathReason(seer, target);
 
-                    if (IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool() && !isForMeeting && !Options.IsSyncColorMode)
-                        TargetPlayerName = $"<size=0%>{TargetPlayerName}</size>";
-                    if (EvilDyer.IsColorCamouflage && !isForMeeting)
+                    if (TownOfHostL.Core.NameParts.HideSeenName(isForMeeting))
                         TargetPlayerName = $"<size=0%>{TargetPlayerName}</size>";
 
                     //全てのテキストを合成します。

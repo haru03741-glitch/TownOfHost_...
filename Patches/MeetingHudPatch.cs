@@ -138,7 +138,6 @@ public static class MeetingHudPatch
 
             SoundManager.Instance.ChangeAmbienceVolume(0f);
             if (!GameStates.IsModHost) return;
-            var myRole = PlayerControl.LocalPlayer.GetRoleClass();
             foreach (var pva in __instance.playerStates)
             {
                 var pc = Utils.GetPlayerById(pva.PlayerId);
@@ -178,16 +177,7 @@ public static class MeetingHudPatch
                 }
 
                 var suffixBuilder = new StringBuilder(32);
-                if (myRole != null)
-                {
-                    suffixBuilder.Append(myRole.GetSuffix(PlayerControl.LocalPlayer, pc, isForMeeting: true));
-                }
-                suffixBuilder.Append(CustomRoleManager.GetSuffixOthers(PlayerControl.LocalPlayer, pc, isForMeeting: true));
-                // Management
-                if (pc.Is(CustomRoles.Management))
-                {
-                    suffixBuilder.Append(Management.GetSuffix(PlayerControl.LocalPlayer, pc, isForMeeting: true));
-                }
+                TownOfHostL.Core.NameParts.AppendSuffix(suffixBuilder, PlayerControl.LocalPlayer, pc, isMeeting: true);
 
                 if (suffixBuilder.Length > 0)
                 {
@@ -296,7 +286,6 @@ public static class MeetingHudPatch
             {
                 if (pva == null) continue;
                 var seer = PlayerControl.LocalPlayer;
-                var seerRole = seer.GetRoleClass();
 
                 var target = Utils.GetPlayerById(pva.PlayerId);
                 if (target == null) continue;
@@ -341,13 +330,8 @@ public static class MeetingHudPatch
                     pva.NameText.text = pva.NameText.text.ApplyNameColorData(seer, target, true);
                 }
 
-                if (seer.KnowDeathReason(target))
-                    sb.Append($"({Utils.ColorString(Utils.GetRoleColor(CustomRoles.Doctor), Utils.GetVitalText(target.PlayerId))})");
-
-                sb.Append(seerRole?.GetMark(seer, target, true));
-                sb.Append(CustomRoleManager.GetMarkOthers(seer, target, true));
-                //Lovers
-                sb.Append(Lovers.GetMark(seer, target));
+                sb.Append(TownOfHostL.Core.NameParts.DeathReason(seer, target));
+                TownOfHostL.Core.NameParts.AppendMark(sb, seer, target, isMeeting: true);
 
                 //会議画面ではインポスター自身の名前にSnitchマークはつけません。
 
