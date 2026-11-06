@@ -35,4 +35,6 @@ public enum RoleFlags : uint
     CCLeader = 1 << 12,
     CCColorCat = 1 << 13,
     CCNoCat = 1 << 14,
+    /// <summary>インポスター陣営に数えるが、他のインポスターの仲間にならない (互いに役職が見えず、キルもできる)</summary>
+    LoneImpostor = 1 << 15,
 }

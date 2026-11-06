@@ -62,7 +62,7 @@ public static class CustomRoleManager
         if (!CheckMurderPatch.CheckForInvalidMurdering(info, killerMyselfInvoke)) return false;
 
         // インポスター同士のキル無効
-        if (attemptKiller.GetCustomRole().IsImpostor() && attemptTarget.GetCustomRole().IsImpostor() && !attemptKiller.Is(CustomRoles.StrayWolf)) return false;
+        if (attemptKiller.GetCustomRole().IsImpostor() && attemptTarget.GetCustomRole().IsImpostor() && !attemptKiller.GetCustomRole().IsLoneImpostor()) return false;
         // ゴッドファーザーのロックキル
         if (CustomRoles.Godfather.IsPresent() && GodfatherAndJanitor.JanitorTarget.Contains(attemptKiller.PlayerId)) return false;
         // ペンギンの拉致られ中キル
