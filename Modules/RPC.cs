@@ -435,6 +435,9 @@ namespace TownOfHostY
                 case RpcCalls.CheckProtect:
                     callId = (byte)RpcCalls.ProtectPlayer;
                     break;
+                case RpcCalls.SnapTo:
+                    Modules.Net.SnapToWatch.Record();
+                    break;
             }
 
             string rpcName = RPC.GetRpcName(callId);

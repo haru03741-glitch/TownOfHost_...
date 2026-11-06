@@ -887,12 +887,22 @@ static class NameRpcBatcher
 {
     private const int MaxLength = 1000;
     private const int Overhead = 24;
+    // 公式サーバーで 1 件の名前に使ってよい長さ。MaxLength に Overhead 込みで必ず 1 件収まる値にしておく
+    // (片方だけ変えると、1 件で上限を超えた名前が分割できない長いメッセージになる)
+    private const int OfficialNameBytes = 900;
     private static readonly Dictionary<int, CustomRpcSender> senders = new();
     private static bool scheduled;
 
     public static void Enqueue(int clientId, uint netId, uint dataNetId, string name, bool dontShowOnModdedClient)
     {
-        var size = System.Text.Encoding.UTF8.GetByteCount(name) + Overhead;
+        var bytes = System.Text.Encoding.UTF8.GetByteCount(name);
+        if (bytes > OfficialNameBytes && Modules.Net.OfficialServer.IsActive)
+        {
+            Logger.Warn($"名前が長いので切り詰め: {bytes}バイト", "NameRpcBatcher");
+            name = TrimToBytes(name, OfficialNameBytes);
+            bytes = System.Text.Encoding.UTF8.GetByteCount(name);
+        }
+        var size = bytes + Overhead;
         if (senders.TryGetValue(clientId, out var current) && current.stream.Length + size > MaxLength)
         {
             senders.Remove(clientId);
@@ -914,6 +924,25 @@ static class NameRpcBatcher
             scheduled = true;
             _ = new LateTask(Flush, 0f, "");
         }
+    }
+
+    // 文字の途中で切らず、末尾に書きかけのタグ (<color=#... など) が残ったら取り除く。書きかけのタグがあると表示が崩れる
+    private static string TrimToBytes(string text, int maxBytes)
+    {
+        int bytes = 0;
+        int end = 0;
+        while (end < text.Length)
+        {
+            int len = char.IsSurrogatePair(text, end) ? 2 : 1;
+            int charBytes = System.Text.Encoding.UTF8.GetByteCount(text.AsSpan(end, len));
+            if (bytes + charBytes > maxBytes) break;
+            bytes += charBytes;
+            end += len;
+        }
+        var trimmed = text[..end];
+        int open = trimmed.LastIndexOf('<');
+        if (open >= 0 && trimmed.IndexOf('>', open) < 0) trimmed = trimmed[..open];
+        return trimmed;
     }
 
     public static void Flush()

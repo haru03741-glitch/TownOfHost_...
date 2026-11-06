@@ -138,6 +138,7 @@ namespace TownOfHostY
             stream.StartMessage(2);
             stream.WritePacked(targetNetId);
             stream.Write(callId);
+            if (callId == (byte)RpcCalls.SnapTo) Modules.Net.SnapToWatch.Record();
 
             currentState = State.InRpc;
             return this;
