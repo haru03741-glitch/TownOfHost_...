@@ -19,7 +19,8 @@ namespace TownOfHostY
             }
             foreach (BoolOptionNames name in EnumHelper.GetAllValues<BoolOptionNames>())
             {
-                if (option.TryGetBool(name, out var value))
+                // GhostsDoTasks と Roles は V12 で読めても書けず、戻すたびに本編がエラーを出すので退避しない
+                if (option.TryGetBool(name, out var value) && name is not BoolOptionNames.GhostsDoTasks and not BoolOptionNames.Roles)
                     AllValues.Add(new BoolOptionBackupValue(name, value));
             }
             foreach (FloatOptionNames name in EnumHelper.GetAllValues<FloatOptionNames>())
