@@ -281,7 +281,7 @@ namespace TownOfHostL
                     string DeathReason = "";
                     try
                     {
-                        if (seer?.Data != null && seer.Data.IsDead)
+                        if (seer?.Data != null)
                             DeathReason = TownOfHostL.Core.NameParts.DeathReason(seer, target);
                     }
                     catch (Exception ex)
