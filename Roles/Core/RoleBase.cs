@@ -259,6 +259,10 @@ public abstract class RoleBase : IDisposable
     public virtual bool IsInfoPoor => false;
     /// <summary>投票で追放された時に誰かを道連れにする</summary>
     public virtual bool RevengesOnExile => false;
+    /// <summary>この役職の人に、target の役職の色が見えるか</summary>
+    public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
+    /// <summary>この役職の人の役職の色が、全員に見えるか</summary>
+    public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
 
     // == Sabotage関連処理 ==
     /// <summary>

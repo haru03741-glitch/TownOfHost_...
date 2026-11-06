@@ -170,13 +170,7 @@ public sealed class FortuneTeller : RoleBase
             roleText = GetString("TeamCrewmate").Color(Palette.CrewmateBlue);
         }
     }
-    public static bool KnowTargetRoleColor(PlayerControl seer, PlayerControl target, bool isMeeting)
-    {
-        if (seer == null) return false;
-        if (!seer.Is(CustomRoles.FortuneTeller)) return false;
-        return ((FortuneTeller)seer.GetRoleClass()).KnowTargetRoleColor(target, isMeeting);
-    }
-    private bool KnowTargetRoleColor(PlayerControl target, bool isMeeting)
+    public override bool KnowsRoleColorOf(PlayerControl target, bool isMeeting)
     {
         if (!isMeeting) return false;
         if (!ForecastResult.ContainsKey(target.PlayerId)) return false;
