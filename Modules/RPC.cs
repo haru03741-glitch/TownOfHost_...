@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
@@ -274,9 +273,15 @@ namespace TownOfHostY
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             player.Exiled();
         }
-        public static async void RpcVersionCheck()
+        public static void RpcVersionCheck()
         {
-            while (PlayerControl.LocalPlayer == null) await Task.Delay(500);
+            // Task.Delay で待つと続きがメインスレッド外で動くので、LateTask で待ち直す
+            if (PlayerControl.LocalPlayer == null)
+            {
+                if (AmongUsClient.Instance != null && !GameStates.IsNotJoined)
+                    _ = new LateTask(RpcVersionCheck, 0.5f, "");
+                return;
+            }
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
                 PlayerControl.LocalPlayer.NetId,
                 (byte)CustomRPC.VersionCheck,
