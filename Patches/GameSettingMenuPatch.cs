@@ -412,12 +412,41 @@ public class GameSettingMenuPatch
     [HarmonyPatch(nameof(GameSettingMenu.Close)), HarmonyPostfix]
     private static void ClosePostfix(GameSettingMenu __instance)
     {
+        // 各行の OnValueChanged に入れた管理側のデリゲートはメニューを握り、GameObject を消しても
+        // メニュー全体 (全行・TMP・材質) が回収されなくなる。消す前に参照を外す
         foreach (var button in ModSettingsButtons.Values)
+        {
+            try { button.OnClick?.RemoveAllListeners(); } catch { }
             UnityEngine.Object.Destroy(button);
+        }
         foreach (var tab in ModSettingsTabs.Values)
+        {
+            ReleaseMenu(tab);
             UnityEngine.Object.Destroy(tab);
+        }
         ModSettingsButtons = new();
         ModSettingsTabs = new();
+        ModGameOptionsMenu.OptionList = new();
+        ModGameOptionsMenu.BehaviourList = new();
+        ModGameOptionsMenu.CategoryHeaderList = new();
+        ModGameOptionsMenu.SettingsMenus = new();
+        GameOptionsMenuPatch.Instance = null;
+    }
+    private static void ReleaseMenu(GameOptionsMenu menu)
+    {
+        if ((object)menu == null) return;
+        try
+        {
+            var children = menu.Children;
+            if (children == null) return;
+            for (int i = 0; i < children.Count; i++)
+            {
+                var child = children[i];
+                if ((object)child != null) child.OnValueChanged = null;
+            }
+            children.Clear();
+        }
+        catch { }
     }
 }
 

@@ -61,7 +61,8 @@ namespace TownOfHostY
                     cancelButton.transform.localPosition = new(0f, -0.2f, 0f);
                     var buttonComponent = cancelButton.GetComponent<PassiveButton>();
                     buttonComponent.OnClick = new();
-                    buttonComponent.OnClick.AddListener((Action)(() => __instance.ResetStartState()));
+                    // __instance を捕まえると前のロビーの GameStartManager がずっと残るので、押された時の物を引く
+                    buttonComponent.OnClick.AddListener((Action)(() => { if (GameStartManager.InstanceExists) GameStartManager.Instance.ResetStartState(); }));
                     cancelButton.gameObject.SetActive(false);
 
                     if (!AmongUsClient.Instance.AmHost) return;

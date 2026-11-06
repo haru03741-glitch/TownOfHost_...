@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AmongUs.Data;
 using AmongUs.GameOptions;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using Il2CppInterop.Runtime.InteropTypes;
 using InnerNet;
 using Microsoft.VisualBasic;
@@ -1857,15 +1858,28 @@ public static class Utils
             obj = GameObject.Instantiate(hud.FullScreen.gameObject, hud.transform);
             obj.name = "FlashColor_FullScreen";
         }
-        hud.StartCoroutine(Effects.Lerp(duration, new Action<float>((t) =>
+        // Effects.Lerp に管理側のラムダを渡すと呼ぶたびに GCHandle が 1 つ残るので、自前のコルーチンで同じ動きをする
+        hud.StartCoroutine(CoFlashColor(obj, color, duration).WrapToIl2Cpp());
+    }
+    private static System.Collections.IEnumerator CoFlashColor(GameObject obj, Color color, float duration)
+    {
+        var renderer = obj.GetComponent<SpriteRenderer>();
+        for (float time = 0f; time < duration; time += Time.deltaTime)
         {
-            obj.SetActive(t != 1f);
-            obj.GetComponent<SpriteRenderer>().color = new(color.r, color.g, color.b, Mathf.Clamp01((-2f * Mathf.Abs(t - 0.5f) + 1) * color.a)); //アルファ値を0→目標→0に変化させる
-        })));
+            if (obj == null) yield break;
+            float t = time / duration;
+            obj.SetActive(true);
+            renderer.color = new(color.r, color.g, color.b, Mathf.Clamp01((-2f * Mathf.Abs(t - 0.5f) + 1) * color.a)); //アルファ値を0→目標→0に変化させる
+            yield return null;
+        }
+        if (obj != null) obj.SetActive(false);
     }
 
+    // 同じ絵を開くたびに作り直すと Texture2D と Sprite が積み上がるので、作った物を使い回す
+    private static readonly Dictionary<(string, float), Sprite> SpriteCache = new();
     public static Sprite LoadSprite(string path, float pixelsPerUnit = 1f)
     {
+        if (SpriteCache.TryGetValue((path, pixelsPerUnit), out var cached) && cached != null) return cached;
         Sprite sprite = null;
         try
         {
@@ -1875,6 +1889,9 @@ public static class Utils
             stream.CopyTo(ms);
             ImageConversion.LoadImage(texture, ms.ToArray());
             sprite = Sprite.Create(texture, new(0, 0, texture.width, texture.height), new(0.5f, 0.5f), pixelsPerUnit);
+            texture.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            sprite.hideFlags |= HideFlags.DontUnloadUnusedAsset;
+            SpriteCache[(path, pixelsPerUnit)] = sprite;
         }
         catch
         {
