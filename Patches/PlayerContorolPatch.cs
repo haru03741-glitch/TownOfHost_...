@@ -717,28 +717,42 @@ class CoEnterVentPatch
     {
         if (AmongUsClient.Instance.AmHost)
         {
-            var user = __instance.myPlayer;
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek && Options.IgnoreVent.GetBool())
                 __instance.RpcBootFromVent(id);
 
-
-            bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(__instance, id) ?? false;
-            bool ventTaskAllows = VentEnterTask.OnEnterVent(__instance, id);
-
-            if (!roleAllowsVent &&
-                !ventTaskAllows &&
-                !(user.GetCustomRole().IsCCCatRoles() && CatchCat.CatPlayer.CanUseVent(user)) &&
-                user.Data.Role.Role != RoleTypes.Engineer &&
-                !user.CanUseImpostorVentButton())
-            {
-                _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-            }
-            else if (user.GetCustomRole().IsCCCatRoles() && !CatchCat.CatPlayer.CanUseVent(user))
-            {
-                _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-            }
+            OnEnterVent(__instance, id);
         }
         return true;
+    }
+
+    // ホスト自身の入室は RpcEnterVent の中で CoEnterVent も走るので、両方のフックに来る。
+    // 同じフレームの同じ入室は 1 回だけ役職へ渡す
+    private static (byte playerId, int ventId, int frame) lastHandled = (byte.MaxValue, -1, -1);
+
+    public static void OnEnterVent(PlayerPhysics physics, int id)
+    {
+        var user = physics.myPlayer;
+        if (user == null) return;
+
+        var key = (user.PlayerId, id, Time.frameCount);
+        if (lastHandled == key) return;
+        lastHandled = key;
+
+        bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(physics, id) ?? false;
+        bool ventTaskAllows = VentEnterTask.OnEnterVent(physics, id);
+
+        if (!roleAllowsVent &&
+            !ventTaskAllows &&
+            !(user.GetCustomRole().IsCCCatRoles() && CatchCat.CatPlayer.CanUseVent(user)) &&
+            user.Data.Role.Role != RoleTypes.Engineer &&
+            !user.CanUseImpostorVentButton())
+        {
+            _ = new LateTask(() => { physics.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
+        }
+        else if (user.GetCustomRole().IsCCCatRoles() && !CatchCat.CatPlayer.CanUseVent(user))
+        {
+            _ = new LateTask(() => { physics.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
+        }
     }
 }
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
@@ -747,25 +761,7 @@ class RpcEnterVentPatch
     public static void Postfix(PlayerPhysics __instance, [HarmonyArgument(0)] int id)
     {
         if (!AmongUsClient.Instance.AmHost) return;
-
-        var user = __instance.myPlayer;
-        if (user == null) return;
-
-        bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(__instance, id) ?? false;
-        bool ventTaskAllows = VentEnterTask.OnEnterVent(__instance, id);
-
-        if (!roleAllowsVent &&
-            !ventTaskAllows &&
-            !(user.GetCustomRole().IsCCCatRoles() && CatchCat.CatPlayer.CanUseVent(user)) &&
-            user.Data.Role.Role != RoleTypes.Engineer &&
-            !user.CanUseImpostorVentButton())
-        {
-            _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-        }
-        else if (user.GetCustomRole().IsCCCatRoles() && !CatchCat.CatPlayer.CanUseVent(user))
-        {
-            _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-        }
+        CoEnterVentPatch.OnEnterVent(__instance, id);
     }
 }
 

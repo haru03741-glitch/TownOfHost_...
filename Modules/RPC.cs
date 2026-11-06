@@ -81,7 +81,7 @@ namespace TownOfHostY
                     break;
                 case RpcCalls.SetRole: //SetNameRPC
                     var role = (RoleTypes)subReader.ReadUInt16();
-                    bool canOverride = reader.ReadBoolean();
+                    bool canOverride = subReader.ReadBoolean();
                     Logger.Info("役職:" + __instance.GetRealName(Options.GetNameChangeModes() == NameChange.Crew) + " => " + role, "SetRole");
                     break;
                 case RpcCalls.SendChat:

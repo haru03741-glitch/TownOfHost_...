@@ -1613,7 +1613,7 @@ public static class Utils
                     // 空でなければ先頭に改行を挿入
                     if (TargetSuffix.Length > 0)
                     {
-                        TargetSuffix.Insert(0, "\r\n<size={fontSize}>");
+                        TargetSuffix.Insert(0, $"\r\n<size={fontSize}>");
                         TargetSuffix.Append("</size>");
                     }
 
