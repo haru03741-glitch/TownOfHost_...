@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using UnityEngine;
@@ -334,23 +333,18 @@ class BeginCrewmatePatch
         }
     }
 
-    private static async void StartFadeIntro(IntroCutscene __instance, Color start, Color end)
+    // Task.Delay の続きはメインスレッド外で動き、そこからゲームの物を触ると落ちうるので LateTask で刻む
+    private static void StartFadeIntro(IntroCutscene __instance, Color start, Color end)
     {
-        await Task.Delay(2000);
-        int milliseconds = 0;
-        while (true)
+        const float Step = 0.02f;
+        const float Duration = 0.5f;
+        void Tick(float elapsed)
         {
-            await Task.Delay(20);
-            milliseconds += 20;
-            float time = (float)milliseconds / (float)500;
-            Color LerpingColor = Color.Lerp(start, end, time);
-            if (__instance == null || milliseconds > 500)
-            {
-                Logger.Info("ループを終了します", "StartFadeIntro");
-                break;
-            }
-            __instance.BackgroundBar.material.color = LerpingColor;
+            if (__instance == null || elapsed > Duration) return;
+            __instance.BackgroundBar.material.color = Color.Lerp(start, end, elapsed / Duration);
+            _ = new LateTask(() => Tick(elapsed + Step), Step, "");
         }
+        _ = new LateTask(() => Tick(Step), 2f, "");
     }
 }
 

@@ -30,6 +30,10 @@ namespace TownOfHostY
         //-1: 全プレイヤー (GameData)
         //-2: 未設定
         private int currentRpcTarget;
+        // 開いているエンベロープの中身の書き始め位置と、中身があって閉じたエンベロープの数。
+        // 中身の無いエンベロープは送らない (RPC だけでなく stream へ直接書いた Data も中身として数える)
+        private int rootBodyStart;
+        private int keptMessages;
 
         private CustomRpcSender() { }
         public CustomRpcSender(string name, SendOption sendOption, bool isUnsafe)
@@ -80,6 +84,7 @@ namespace TownOfHostY
                 stream.WritePacked(targetClientId);
             }
 
+            rootBodyStart = stream.Length;
             currentRpcTarget = targetClientId;
             currentState = State.InRootMessage;
             return this;
@@ -98,7 +103,12 @@ namespace TownOfHostY
                     throw new InvalidOperationException(errorMsg);
                 }
             }
-            stream.EndMessage();
+            if (stream.Length > rootBodyStart)
+            {
+                stream.EndMessage();
+                keptMessages++;
+            }
+            else stream.CancelMessage();
 
             currentRpcTarget = -2;
             currentState = State.Ready;
@@ -128,6 +138,7 @@ namespace TownOfHostY
             stream.StartMessage(2);
             stream.WritePacked(targetNetId);
             stream.Write(callId);
+            if (callId == (byte)RpcCalls.SnapTo) Modules.Net.SnapToWatch.Record();
 
             currentState = State.InRpc;
             return this;
@@ -196,7 +207,8 @@ namespace TownOfHostY
                 }
             }
 
-            AmongUsClient.Instance.SendOrDisconnect(stream);
+            if (keptMessages > 0) AmongUsClient.Instance.SendOrDisconnect(stream);
+            else Logger.Info($"\"{name}\" は中身が無いので送らない", "CustomRpcSender");
             onSendDelegate();
             currentState = State.Finished;
             Logger.Info($"\"{name}\" is finished", "CustomRpcSender");
