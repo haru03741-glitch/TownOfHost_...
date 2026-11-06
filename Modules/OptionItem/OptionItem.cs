@@ -225,7 +225,7 @@ namespace TownOfHostY
             if (doSync)
                 SyncAllOptions();
             if (doSave)
-                OptionSaver.Save();
+                OptionSaver.RequestSave(IsSingleValue ? null : CurrentPreset);
         }
         public virtual void SetValue(int afterValue, bool doSync = true) => SetValue(afterValue, true, doSync);
 

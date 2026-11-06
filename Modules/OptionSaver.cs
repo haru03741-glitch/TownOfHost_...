@@ -142,7 +142,10 @@ public static class OptionSaver
         {
             return;
         }
-
+        WriteSingleOptions();
+    }
+    private static void WriteSingleOptions()
+    {
         try
         {
             var jsonString = JsonSerializer.Serialize(GenerateSingleOptionsData(), new JsonSerializerOptions { WriteIndented = true });
@@ -162,7 +165,10 @@ public static class OptionSaver
         {
             return;
         }
-
+        WritePreset(presetIndex);
+    }
+    private static void WritePreset(int presetIndex)
+    {
         try
         {
             var presetFilePath = GetPresetFilePath(presetIndex);
@@ -184,11 +190,57 @@ public static class OptionSaver
         }
     }
 
-    /// <summary>現在のオプションをjsonファイルに保存</summary>
+    /// <summary>現在のオプションをjsonファイルに保存 (すぐ書く)</summary>
     public static void Save()
     {
         SaveSingleOptions();
         SaveAllPresets();
+        dirtySingle = false;
+        dirtyPresets = 0;
+    }
+
+    // ---- まとめて保存 ----
+    // 値を 1 つ変えるたびに全部のファイルを書き直すと、プリセットの切り替えのような一括の変更で
+    // 何千回も書くことになる。変わった印だけ付けて、最後の変更から少し待ってから変わったファイルだけを書く。
+    private const float SaveDelaySeconds = 1f;
+    private static bool dirtySingle;
+    private static int dirtyPresets; // プリセットの番号ごとのビット
+    private static float saveAt = -1f;
+
+    /// <summary>保存を予約する。preset は変わったプリセットの番号 (シングルオプションなら null)。</summary>
+    public static void RequestSave(int? preset)
+    {
+        // 接続済みで，ホストじゃなければ保存しない
+        if (AmongUsClient.Instance != null && !AmongUsClient.Instance.AmHost) return;
+        if (preset is int index) dirtyPresets |= 1 << index;
+        else dirtySingle = true;
+        saveAt = UnityEngine.Time.realtimeSinceStartup + SaveDelaySeconds;
+    }
+
+    /// <summary>毎フレーム呼ぶ。予約から時間が経っていれば書く。</summary>
+    public static void Tick()
+    {
+        if (saveAt < 0f || UnityEngine.Time.realtimeSinceStartup < saveAt) return;
+        Flush();
+    }
+
+    /// <summary>予約されている保存を今すぐ書く。</summary>
+    public static void Flush()
+    {
+        saveAt = -1f;
+        if (dirtySingle)
+        {
+            dirtySingle = false;
+            WriteSingleOptions();
+        }
+        for (int i = 0; dirtyPresets != 0 && i < OptionItem.NumPresets; i++)
+        {
+            int bit = 1 << i;
+            if ((dirtyPresets & bit) == 0) continue;
+            dirtyPresets &= ~bit;
+            WritePreset(i);
+        }
+        dirtyPresets = 0;
     }
 
     /// <summary>シングルオプションをjsonファイルから読み込み</summary>

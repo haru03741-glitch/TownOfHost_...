@@ -35,6 +35,8 @@ public sealed class GameSession
 
     internal static void Begin()
     {
+        // 試合中は設定が変わらないので、予約中の保存はここで書き切る
+        TownOfHostY.Modules.OptionSaver.Flush();
         CloseLatest("次の試合の開始");
         latest = Current = new GameSession(nextId++);
         Log.Info("GameSession", $"#{Current.Id} 開始");

@@ -285,6 +285,8 @@ public class Main : BasePlugin
         TownOfHostY.Modules.DelegateTypeCache.Install(Harmony);
         Harmony.PatchAll();
         Application.quitting += new Action(Utils.SaveNowLog);
+        // まとめて保存する設定を、終了前に書き切る
+        Application.quitting += new Action(TownOfHostY.Modules.OptionSaver.Flush);
     }
 }
 public enum CustomDeathReason
