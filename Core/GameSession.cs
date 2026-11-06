@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using InnerNet;
 
 using TownOfHostL;
 
@@ -91,7 +92,8 @@ public sealed class GameSession
         public static void Postfix() => CloseLatest("ロビーに戻った");
     }
 
-    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnDisconnected))]
+    // AmongUsClient.OnDisconnected は自分から抜けた時 (ExitGame) には呼ばれない。どの切断でも通る DisconnectInternal で見る
+    [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.DisconnectInternal))]
     private static class DisconnectPatch
     {
         public static void Postfix()
