@@ -1310,47 +1310,34 @@ public static class Utils
         if (!AmongUsClient.Instance.AmHost) return;
         string name = DataManager.player.Customization.Name;
         if (Main.nickName != "") name = Main.nickName;
-        if (AmongUsClient.Instance.IsGameStarted)
+        // 試合中のホストの名前は NotifyRoles が見る人ごとに配る。ここで全員へ送ると、その名前 (通信妨害で隠した名前など) を上書きしてしまう
+        if (AmongUsClient.Instance.IsGameStarted) return;
+
+        if (Options.IsCCMode)
+            name = $"<color={Main.ModColor}>{GetString("CatchCat")}</color>\r\n" + name;
+        //else if (Options.IsONMode)
+        //    name = $"<color={GetRoleColorCode(CustomRoles.ONVillager)}>TOH_Y {GetString("OneNight")}</color>\r\n" + name;
+        else if (AmongUsClient.Instance.IsGamePublic)
+            name = $"<color={Main.ModColor}>TownOfHost_L v{Main.PluginVersion}</color>\r\n" + name;
+        switch (Options.GetSuffixMode())
         {
-            if (Main.nickName == "")
-            {
-                if (Options.GetNameChangeModes() == NameChange.Color)
-                {
-                    if (PlayerControl.LocalPlayer.Is(CustomRoles.Rainbow))
-                        name = GetString("RainbowColor");
-                    else
-                        name = Palette.GetColorName(Camouflage.PlayerSkins[PlayerControl.LocalPlayer.PlayerId].ColorId);
-                }
-            }
-        }
-        else
-        {
-            if (Options.IsCCMode)
-                name = $"<color={Main.ModColor}>{GetString("CatchCat")}</color>\r\n" + name;
-            //else if (Options.IsONMode)
-            //    name = $"<color={GetRoleColorCode(CustomRoles.ONVillager)}>TOH_Y {GetString("OneNight")}</color>\r\n" + name;
-            else if (AmongUsClient.Instance.IsGamePublic)
-                name = $"<color={Main.ModColor}>TownOfHost_L v{Main.PluginVersion}</color>\r\n" + name;
-            switch (Options.GetSuffixMode())
-            {
-                case SuffixModes.None:
-                    break;
-                case SuffixModes.TOH_L:
-                    name += $"\r\n<color={Main.ModColor}>TOH_L v{Main.PluginVersion}</color>";
-                    break;
-                case SuffixModes.Streaming:
-                    name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Streaming")}</color>";
-                    break;
-                case SuffixModes.Recording:
-                    name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Recording")}</color>";
-                    break;
-                case SuffixModes.RoomHost:
-                    name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.RoomHost")}</color>";
-                    break;
-                case SuffixModes.OriginalName:
-                    name += $"\r\n<color={Main.ModColor}>{DataManager.player.Customization.Name}</color>";
-                    break;
-            }
+            case SuffixModes.None:
+                break;
+            case SuffixModes.TOH_L:
+                name += $"\r\n<color={Main.ModColor}>TOH_L v{Main.PluginVersion}</color>";
+                break;
+            case SuffixModes.Streaming:
+                name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Streaming")}</color>";
+                break;
+            case SuffixModes.Recording:
+                name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Recording")}</color>";
+                break;
+            case SuffixModes.RoomHost:
+                name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.RoomHost")}</color>";
+                break;
+            case SuffixModes.OriginalName:
+                name += $"\r\n<color={Main.ModColor}>{DataManager.player.Customization.Name}</color>";
+                break;
         }
         if (name != PlayerControl.LocalPlayer.name && PlayerControl.LocalPlayer.CurrentOutfitType == PlayerOutfitType.Default) PlayerControl.LocalPlayer.RpcSetName(name);
     }
