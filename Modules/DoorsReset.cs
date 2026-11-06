@@ -1,7 +1,7 @@
 using Sentry;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public static class DoorsReset
 {

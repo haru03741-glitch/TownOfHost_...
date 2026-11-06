@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadNimrod : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using HarmonyLib;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 // Based on https://github.com/waffle-ful/Aeterna-End-K-not (Modules/PatchPhases.cs DelegateTypeCache, GPL-3.0)
 // il2cpp のメソッドをパッチするたびに、Il2CppInterop は HarmonyX の DelegateTypeFactory に

@@ -6,23 +6,25 @@ using Hazel;
 using Il2CppSystem.Text;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Neutral;
-using TownOfHostY.Roles.Unit;
-using TownOfHostY.Roles.AddOns.Common;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
+using TownOfHostL.Roles.Unit;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns;
 
-namespace TownOfHostY.Roles.Core;
+namespace TownOfHostL.Roles.Core;
 
 public static class CustomRoleManager
 {
     public static Type[] AllRolesClassType;
-    public static Dictionary<CustomRoles, SimpleRoleInfo> AllRolesInfo = new(CustomRolesHelper.AllRoles.Length);
+    // CustomRolesHelper の static 初期化は RoleCatalog 経由でここを引くので、この初期化から CustomRolesHelper を読まない
+    public static Dictionary<CustomRoles, SimpleRoleInfo> AllRolesInfo = new();
     public static Dictionary<byte, RoleBase> AllActiveRoles = new(15);
 
-    public static SimpleRoleInfo GetRoleInfo(this CustomRoles role) => AllRolesInfo.ContainsKey(role) ? AllRolesInfo[role] : null;
+    public static SimpleRoleInfo GetRoleInfo(this CustomRoles role) => AllRolesInfo.TryGetValue(role, out var info) ? info : null;
     public static RoleBase GetRoleClass(this PlayerControl player) => GetByPlayerId(player.PlayerId);
     public static RoleBase GetByPlayerId(byte playerId) => AllActiveRoles.TryGetValue(playerId, out var roleBase) ? roleBase : null;
     public static void Do<T>(this List<T> list, Action<T> action) => list.ToArray().Do(action);
@@ -304,34 +306,7 @@ public static class CustomRoleManager
         }
     }
     public static void SubRoleAdd(byte playerId, CustomRoles subRole)
-    {
-        switch (subRole)
-        {
-            case CustomRoles.Lovers: Lovers.Add(playerId); break;
-            case CustomRoles.ChainShifterAddon: ChainShifterAddon.Add(playerId); break;
-
-            case CustomRoles.AddWatch: AddWatch.Add(playerId); break;
-            case CustomRoles.AddLight: AddLight.Add(playerId); break;
-            case CustomRoles.AddSeer: AddSeer.Add(playerId); break;
-            case CustomRoles.Autopsy: Autopsy.Add(playerId); break;
-            case CustomRoles.VIP: VIP.Add(playerId); break;
-            case CustomRoles.Revenger: Revenger.Add(playerId); break;
-            case CustomRoles.Management: Management.Add(playerId); break;
-            case CustomRoles.Sending: Sending.Add(playerId); break;
-            case CustomRoles.TieBreaker: TieBreaker.Add(playerId); break;
-            case CustomRoles.Loyalty: Loyalty.Add(playerId); break;
-            case CustomRoles.PlusVote: PlusVote.Add(playerId); break;
-            case CustomRoles.Guarding: Guarding.Add(playerId); break;
-            case CustomRoles.AddBait: AddBait.Add(playerId); break;
-            case CustomRoles.Refusing: Refusing.Add(playerId); break;
-            case CustomRoles.Revealer: Revealer.Add(playerId); break;
-
-            case CustomRoles.Sunglasses: Sunglasses.Add(playerId); break;
-            case CustomRoles.Clumsy: Clumsy.Add(playerId); break;
-            case CustomRoles.InfoPoor: InfoPoor.Add(playerId); break;
-            case CustomRoles.NonReport: NonReport.Add(playerId); break;
-        }
-    }
+        => AddOnList.Get(subRole)?.OnAdd?.Invoke(playerId);
     /// <summary>
     /// 受信したRPCから送信先を読み取ってRoleClassに配信する
     /// </summary>

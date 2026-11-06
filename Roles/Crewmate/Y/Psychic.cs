@@ -6,10 +6,10 @@ using UnityEngine;
 using Hazel;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 
 public sealed class Psychic : RoleBase
 {

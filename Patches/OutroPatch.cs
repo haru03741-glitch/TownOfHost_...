@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Templates;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Templates;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
 class EndGamePatch

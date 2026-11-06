@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Madmate;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Madmate;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class TargetDeadArrow
 {

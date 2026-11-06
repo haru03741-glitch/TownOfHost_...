@@ -2,12 +2,19 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.AddOns.Crewmate
+namespace TownOfHostL.Roles.AddOns.Crewmate
 {
     public static class CompreteCrew
     {
+        public static readonly AddOnInfo Info = new(
+            CustomRoles.CompleteCrew,
+            AddOnGroup.Crewmate,
+            "#ffff00",
+            setupOptions: SetupCustomOption,
+            flags: RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty);
+
         private static readonly int Id = (int)Options.offsetId.AddonCrew + 100;
         public static List<byte> playerIdList = new();
         public static void SetupCustomOption()

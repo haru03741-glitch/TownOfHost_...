@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using AmongUs.GameOptions;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 public sealed class Gang : RoleBase, IAdditionalWinner
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -19,7 +19,8 @@ public sealed class Gang : RoleBase, IAdditionalWinner
             (int)Options.offsetId.NeuY + 1000,//使用しない
             null,
             "一味",
-            "#cc4b33"
+            "#cc4b33",
+            flags: RoleFlags.DontShowOption
         );
     public Gang(PlayerControl player)
     : base(

@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class InfoPoor
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.InfoPoor,
+        AddOnGroup.Debuff,
+        "#556b2f",
+        "Ip",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonDebuff + 200;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.InfoPoor);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ip");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

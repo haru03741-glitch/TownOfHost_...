@@ -1,11 +1,11 @@
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 using Hazel;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class EvilHacker : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -22,7 +22,8 @@ public sealed class EvilHacker : RoleBase, IImpostor
             assignInfo: new(CustomRoles.EvilHacker, CustomRoleTypes.Impostor)
             {
                 IsInitiallyAssignableCallBack = () => (MapNames)Main.NormalOptions.MapId is not MapNames.Fungle
-            }
+            },
+            flags: RoleFlags.DontShowOption  // 封印中
         );
     public EvilHacker(PlayerControl player)
     : base(

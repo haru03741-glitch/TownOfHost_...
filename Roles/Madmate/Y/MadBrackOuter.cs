@@ -2,9 +2,9 @@ using AmongUs.GameOptions;
 using Hazel;
 using InnerNet;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadBrackOuter : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

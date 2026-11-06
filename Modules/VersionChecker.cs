@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public static class VersionChecker
 {

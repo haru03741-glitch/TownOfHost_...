@@ -6,14 +6,14 @@ using HarmonyLib;
 using Hazel;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
-using static TownOfHostY.Translator;
+using TownOfHostL.Attributes;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 
 

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Unit;
+namespace TownOfHostL.Roles.Unit;
 public sealed class CounselorAndMadDilemma : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -21,7 +21,8 @@ public sealed class CounselorAndMadDilemma : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Counselor, CustomRoles.MadDilemma }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public CounselorAndMadDilemma(PlayerControl player)
     : base(

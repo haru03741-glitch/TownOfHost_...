@@ -1,19 +1,26 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-using static TownOfHostY.Options;
-using static TownOfHostY.Translator;
-using static TownOfHostY.Utils;
-using TownOfHostY.Attributes;
+using static TownOfHostL.Options;
+using static TownOfHostL.Translator;
+using static TownOfHostL.Utils;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Sending
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Sending,
+        AddOnGroup.Buff,
+        "#883fd1",
+        "Sd",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
+    private static Color RoleColor => Utils.GetRoleColor(CustomRoles.Sending);
     private static readonly int Id = (int)offsetId.AddonBuff + 700;
-    private static Color RoleColor = GetRoleColor(CustomRoles.Sending);
-    public static string SubRoleMark = ColorString(RoleColor, "Sd");
     private static List<byte> playerIdList = new();
 
     private static PlayerControl ExiledPlayer = null;

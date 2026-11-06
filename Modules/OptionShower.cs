@@ -3,11 +3,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public static class OptionShower
     {
@@ -161,7 +161,7 @@ namespace TownOfHostY
                         }
                     }
                 }
-                foreach (var opt in OptionItem.AllOptions.Where(x => x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
+                foreach (var opt in OptionItem.AllOptions.Where(x => x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
                 {
                     if (opt.IsText) sb.Append('\n');
                     else

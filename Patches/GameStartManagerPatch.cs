@@ -9,11 +9,11 @@ using InnerNet;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using TownOfHostY.Modules;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles;
+using TownOfHostL.Modules;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public class GameStartManagerPatch
     {

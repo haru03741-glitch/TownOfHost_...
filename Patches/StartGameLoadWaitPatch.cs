@@ -1,7 +1,7 @@
 using System;
 using HarmonyLib;
 
-namespace TownOfHostY.Patches;
+namespace TownOfHostL.Patches;
 
 // 試合開始時、本編のホストは客のマップ読み込み完了を 10 秒 (Airship/Fungle は 15 秒) しか待たず、
 // 間に合わない客を ClientTimeout で切断する。スマホなど読み込みの遅い端末は 12 秒以上かかることがあり、

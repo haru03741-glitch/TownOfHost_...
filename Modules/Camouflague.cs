@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using System.Linq;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Impostor;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Impostor;
 using static UnityEngine.GraphicsBuffer;
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 static class PlayerOutfitExtension
 {

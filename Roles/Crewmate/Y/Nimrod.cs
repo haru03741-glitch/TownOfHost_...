@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Nimrod : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

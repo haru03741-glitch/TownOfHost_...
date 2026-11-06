@@ -4,10 +4,10 @@ using System.Linq;
 using AmongUs.GameOptions;
 using HarmonyLib;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public class PlayerState
 {
@@ -227,7 +227,7 @@ public static class GameStates
 {
     public static bool InGame = false;
     public static bool AlreadyDied = false;
-    public static bool IsModHost => PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == 0 && x.IsModClient());
+    public static bool IsModHost => TownOfHostL.Core.Players.ById(0) is { } host && host.IsModClient();
     public static bool IsLobby => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Joined;
     public static bool IsInGame => InGame;
     public static bool IsEnded => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Ended;

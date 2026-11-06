@@ -5,16 +5,17 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Unit;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Impostor;
-using TownOfHostY.Roles.AddOns.Crewmate;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Unit;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Impostor;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.AddOns;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [Flags]
 public enum CustomGameMode
@@ -33,6 +34,8 @@ public static class Options
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.Initialize)), HarmonyPostfix]
     public static void OptionsLoadStart()
     {
+        // 2 回目に呼ばれると設定を二重に作り、保存待ちの変更もファイルの値で上書きしてしまう
+        if (IsLoaded) return;
         Logger.Info("Options.Load Start", "Options");
         //taskOptionsLoad = Task.Run(Load);
         Load();
@@ -471,36 +474,19 @@ public static class Options
         //TextOptionItem.Create((int)offsetId.Text + 15, "Head.NewAddOn", TabGroup.Addons).SetColor(Color.green);
 
         TextOptionItem.Create((int)offsetId.Text + 10, "Head.ImpostorAddOn", TabGroup.Addons).SetColor(Palette.ImpostorRed);
-        LastImpostor.SetupCustomOption();
+        AddOnList.SetupOptions(AddOnGroup.Impostor);
 
         TextOptionItem.Create((int)offsetId.Text + 11, "Head.CrewmateAddOn", TabGroup.Addons).SetColor(Palette.CrewmateBlue);
-        CompreteCrew.SetupCustomOption();
-        Workhorse.SetupCustomOption();
+        AddOnList.SetupOptions(AddOnGroup.Crewmate);
 
         TextOptionItem.Create((int)offsetId.Text + 12, "Head.NeutralAddOn", TabGroup.Addons).SetColor(Palette.Orange);
-        Lovers.SetupCustomOption();
+        AddOnList.SetupOptions(AddOnGroup.Neutral);
 
         TextOptionItem.Create((int)offsetId.Text + 13, "Head.BuffAddOn", TabGroup.Addons).SetColor(Color.yellow);
-        AddLight.SetupCustomOption();
-        Management.SetupCustomOption();
-        AddWatch.SetupCustomOption();
-        AddSeer.SetupCustomOption();
-        Autopsy.SetupCustomOption();
-        VIP.SetupCustomOption();
-        Revenger.SetupCustomOption();
-        Sending.SetupCustomOption();
-        TieBreaker.SetupCustomOption();
-        PlusVote.SetupCustomOption();
-        Guarding.SetupCustomOption();
-        AddBait.SetupCustomOption();
-        Refusing.SetupCustomOption();
-        Revealer.SetupCustomOption();
+        AddOnList.SetupOptions(AddOnGroup.Buff);
 
         TextOptionItem.Create((int)offsetId.Text + 14, "Head.DebuffAddOn", TabGroup.Addons).SetColor(Palette.Purple);
-        Sunglasses.SetupCustomOption();
-        Clumsy.SetupCustomOption();
-        InfoPoor.SetupCustomOption();
-        NonReport.SetupCustomOption();
+        AddOnList.SetupOptions(AddOnGroup.Debuff);
         #endregion
 
         TextOptionItem.Create((int)offsetId.Text + 20, "Head.RoleAssign", TabGroup.ModMainSettings).SetColor(Palette.LightBlue);

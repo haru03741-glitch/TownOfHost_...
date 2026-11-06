@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Madmate;
-using static TownOfHostY.Utils;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Madmate;
+using static TownOfHostL.Utils;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 static class VentEnterTask
 {
     public static List<byte> PlayerIdList = new();

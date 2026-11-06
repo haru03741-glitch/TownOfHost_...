@@ -1,12 +1,12 @@
 using AmongUs.GameOptions;
 using UnityEngine;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 using System.Linq;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class EvilIgnition : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =

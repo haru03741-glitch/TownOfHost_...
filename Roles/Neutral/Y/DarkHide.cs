@@ -3,11 +3,11 @@ using AmongUs.GameOptions;
 using Hazel;
 using InnerNet;
 
-using static TownOfHostY.Options;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using static TownOfHostL.Options;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral
+namespace TownOfHostL.Roles.Neutral
 {
     public sealed class DarkHide : RoleBase, IKiller, ISchrodingerCatOwner
     {
@@ -27,7 +27,8 @@ namespace TownOfHostY.Roles.Neutral
                 assignInfo: new RoleAssignInfo(CustomRoles.DarkHide, CustomRoleTypes.Neutral)
                 {
                     AssignCountRule = new(1, 1, 1)
-                }
+                },
+            flags: RoleFlags.FixedCount
             );
         public DarkHide(PlayerControl player)
         : base(

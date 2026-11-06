@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Madmate;
-using TownOfHostY.Roles.Impostor;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Madmate;
+using TownOfHostL.Roles.Impostor;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 public static class MeetingDisplayText
 {
     /***************************************
@@ -82,7 +82,7 @@ public static class MeetingDisplayText
         if (forVanilla)
         {
             addText.Append("<line-height=0.68em>\n</line-height>")
-                .Append($"<size=80%><color={Main.ModColor}>TOH_Y</color>\n</size>")
+                .Append($"<size=80%><color={Main.ModColor}>TOH_L</color>\n</size>")
                 .Append($"<size=70%> v{Main.PluginVersion}\n</size>\n".Color(Color.white));
 
             column += 3;

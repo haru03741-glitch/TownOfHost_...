@@ -4,11 +4,11 @@ using Hazel;
 using UnityEngine;
 
 using AmongUs.GameOptions;
-using static TownOfHostY.Translator;
-using static TownOfHostY.Utils;
-using TownOfHostY.Roles.Core;
+using static TownOfHostL.Translator;
+using static TownOfHostL.Utils;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Bakery : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

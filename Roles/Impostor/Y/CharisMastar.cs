@@ -4,10 +4,10 @@ using HarmonyLib;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class CharismaStar : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =

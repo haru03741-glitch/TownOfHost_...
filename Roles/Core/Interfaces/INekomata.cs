@@ -1,4 +1,4 @@
-namespace TownOfHostY.Roles.Core.Interfaces;
+namespace TownOfHostL.Roles.Core.Interfaces;
 
 /// <summary>
 /// 追放されたときに誰かを道連れにする役職

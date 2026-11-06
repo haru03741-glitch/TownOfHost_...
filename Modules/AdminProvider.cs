@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 using UnityEngine;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public static class AdminProvider
 {

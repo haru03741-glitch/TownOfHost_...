@@ -3,9 +3,9 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using static TownOfHostY.Options;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.Core;
+namespace TownOfHostL.Roles.Core;
 
 public class SimpleRoleInfo
 {
@@ -25,6 +25,8 @@ public class SimpleRoleInfo
     public string ChatCommand;
     /// <summary>本人視点のみインポスターに見える役職</summary>
     public bool IsDesyncImpostor;
+    /// <summary>役職の分類 (判定は CustomRolesHelper の IsXxx から引く)</summary>
+    public RoleFlags Flags;
     private Func<AudioClip> introSound;
     public AudioClip IntroSound => introSound?.Invoke();
     private Func<bool> canMakeMadmate;
@@ -46,7 +48,8 @@ public class SimpleRoleInfo
         TabGroup tab,
         Func<AudioClip> introSound,
         Func<bool> canMakeMadmate,
-        RoleAssignInfo assignInfo
+        RoleAssignInfo assignInfo,
+        RoleFlags flags
     )
     {
         ClassType = classType;
@@ -62,6 +65,7 @@ public class SimpleRoleInfo
         this.canMakeMadmate = canMakeMadmate;
         ChatCommand = chatCommand;
         AssignInfo = assignInfo;
+        Flags = flags;
 
         if (colorCode == "")
             colorCode = customRoleType switch
@@ -103,7 +107,8 @@ public class SimpleRoleInfo
         Func<AudioClip> introSound = null,
         Func<bool> canMakeMadmate = null,
         CountTypes? countType = null,
-        RoleAssignInfo assignInfo = null
+        RoleAssignInfo assignInfo = null,
+        RoleFlags flags = RoleFlags.None
     )
     {
         countType ??= customRoleType == CustomRoleTypes.Impostor ? CountTypes.Impostor : CountTypes.Crew;
@@ -125,7 +130,8 @@ public class SimpleRoleInfo
                 tab,
                 introSound,
                 canMakeMadmate,
-                assignInfo
+                assignInfo,
+                flags
             );
     }
     public static SimpleRoleInfo CreateForVanilla(
@@ -134,7 +140,8 @@ public class SimpleRoleInfo
         RoleTypes baseRoleType,
         string colorCode = "",
         bool canMakeMadmate = false,
-        RoleAssignInfo assignInfo = null
+        RoleAssignInfo assignInfo = null,
+        RoleFlags flags = RoleFlags.None
     )
     {
         CustomRoles roleName;
@@ -212,7 +219,8 @@ public class SimpleRoleInfo
                 TabGroup.ModMainSettings,
                 null,
                 () => canMakeMadmate,
-                assignInfo ?? new(roleName, customRoleType)
+                assignInfo ?? new(roleName, customRoleType),
+                flags | RoleFlags.Vanilla
             );
     }
     public delegate void OptionCreatorDelegate();

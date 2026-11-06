@@ -3,11 +3,11 @@ using System.Linq;
 using UnityEngine;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Roles.Unit.JackOLantern;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Roles.Unit.JackOLantern;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class JO : RoleBase, IKiller
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -21,7 +21,8 @@ public sealed class JO : RoleBase, IKiller
             null,
             "オー",
             countType:CountTypes.Crew,
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontShowOption | RoleFlags.DontSelectLoyalty | RoleFlags.DirectKill
         );
     public JO(PlayerControl player)
     : base(

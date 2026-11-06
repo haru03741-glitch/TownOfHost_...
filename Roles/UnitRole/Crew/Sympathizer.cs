@@ -1,8 +1,8 @@
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Utils;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Utils;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Sympathizer : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -22,7 +22,8 @@ public sealed class Sympathizer : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Sympathizer, CustomRoles.Sympathizer }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public Sympathizer(PlayerControl player)
     : base(

@@ -1,6 +1,6 @@
 using System;
 
-namespace TownOfHostY.Modules
+namespace TownOfHostL.Modules
 {
     public interface ILogHandler
     {

@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class AddSeer
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.AddSeer,
+        AddOnGroup.Buff,
+        "#61b26c",
+        "Ｓ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 300;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.AddSeer);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｓ");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

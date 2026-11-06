@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class VIP
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.VIP,
+        AddOnGroup.Buff,
+        "#ffff00",
+        "Ｖ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 500;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.VIP);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｖ");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

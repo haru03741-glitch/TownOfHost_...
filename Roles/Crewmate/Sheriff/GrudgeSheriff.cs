@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
 using UnityEngine;
-using static TownOfHostY.Translator;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 
 public sealed class GrudgeSheriff : RoleBase
 {
@@ -100,7 +100,7 @@ public sealed class GrudgeSheriff : RoleBase
         if (parent == null) parent = RoleInfo.RoleOption;
         var roleName = Utils.GetRoleName(role);
         Dictionary<string, string> replacementDic = new() { { "%role%", Utils.ColorString(Utils.GetRoleColor(role), roleName) } };
-        KillTargetOptions[role] = StringOptionItem.Create(id, OptionName.SheriffCanKill + "%role%", new string[] { "ColoredOff", "ColoredOn" }, defaultValue ? 1 : 0, RoleInfo.Tab, false).SetParent(parent);
+        KillTargetOptions[role] = StringOptionItem.Create(id, OptionName.SheriffCanKill + "%role%", new string[] { "ColoredOff", "ColoredOn" }, defaultValue ? 1 : 0, RoleInfo.Tab, false).SetParent(parent).SetKeyName($"{OptionName.SheriffCanKill}.{role}");
         KillTargetOptions[role].ReplacementDictionary = replacementDic;
     }
 
@@ -111,7 +111,7 @@ public sealed class GrudgeSheriff : RoleBase
         var inTeam = GetString("In%team%", new Dictionary<string, string>() { ["%team%"] = GetRoleString(catType.ToString()) });
         var catInTeam = Utils.ColorString(SchrodingerCat.GetCatColor(catType), Utils.GetRoleName(CustomRoles.SchrodingerCat) + inTeam);
         Dictionary<string, string> replacementDic = new() { ["%role%"] = catInTeam };
-        SchrodingerCatKillTargetOptions[catType] = StringOptionItem.Create(id, OptionName.SheriffCanKill + "%role%", new string[] { "ColoredOff", "ColoredOn" }, defaultValue ? 1 : 0, RoleInfo.Tab, false).SetParent(parent);
+        SchrodingerCatKillTargetOptions[catType] = StringOptionItem.Create(id, OptionName.SheriffCanKill + "%role%", new string[] { "ColoredOff", "ColoredOn" }, defaultValue ? 1 : 0, RoleInfo.Tab, false).SetParent(parent).SetKeyName($"{OptionName.SheriffCanKill}.SchrodingerCat.{catType}");
         SchrodingerCatKillTargetOptions[catType].ReplacementDictionary = replacementDic;
     }
 

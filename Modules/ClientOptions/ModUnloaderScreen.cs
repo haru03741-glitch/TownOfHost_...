@@ -5,7 +5,7 @@ using UnityEngine;
 using InnerNet;
 using Object = UnityEngine.Object;
 
-namespace TownOfHostY.Modules.ClientOptions;
+namespace TownOfHostL.Modules.ClientOptions;
 
 public static class ModUnloaderScreen
 {

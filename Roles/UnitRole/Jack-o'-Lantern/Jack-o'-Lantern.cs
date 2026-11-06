@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Unit;
+namespace TownOfHostL.Roles.Unit;
 public sealed class JackOLantern : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -22,7 +22,8 @@ public sealed class JackOLantern : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[3] { CustomRoles.Jack, CustomRoles.jO, CustomRoles.Lantern }
-            }
+            },
+            flags: RoleFlags.Pair | RoleFlags.DontShowOption  // 期間限定
         );
     public JackOLantern(PlayerControl player)
     : base(

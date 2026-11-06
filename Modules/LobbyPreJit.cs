@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 // 試合で初めて通る処理は、その場で JIT コンパイルされるので試合開始の瞬間に 100ms 級の引っかかりになる
 // (4 人の実測で開始直後に約 1,400 関数・300ms)。ロビーで待っている間に、メインスレッドで 1 フレームあたり

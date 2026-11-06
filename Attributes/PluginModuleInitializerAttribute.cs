@@ -1,4 +1,4 @@
-namespace TownOfHostY.Attributes;
+namespace TownOfHostL.Attributes;
 
 /// <summary>
 /// <see cref="Main.Load"/>で起動時に初期化するメソッドに使う<br/>

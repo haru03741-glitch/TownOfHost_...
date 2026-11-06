@@ -1,6 +1,6 @@
 using System;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public abstract class ValueRule<T>
     {

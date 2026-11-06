@@ -1,10 +1,10 @@
 using System;
 using HarmonyLib;
-using TownOfHostY.Modules;
-using TownOfHostY.Templates;
+using TownOfHostL.Modules;
+using TownOfHostL.Templates;
 using UnityEngine;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(MainMenuManager))]
     public class MainMenuManagerPatch
@@ -180,7 +180,7 @@ namespace TownOfHostY
                 ModWarningText.transform.localPosition = new Vector3(1.4f, 0.25f, 0f);
                 ModWarningText.transform.localScale = new Vector3(1.9f, 1.9f, 2f);
                 var renderer = ModWarningText.AddComponent<SpriteRenderer>();
-                renderer.sprite = Utils.LoadSprite($"TownOfHost_Y.Resources.warning_online.png", 400f);
+                renderer.sprite = Utils.LoadSprite($"TownOfHost_L.Resources.warning_online.png", 400f);
             }
         }
     }

@@ -1,10 +1,10 @@
 using System.Linq;
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class PlatonicLover : RoleBase, IKiller
 {
@@ -23,7 +23,8 @@ public sealed class PlatonicLover : RoleBase, IKiller
             assignInfo: new RoleAssignInfo(CustomRoles.PlatonicLover, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount | RoleFlags.DirectKill
         );
     public PlatonicLover(PlayerControl player)
     : base(

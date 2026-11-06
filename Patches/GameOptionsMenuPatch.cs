@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class ModGameOptionsMenu
 {
@@ -219,7 +219,7 @@ public static class GameOptionsMenuPatch
 
         var labelBackground = optionBehaviour.transform.FindChild("LabelBackground");
         var labelBackgroundSpriteRenderer = labelBackground.GetComponent<SpriteRenderer>();
-        labelBackgroundSpriteRenderer.sprite = Utils.LoadSprite($"TownOfHost_Y.Resources.SettingMenu_LabelBackground.png", 100f);
+        labelBackgroundSpriteRenderer.sprite = Utils.LoadSprite($"TownOfHost_L.Resources.SettingMenu_LabelBackground.png", 100f);
         labelBackgroundSpriteRenderer.color = color;
 
         labelBackground.localScale = new Vector3(1.57f, 0.8f, 1f) + scaleOffset;

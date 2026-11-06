@@ -1,16 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
 using System.Linq;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Loyalty
 {
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Loyalty);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Lo");
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Loyalty,
+        AddOnGroup.Buff,
+        "#b8fb4f",
+        "Lo",
+        onAdd: Add);
+
     private static List<byte> playerIdList = new();
 
     [GameModuleInitializer]

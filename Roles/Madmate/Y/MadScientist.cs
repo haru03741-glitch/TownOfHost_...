@@ -1,7 +1,7 @@
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadScientist : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

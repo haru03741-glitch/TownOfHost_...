@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Vanilla;
+namespace TownOfHostL.Roles.Vanilla;
 
 public sealed class Impostor : RoleBase, IImpostor
 {
@@ -11,7 +11,8 @@ public sealed class Impostor : RoleBase, IImpostor
         SimpleRoleInfo.CreateForVanilla(
             typeof(Impostor),
             player => new Impostor(player),
-            RoleTypes.Impostor
+            RoleTypes.Impostor,
+            flags: RoleFlags.DontShowOption
         );
     public Impostor(PlayerControl player)
     : base(

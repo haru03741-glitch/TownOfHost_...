@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TownOfHostY.Modules;
+using TownOfHostL.Modules;
 using UnityEngine;
-using static Il2CppSystem.Net.Mail.SmtpClient;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public abstract class OptionItem
     {
@@ -20,7 +19,18 @@ namespace TownOfHostY
 
         // 必須情報(コンストラクタで必ず設定させる必要がある値)
         public int Id { get; }
+        /// <summary>
+        /// 保存に使うキー。親をたどった名前の道筋 (例: Sheriff/KillCooldown)。
+        /// 同じ道筋の設定が他にもある時は、区別のため #ID を付ける。
+        /// </summary>
+        public string Key => key ??= BuildKey();
+        private string key;
         public string Name { get; }
+        /// <summary>
+        /// キーの道筋で Name の代わりに使う名前。%role% などの置き換えで役職ごとに表示が変わり、
+        /// 同じ親の下に同じ Name が並ぶ設定に、言語に依らない名前を与える。
+        /// </summary>
+        public string KeyName { get; private set; }
         public int DefaultValue { get; }
         public TabGroup Tab { get; }
         public bool IsSingleValue { get; }
@@ -140,6 +150,7 @@ namespace TownOfHostY
         public OptionItem SetFixValue(bool value) => Do(i => i.IsFixValue = value);
         public OptionItem SetText(bool value) => Do(i => i.IsText = value);
         public OptionItem SetReplacementDictionary(Dictionary<string, string> value) => Do(i => i.ReplacementDictionary = value);
+        public OptionItem SetKeyName(string value) => Do(i => i.KeyName = value);
 
         public OptionItem SetParent(OptionItem parent) => Do(i =>
         {
@@ -172,6 +183,8 @@ namespace TownOfHostY
         public virtual float GetFloat() => CurrentValue;
         public virtual string GetString() => ApplyFormat(CurrentValue.ToString());
         public virtual int GetValue() => IsSingleValue ? SingleValue : AllValues[CurrentPreset];
+        /// <summary>機能の設定 (offsetId.FeatSpecial 以降の帯。役職とゲームモード以外の設定一覧に出す物)</summary>
+        public bool IsFeatureOption => Id >= (int)Options.offsetId.FeatSpecial;
 
         // Hidden判定
         public virtual bool IsHiddenOn(CustomGameMode mode)
@@ -225,7 +238,7 @@ namespace TownOfHostY
             if (doSync)
                 SyncAllOptions();
             if (doSave)
-                OptionSaver.Save();
+                OptionSaver.RequestSave();
         }
         public virtual void SetValue(int afterValue, bool doSync = true) => SetValue(afterValue, true, doSync);
 
@@ -236,6 +249,78 @@ namespace TownOfHostY
             => item.Do(i => i.SetValue(i.CurrentValue + 1));
         public static OptionItem operator --(OptionItem item)
             => item.Do(i => i.SetValue(i.CurrentValue - 1));
+
+        // ---- キー ----
+        private static Dictionary<string, OptionItem> byKey;
+
+        private string KeyPath => Parent == null ? KeyName ?? Name : $"{Parent.Key}/{KeyName ?? Name}";
+        private string BuildKey()
+        {
+            // 確定の後に作られた設定。道筋が既にあれば #ID で区別する
+            var path = KeyPath;
+            if (byKey != null && !byKey.TryAdd(path, this))
+            {
+                path = $"{path}#{Id}";
+                byKey[path] = this;
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// 全部の設定のキーを確定する。親から順に、同じ道筋が重なったら、先に作られた 1 つは道筋のまま、残りに #ID を付ける。
+        /// 後から同じ名前の設定を足しても、前からある設定のキーは変わらない。
+        /// </summary>
+        public static void FinalizeKeys()
+        {
+            byKey = new(_allOptions.Count);
+            var depthOf = new Dictionary<OptionItem, int>(_allOptions.Count);
+            int Depth(OptionItem o)
+            {
+                if (depthOf.TryGetValue(o, out var d)) return d;
+                d = o.Parent == null ? 0 : Depth(o.Parent) + 1;
+                depthOf[o] = d;
+                return d;
+            }
+            var byDepth = new SortedDictionary<int, List<OptionItem>>();
+            foreach (var o in _allOptions)
+            {
+                var d = Depth(o);
+                if (!byDepth.TryGetValue(d, out var list)) byDepth[d] = list = new();
+                list.Add(o);
+            }
+            foreach (var level in byDepth.Values)
+            {
+                var groups = new Dictionary<string, List<OptionItem>>();
+                foreach (var o in level)
+                {
+                    var path = o.KeyPath;
+                    if (!groups.TryGetValue(path, out var g)) groups[path] = g = new();
+                    g.Add(o);
+                }
+                foreach (var (path, g) in groups)
+                {
+                    if (g.Count == 1 && !byKey.ContainsKey(path))
+                    {
+                        g[0].key = path;
+                        byKey[path] = g[0];
+                        continue;
+                    }
+                    Logger.Warn($"設定のキー {path} が {g.Count} 個で重なっているので、後から作られた方に #ID を付けて区別します", "OptionItem");
+                    for (int i = 0; i < g.Count; i++)
+                    {
+                        var o = g[i];
+                        o.key = i == 0 && byKey.TryAdd(path, o) ? path : $"{path}#{o.Id}";
+                        byKey[o.key] = o;
+                    }
+                }
+            }
+        }
+
+        public static bool TryGetByKey(string key, out OptionItem option)
+        {
+            option = null;
+            return byKey != null && byKey.TryGetValue(key, out option);
+        }
 
         // 全体操作用
         public static void SwitchPreset(int newPreset)

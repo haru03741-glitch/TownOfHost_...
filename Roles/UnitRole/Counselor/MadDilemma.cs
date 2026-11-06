@@ -1,8 +1,8 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadDilemma : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -15,7 +15,8 @@ public sealed class MadDilemma : RoleBase
             (int)Options.offsetId.UnitMix + 0,//使用しない
             null,
             "マッドジレンマ",
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontShowOption | RoleFlags.DontSelectLoyalty
         );
     public MadDilemma(PlayerControl player)
     : base(

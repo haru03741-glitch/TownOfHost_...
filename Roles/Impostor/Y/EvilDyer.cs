@@ -1,10 +1,10 @@
 using AmongUs.GameOptions;
 using HarmonyLib;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class EvilDyer : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -20,7 +20,8 @@ public sealed class EvilDyer : RoleBase, IImpostor
             assignInfo: new(CustomRoles.EvilDyer, CustomRoleTypes.Impostor)
             {
                 IsInitiallyAssignableCallBack = () => !Options.IsSyncColorMode
-            }
+            },
+            flags: RoleFlags.DontShowOption  // 封印中
         );
     public EvilDyer(PlayerControl player)
     : base(

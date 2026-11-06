@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 // 埋め込みの翻訳 CSV (Resources/string.csv) を読むだけの最小の読み込み。
 // 決まり: 1 行目が見出し。空行と '#' で始まる行は飛ばす。区切りは ','。値は "..." で囲めて、中の "" は " 1 文字。

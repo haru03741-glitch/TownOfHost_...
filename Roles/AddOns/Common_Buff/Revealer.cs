@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Attributes;
-using static TownOfHostY.Options;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Attributes;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Revealer
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Revealer,
+        AddOnGroup.Buff,
+        "#e478ff",
+        "Rv",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 1300;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Revealer);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Rv");
     private static List<byte> playerIdList = new();
     private static HashSet<byte> SeenIdList = new();
     private static HashSet<byte> pendingRevealList = new();
@@ -59,17 +65,15 @@ public static class Revealer
             pc.RpcSetName(string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName));
         }
         
-        _ = new LateTask(() =>
+        if (pc == PlayerControl.LocalPlayer)
         {
-            if (pc == PlayerControl.LocalPlayer)
-            {
-                Main.nickName = exiledName;
-            }
-            else
-            {
-                pc.RpcSetName(exiledName);
-            }
-        }, 8f, "SetName");
+            // Main.nickName は試合をまたいで残るので、戻す前に試合が閉じても戻す
+            _ = new LateTask(() => Main.nickName = exiledName, 8f, "SetName", outlivesSession: true);
+        }
+        else
+        {
+            _ = new LateTask(() => pc.RpcSetName(exiledName), 8f, "SetName");
+        }
     }
 
     public static void OverrideDisplayRoleNameAsSeen(PlayerControl seen, bool isMeeting, ref bool enabled, ref string roleText)

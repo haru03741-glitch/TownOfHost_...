@@ -1,11 +1,11 @@
 using HarmonyLib;
 using Hazel;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY.Patches.ISystemType;
+namespace TownOfHostL.Patches.ISystemType;
 
 [HarmonyPatch(typeof(HudOverrideSystemType), nameof(HudOverrideSystemType.UpdateSystem))]
 public static class HudOverrideSystemTypeUpdateSystemPatch

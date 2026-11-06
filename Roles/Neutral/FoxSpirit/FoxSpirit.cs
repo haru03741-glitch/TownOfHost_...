@@ -1,10 +1,10 @@
 using System.Linq;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
 {
@@ -25,7 +25,8 @@ public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
             {
                 AssignCountRule = new(1, 1, 1),
                 IsInitiallyAssignableCallBack = () => (MapNames)Main.NormalOptions.MapId is not MapNames.Polus and not MapNames.Fungle
-            }
+            },
+            flags: RoleFlags.FixedCount
         );
     public FoxSpirit(PlayerControl player)
     : base(

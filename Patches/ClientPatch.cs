@@ -5,10 +5,10 @@ using HarmonyLib;
 using InnerNet;
 using Hazel;
 using UnityEngine;
-using TownOfHostY.Modules;
-using static TownOfHostY.Translator;
+using TownOfHostL.Modules;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     class CannotUsePublicRoom
     {

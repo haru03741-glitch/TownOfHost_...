@@ -6,14 +6,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using AmongUs.Data;
 using HarmonyLib;
-using TownOfHostY.Attributes;
-using static TownOfHostY.Translator;
+using TownOfHostL.Attributes;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public static class TemplateManager
     {
-        private static readonly string TEMPLATE_FILE_PATH = "./TOHY_DATA/template.txt";
+        private static readonly string TEMPLATE_FILE_PATH = "./TOHL_DATA/template.txt";
         private static Dictionary<string, Func<string>> _replaceDictionary = new()
         {
             ["RoomCode"] = () => InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId),
@@ -48,7 +48,7 @@ namespace TownOfHostY
             {
                 try
                 {
-                    if (!Directory.Exists(@"TOHY_DATA")) Directory.CreateDirectory(@"TOHY_DATA");
+                    if (!Directory.Exists(@"TOHL_DATA")) Directory.CreateDirectory(@"TOHL_DATA");
                     if (File.Exists(@"./template.txt"))
                     {
                         File.Move(@"./template.txt", TEMPLATE_FILE_PATH);

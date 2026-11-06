@@ -5,9 +5,9 @@ using System.IO;
 using System.Net.Http;
 using System.Linq;
 using System.Runtime.InteropServices;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     class VoiceReader
     {
@@ -95,12 +95,12 @@ namespace TownOfHostY
             VoiceReaderCoral = StringOptionItem.Create(Id + 38, "VoiceReaderCoral", VoiceName.Values.ToArray(), 0, TabGroup.ModMainSettings, true).SetParent(VoiceReaderMode)
                 .SetGameMode(CustomGameMode.All);
         }
-        private static readonly string VOICE_LIST_PATH = @"./TOHY_DATA/VoiceList.txt";
+        private static readonly string VOICE_LIST_PATH = @"./TOHL_DATA/VoiceList.txt";
         public static void LoadVoiceList()
         {
             try
             {
-                Directory.CreateDirectory("TOHY_DATA");
+                Directory.CreateDirectory("TOHL_DATA");
                 if (!File.Exists(VOICE_LIST_PATH))
                 {
                     Logger.Info($"CreateListText", "LoadVoiceList");

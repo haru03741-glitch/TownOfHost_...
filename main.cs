@@ -9,13 +9,13 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
 using UnityEngine;
 
-[assembly: AssemblyFileVersionAttribute(TownOfHostY.Main.PluginVersion)]
-[assembly: AssemblyInformationalVersionAttribute(TownOfHostY.Main.PluginVersion)]
-namespace TownOfHostY;
+[assembly: AssemblyFileVersionAttribute(TownOfHostL.Main.PluginVersion)]
+[assembly: AssemblyInformationalVersionAttribute(TownOfHostL.Main.PluginVersion)]
+namespace TownOfHostL;
 
 [BepInPlugin(PluginGuid, "Town Of Host_L", PluginVersion)]
 [BepInIncompatibility("com.yumenopai.townofhosty")]
@@ -100,7 +100,6 @@ public class Main : BasePlugin
     public static Dictionary<(byte, byte), string> LastNotifyNames;
     public static Dictionary<byte, Color32> PlayerColors = new();
     public static Dictionary<byte, CustomDeathReason> AfterMeetingDeathPlayers = new();
-    public static Dictionary<CustomRoles, string> roleColors;
     public static List<byte> winnerList;
     public static List<int> clientIdList;
     public static List<(string, byte, string, bool)> MessagesToSend;
@@ -138,33 +137,33 @@ public class Main : BasePlugin
     public static bool IsInitialRelease = DateTime.Now.Month == 11 && DateTime.Now.Day >= 1 && DateTime.Now.Day <= 8;
     public static bool IsChristmas = DateTime.Now.Month == 13 && DateTime.Now.Day <= 25;
 
-    public static IEnumerable<PlayerControl> AllPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null);
-    public static IEnumerable<PlayerControl> AllAlivePlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && p.IsAlive());
-    public static IEnumerable<PlayerControl> AllDeadPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && !p.IsAlive());
+    public static IEnumerable<PlayerControl> AllPlayerControls => TownOfHostL.Core.Players.All;
+    public static IEnumerable<PlayerControl> AllAlivePlayerControls => TownOfHostL.Core.Players.Alive;
+    public static IEnumerable<PlayerControl> AllDeadPlayerControls => TownOfHostL.Core.Players.Dead;
 
     public static Main Instance;
 
     public override void Load()
     {
         Instance = this;
-        TownOfHostY.Modules.IncrementalGcGate.Apply();
-        TownOfHostY.Modules.OptionSaver.Initialize(); // オプション保存用ディレクトリ・ファイルを起動時に作成
+        TownOfHostL.Modules.IncrementalGcGate.Apply();
+        TownOfHostL.Modules.OptionSaver.Initialize(); // オプション保存用ディレクトリ・ファイルを起動時に作成
 
         //Client Options
-        HideName = Config.Bind("Client Options", "Hide Game Code Name", "TOH_Y");
+        HideName = Config.Bind("Client Options", "Hide Game Code Name", "TOH_L");
         HideColor = Config.Bind("Client Options", "Hide Game Code Color", $"{ModColor}");
         ForceJapanese = Config.Bind("Client Options", "Force Japanese", false);
         JapaneseRoleName = Config.Bind("Client Options", "Japanese Role Name", true);
         IsMuteLobbyBGM = Config.Bind("Client Options", "Mute Lobby BGM", false);
         DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
 
-        Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_Y");
-        TownOfHostY.Logger.Enable();
-        TownOfHostY.Logger.Disable("NotifyRoles");
-        TownOfHostY.Logger.Disable("SendRPC");
-        TownOfHostY.Logger.Disable("ReceiveRPC");
-        TownOfHostY.Logger.Disable("SwitchSystem");
-        TownOfHostY.Logger.Disable("CustomRpcSender");
+        Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_L");
+        TownOfHostL.Logger.Enable();
+        TownOfHostL.Logger.Disable("NotifyRoles");
+        TownOfHostL.Logger.Disable("SendRPC");
+        TownOfHostL.Logger.Disable("ReceiveRPC");
+        TownOfHostL.Logger.Disable("SwitchSystem");
+        TownOfHostL.Logger.Disable("CustomRpcSender");
         //TownOfHost.Logger.isDetail = true;
 
         // 認証関連-初期化
@@ -197,59 +196,6 @@ public class Main : BasePlugin
         ExceptionMessage = "";
         try
         {
-            roleColors = new Dictionary<CustomRoles, string>()
-            {
-                // マッドメイト役職
-                {CustomRoles.SKMadmate, "#ff1919"},
-                //特殊クルー役職
-                //HideAndSeek
-                {CustomRoles.HASFox, "#e478ff"},
-                {CustomRoles.HASTroll, "#00ff00"},
-                // GM
-                {CustomRoles.GM, "#ff5b70"},
-                //サブ役職
-                {CustomRoles.LastImpostor, "#ff1919"},
-                {CustomRoles.Lovers, "#ff6be4"},
-                {CustomRoles.Workhorse, "#00ffff"},
-                {CustomRoles.CompleteCrew, "#ffff00"},
-
-                {CustomRoles.AddWatch, "#800080"},
-                {CustomRoles.AddLight, "#eee5be"},
-                {CustomRoles.AddSeer, "#61b26c"},
-                {CustomRoles.Autopsy, "#80ffdd"},
-                {CustomRoles.VIP, "#ffff00"},
-                {CustomRoles.Revenger, "#00ffff"},
-                {CustomRoles.Management, "#80ffdd"},
-                {CustomRoles.Sending, "#883fd1"},
-                {CustomRoles.TieBreaker, "#204d42"},
-                {CustomRoles.Loyalty, "#b8fb4f"},
-                {CustomRoles.PlusVote, "#204d42"},
-                {CustomRoles.Guarding, "#8cffff"},
-                {CustomRoles.AddBait, "#00f7ff"},
-                {CustomRoles.Refusing, "#61b26c"},
-                {CustomRoles.Revealer, "#e478ff"},
-
-                {CustomRoles.Sunglasses, "#883fd1"},
-                {CustomRoles.Clumsy, "#696969"},
-                {CustomRoles.InfoPoor, "#556b2f"},
-                {CustomRoles.NonReport, "#883fd1"},
-
-                {CustomRoles.Archenemy, "#ff6347"},
-                {CustomRoles.ChainShifterAddon, "#666666"},
-
-                // CatchCat
-                {CustomRoles.CCRedLeader, "#ff0000"},
-                {CustomRoles.CCBlueLeader, "#00b4eb"},
-                {CustomRoles.CCYellowLeader, "#f8cd46"},
-                {CustomRoles.CCNoCat, "#696969"},
-                {CustomRoles.CCRedCat, "#ff0000"},
-                {CustomRoles.CCBlueCat, "#00b4eb"},
-                {CustomRoles.CCYellowCat, "#f8cd46"},
-
-
-                {CustomRoles.NotAssigned, "#ffffff"}
-            };
-
             var type = typeof(RoleBase);
             var roleClassArray =
             CustomRoleManager.AllRolesClassType = Assembly.GetAssembly(type)
@@ -261,15 +207,17 @@ public class Main : BasePlugin
         }
         catch (ArgumentException ex)
         {
-            TownOfHostY.Logger.Error("エラー:Dictionaryの値の重複を検出しました", "LoadDictionary");
-            TownOfHostY.Logger.Exception(ex, "LoadDictionary");
+            TownOfHostL.Logger.Error("エラー:Dictionaryの値の重複を検出しました", "LoadDictionary");
+            TownOfHostL.Logger.Exception(ex, "LoadDictionary");
             hasArgumentException = true;
             ExceptionMessage = ex.Message;
             ExceptionMessageIsShown = false;
         }
-        TownOfHostY.Logger.Info($"{Application.version}", "AmongUs Version");
+        // 役職の分類の表は、全役職クラスの RoleInfo が揃ってから組む (登録で重複が出ても組む)
+        TownOfHostL.Core.RoleCatalog.Build();
+        TownOfHostL.Logger.Info($"{Application.version}", "AmongUs Version");
 
-        var handler = TownOfHostY.Logger.Handler("GitVersion");
+        var handler = TownOfHostL.Logger.Handler("GitVersion");
         handler.Info($"{nameof(ThisAssembly.Git.Branch)}: {ThisAssembly.Git.Branch}");
         handler.Info($"{nameof(ThisAssembly.Git.BaseTag)}: {ThisAssembly.Git.BaseTag}");
         handler.Info($"{nameof(ThisAssembly.Git.Commit)}: {ThisAssembly.Git.Commit}");
@@ -282,9 +230,11 @@ public class Main : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<BooleanOptionItem.BooleanGameSetting>();
         ClassInjector.RegisterTypeInIl2Cpp<LabelHoverBehaviour>();
 
-        TownOfHostY.Modules.DelegateTypeCache.Install(Harmony);
+        TownOfHostL.Modules.DelegateTypeCache.Install(Harmony);
         Harmony.PatchAll();
         Application.quitting += new Action(Utils.SaveNowLog);
+        // まとめて保存する設定を、終了前に書き切る
+        Application.quitting += new Action(TownOfHostL.Modules.OptionSaver.Flush);
     }
 }
 public enum CustomDeathReason
@@ -351,7 +301,7 @@ public enum CustomWinner
 public enum SuffixModes
 {
     None = 0,
-    TOH_Y,
+    TOH_L,
     Streaming,
     Recording,
     RoomHost,

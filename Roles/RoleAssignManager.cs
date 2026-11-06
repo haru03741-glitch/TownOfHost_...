@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles
+namespace TownOfHostL.Roles
 {
     public static class RoleAssignManager
     {
@@ -25,9 +25,11 @@ namespace TownOfHostY.Roles
 
                 var minOption = IntegerOptionItem.Create(idStart + id + 1, "RoleTypeMin", new(0, maxCount, 1), 0, TabGroup.ModMainSettings, false)
                     .SetParent(parent)
+                    .SetKeyName($"RoleTypeMin.{roleTypes}")
                     .SetValueFormat(OptionFormat.Players);
                 var maxOption = IntegerOptionItem.Create(idStart + id + 2, "RoleTypeMax", new(0, maxCount, 1), 0, TabGroup.ModMainSettings, false)
                     .SetParent(parent)
+                    .SetKeyName($"RoleTypeMax.{roleTypes}")
                     .SetValueFormat(OptionFormat.Players);
 
                 minOption.ReplacementDictionary =

@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Utils;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Utils;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class TaskManager : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

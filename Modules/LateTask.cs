@@ -1,13 +1,24 @@
 using System;
 using System.Collections.Generic;
-namespace TownOfHostY
+using TownOfHostL.Core;
+
+namespace TownOfHostL
 {
+    /// <summary>
+    /// 指定した秒数の後にメインスレッドで 1 回だけ走る処理。
+    /// 試合中に作った物はその試合 (GameSession) に属し、試合が閉じたら (ロビーに戻った・切断) 走らせずに捨てる。
+    /// </summary>
     class LateTask
     {
         public string name;
         public float timer;
         public Action action;
+        private readonly GameSession owner;
+        private bool done;
+
         public static List<LateTask> Tasks = new();
+        private static readonly Predicate<LateTask> isDone = static task => task.done;
+
         public bool Run(float deltaTime)
         {
             timer -= deltaTime;
@@ -18,37 +29,49 @@ namespace TownOfHostY
             }
             return false;
         }
-        public LateTask(Action action, float time, string name = "No Name Task")
+        /// <param name="outlivesSession">true なら試合が閉じても捨てない。試合の外まで残る static な状態を戻す処理に使う。</param>
+        public LateTask(Action action, float time, string name = "No Name Task", bool outlivesSession = false)
         {
             this.action = action;
             this.timer = time;
             this.name = name;
+            owner = outlivesSession ? null : GameSession.Current;
             Tasks.Add(this);
             if (name != "")
-                Logger.Info("\"" + name + "\" is created", "LateTask");
+                Log.Info("LateTask", $"\"{name}\" is created");
         }
         public static void Update(float deltaTime)
         {
-            var TasksToRemove = new List<LateTask>();
+            if (Tasks.Count == 0) return;
+            bool anyDone = false;
+            // 走らせた処理が新しい LateTask を作ると Tasks が伸びる。伸びた分も同じフレームで数える
             for (int i = 0; i < Tasks.Count; i++)
             {
                 var task = Tasks[i];
+                if (task.done) continue;
+                if (task.owner is { IsClosed: true })
+                {
+                    if (task.name != "")
+                        Log.Info("LateTask", $"\"{task.name}\" は試合 #{task.owner.Id} が閉じたので捨てる");
+                    task.done = anyDone = true;
+                    continue;
+                }
                 try
                 {
                     if (task.Run(deltaTime))
                     {
                         if (task.name != "")
-                            Logger.Info($"\"{task.name}\" is finished", "LateTask");
-                        TasksToRemove.Add(task);
+                            Log.Info("LateTask", $"\"{task.name}\" is finished");
+                        task.done = anyDone = true;
                     }
                 }
                 catch (Exception ex)
                 {
                     Logger.Error($"{ex.GetType()}: {ex.Message}  in \"{task.name}\"\n{ex.StackTrace}", "LateTask.Error", false);
-                    TasksToRemove.Add(task);
+                    task.done = anyDone = true;
                 }
             }
-            TasksToRemove.ForEach(task => Tasks.Remove(task));
+            if (anyDone) Tasks.RemoveAll(isDone);
         }
     }
 }

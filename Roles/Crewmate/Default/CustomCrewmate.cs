@@ -1,7 +1,7 @@
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class CustomCrewmate : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -14,7 +14,8 @@ public sealed class CustomCrewmate : RoleBase
             (int)Options.offsetId.CrewDefault + 900,
             SetupOptionItem,
             "カスタムクルーメイト",
-            "#8cffff"
+            "#8cffff",
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
         );
     public CustomCrewmate(PlayerControl player)
     : base(

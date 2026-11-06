@@ -1,10 +1,10 @@
 using System.Linq;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 public sealed class JClient : RoleBase, IAdditionalWinner
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -22,7 +22,8 @@ public sealed class JClient : RoleBase, IAdditionalWinner
             assignInfo: new(CustomRoles.JClient, CustomRoleTypes.Neutral)
             {
                 IsInitiallyAssignableCallBack = () => CustomRoles.Jackal.IsEnable()
-            }
+            },
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
         );
     public JClient(PlayerControl player)
     : base(

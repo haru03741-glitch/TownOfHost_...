@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 using UnityEngine;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     static class DoubleTrigger
     {

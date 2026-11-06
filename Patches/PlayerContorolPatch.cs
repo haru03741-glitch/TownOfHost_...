@@ -6,18 +6,18 @@ using HarmonyLib;
 using Hazel;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Neutral;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Impostor;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Neutral;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Impostor;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckProtect))]
 class CheckProtectPatch
@@ -717,42 +717,23 @@ class CoEnterVentPatch
     {
         if (AmongUsClient.Instance.AmHost)
         {
-            var user = __instance.myPlayer;
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek && Options.IgnoreVent.GetBool())
                 __instance.RpcBootFromVent(id);
 
-
-            bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(__instance, id) ?? false;
-            bool ventTaskAllows = VentEnterTask.OnEnterVent(__instance, id);
-
-            if (!roleAllowsVent &&
-                !ventTaskAllows &&
-                !(user.GetCustomRole().IsCCCatRoles() && CatchCat.CatPlayer.CanUseVent(user)) &&
-                user.Data.Role.Role != RoleTypes.Engineer &&
-                !user.CanUseImpostorVentButton())
-            {
-                _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-            }
-            else if (user.GetCustomRole().IsCCCatRoles() && !CatchCat.CatPlayer.CanUseVent(user))
-            {
-                _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
-            }
+            // ホストが RpcEnterVent を呼んだ時は、その中で CoEnterVent も走る。役職へは RpcEnterVent の後置処理から 1 回だけ渡す
+            if (RpcEnterVentPatch.Depth == 0)
+                OnEnterVent(__instance, id);
         }
         return true;
     }
-}
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
-class RpcEnterVentPatch
-{
-    public static void Postfix(PlayerPhysics __instance, [HarmonyArgument(0)] int id)
-    {
-        if (!AmongUsClient.Instance.AmHost) return;
 
-        var user = __instance.myPlayer;
+    public static void OnEnterVent(PlayerPhysics physics, int id)
+    {
+        var user = physics.myPlayer;
         if (user == null) return;
 
-        bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(__instance, id) ?? false;
-        bool ventTaskAllows = VentEnterTask.OnEnterVent(__instance, id);
+        bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(physics, id) ?? false;
+        bool ventTaskAllows = VentEnterTask.OnEnterVent(physics, id);
 
         if (!roleAllowsVent &&
             !ventTaskAllows &&
@@ -760,12 +741,27 @@ class RpcEnterVentPatch
             user.Data.Role.Role != RoleTypes.Engineer &&
             !user.CanUseImpostorVentButton())
         {
-            _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
+            _ = new LateTask(() => { physics.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
         }
         else if (user.GetCustomRole().IsCCCatRoles() && !CatchCat.CatPlayer.CanUseVent(user))
         {
-            _ = new LateTask(() => { __instance.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
+            _ = new LateTask(() => { physics.RpcBootFromVent(id); }, 0.5f, "Cancel Vent");
         }
+    }
+}
+[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
+class RpcEnterVentPatch
+{
+    /// <summary>RpcEnterVent の実行中なら 1 以上</summary>
+    public static int Depth;
+
+    public static void Prefix() => Depth++;
+    public static void Finalizer() => Depth--;
+
+    public static void Postfix(PlayerPhysics __instance, [HarmonyArgument(0)] int id)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        CoEnterVentPatch.OnEnterVent(__instance, id);
     }
 }
 

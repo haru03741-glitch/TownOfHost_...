@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Class;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Class;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class NiceGuesser : VoteGuesser
 {
     public static readonly SimpleRoleInfo RoleInfo =

@@ -1,4 +1,4 @@
-namespace TownOfHostY.Roles.Core.Interfaces;
+namespace TownOfHostL.Roles.Core.Interfaces;
 
 public interface IKillFlashSeeable
 {

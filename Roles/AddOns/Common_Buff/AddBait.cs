@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class AddBait
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.AddBait,
+        AddOnGroup.Buff,
+        "#00f7ff",
+        "Ｂ",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 1100;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.AddBait);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｂ");
     private static List<byte> playerIdList = new();
 
     public static void SetupCustomOption()

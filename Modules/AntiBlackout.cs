@@ -4,14 +4,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Attributes;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Neutral;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Unit;
+using TownOfHostL.Attributes;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Unit;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class AntiBlackout
 {

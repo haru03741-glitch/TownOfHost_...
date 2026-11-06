@@ -4,10 +4,10 @@ using System.Text;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadConnecter : RoleBase, IKiller, IKillFlashSeeable
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -20,7 +20,8 @@ public sealed class MadConnecter : RoleBase, IKiller, IKillFlashSeeable
             (int)Options.offsetId.MadY + 800,
             SetupOptionItem,
             "マッドコネクター",
-            isDesyncImpostor: true
+            isDesyncImpostor: true,
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.DirectKill
         );
     public MadConnecter(PlayerControl player)
     : base(

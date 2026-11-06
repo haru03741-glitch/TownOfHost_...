@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Roles.Unit.JackOLantern;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Roles.Unit.JackOLantern;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Lantern : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -19,7 +19,8 @@ public sealed class Lantern : RoleBase
             (int)Options.offsetId.UnitMix + 100,//使用しない
             null,
             "ランタン",
-            "#e5a323"
+            "#e5a323",
+            flags: RoleFlags.DontShowOption
         );
     public Lantern(PlayerControl player)
     : base(

@@ -7,12 +7,12 @@ using Assets.CoreScripts;
 using HarmonyLib;
 using Hazel;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Madmate;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Madmate;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
     class ChatCommands
@@ -28,7 +28,6 @@ namespace TownOfHostY
             if (ChatHistory.Count == 0 || ChatHistory[^1] != text) ChatHistory.Add(text);
             ChatControllerUpdatePatch.CurrentHistorySelection = ChatHistory.Count;
             string[] args = text.Split(' ');
-            string subArgs = "";
             var canceled = false;
             var cancelVal = "";
             Main.isChatCommand = true;
@@ -63,287 +62,20 @@ namespace TownOfHostY
                 return true;
             }
 
-            switch (args[0])
-            {
-                case "/dump":
-                    canceled = true;
-                    Utils.DumpLog();
-                    break;
-                case "/v":
-                case "/version":
-                    canceled = true;
-                    string version_text = "";
-                    foreach (var kvp in Main.playerVersion.OrderBy(pair => pair.Key))
-                    {
-                        version_text += $"{kvp.Key}:{Utils.GetPlayerById(kvp.Key)?.Data?.PlayerName}:{kvp.Value.forkId}/{kvp.Value.version}({kvp.Value.tag})\n";
-                    }
-                    if (version_text != "") HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, version_text);
-                    break;
-                default:
-                    Main.isChatCommand = false;
-                    break;
-            }
+            // 自分の画面だけで動くコマンド (ホストでなくても使える)
+            var ctx = new ChatCommandContext(args, PlayerControl.LocalPlayer, __instance);
+            var local = ChatCommandTable.Find(args[0])?.Local;
+            local?.Invoke(ctx);
+            canceled = local != null;
+            Main.isChatCommand = local != null;
             if (AmongUsClient.Instance.AmHost)
             {
-                Main.isChatCommand = true;
-                switch (args[0]?.ToLower())
-                {
-#if DEBUG
-                    case "/sr":
-                    case "/selectroles":
-                        canceled = true;
-                        SelectRolesCommand(args);
-                        break;
-#endif
-                    case "/win":
-                    case "/winner":
-                        canceled = true;
-                        Utils.SendMessageAutoSplit("Winner: " + string.Join(",", Main.winnerList.Select(b => Main.AllPlayerNames[b])), true);
-                        break;
-
-                    case "/l":
-                    case "/lastresult":
-                        canceled = true;
-                        Utils.ShowLastResult();
-                        break;
-
-                    case "/kl":
-                    case "/killlog":
-                        canceled = true;
-                        Utils.ShowKillLog();
-                        break;
-
-                    case "/r":
-                    case "/rename":
-                        canceled = true;
-                        Main.nickName = args.Length > 1 ? Main.nickName = args[1] : "";
-                        break;
-
-                    case "/hn":
-                    case "/hidename":
-                        canceled = true;
-                        Main.HideName.Value = args.Length > 1 ? args.Skip(1).Join(delimiter: " ") : Main.HideName.DefaultValue.ToString();
-                        GameStartManagerPatch.HideName.text = Main.HideName.Value;
-                        break;
-
-                    case "/n":
-                    case "/now":
-                        canceled = true;
-                        subArgs = args.Length < 2 ? "" : args[1];
-                        switch (subArgs)
-                        {
-                            case "r":
-                            case "roles":
-                                Utils.ShowActiveRoles();
-                                break;
-                            case "v":
-                            case "vanilla":
-                                Utils.ShowVanillaSetting();
-                                break;
-                            default:
-                                Utils.ShowActiveSettings();
-                                break;
-                        }
-                        break;
-
-                    case "/w":
-                        canceled = true;
-                        if (!GameStates.IsInGame) break;
-                        subArgs = args.Length < 2 ? "" : args[1];
-                        switch (subArgs)
-                        {
-                            case "crewmate":
-                                GameManager.Instance.enabled = false;
-                                CustomWinnerHolder.WinnerTeam = CustomWinner.Crewmate;
-                                foreach (var player in Main.AllPlayerControls.Where(pc => pc.Is(CustomRoleTypes.Crewmate)))
-                                {
-                                    CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
-                                }
-                                GameEndChecker.StartEndGame(GameOverReason.CrewmatesByTask);
-                                break;
-                            case "impostor":
-                                GameManager.Instance.enabled = false;
-                                CustomWinnerHolder.WinnerTeam = CustomWinner.Impostor;
-                                foreach (var player in Main.AllPlayerControls.Where(pc => pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate)))
-                                {
-                                    CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
-                                }
-                                GameEndChecker.StartEndGame(GameOverReason.ImpostorsByKill);
-                                break;
-                            case "none":
-                                GameManager.Instance.enabled = false;
-                                CustomWinnerHolder.WinnerTeam = CustomWinner.None;
-                                GameEndChecker.StartEndGame(GameOverReason.ImpostorsByKill);
-                                break;
-                            case "jackal":
-                                GameManager.Instance.enabled = false;
-                                CustomWinnerHolder.WinnerTeam = CustomWinner.Jackal;
-                                GameEndChecker.StartEndGame(GameOverReason.ImpostorsByKill);
-                                break;
-
-                            default:
-                                __instance.AddChat(PlayerControl.LocalPlayer, "crewmate | impostor | jackal | none");
-                                cancelVal = "/w";
-                                break;
-                        }
-                        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Admin, 0);
-                        break;
-
-                    case "/dis":
-                        canceled = true;
-                        subArgs = args.Length < 2 ? "" : args[1];
-                        switch (subArgs)
-                        {
-                            case "crewmate":
-                                GameManager.Instance.enabled = false;
-                                GameManager.Instance.RpcEndGame(GameOverReason.CrewmateDisconnect, false);
-                                break;
-
-                            case "impostor":
-                                GameManager.Instance.enabled = false;
-                                GameManager.Instance.RpcEndGame(GameOverReason.ImpostorDisconnect, false);
-                                break;
-
-                            default:
-                                __instance.AddChat(PlayerControl.LocalPlayer, "crewmate | impostor");
-                                cancelVal = "/dis";
-                                break;
-                        }
-                        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Admin, 0);
-                        break;
-
-                    case "/h":
-                    case "/help":
-                        canceled = true;
-                        subArgs = args.Length < 2 ? "" : args[1];
-                        switch (subArgs)
-                        {
-                            case "r":
-                            case "roles":
-                                subArgs = args.Length < 3 ? "" : args[2];
-                                GetRolesInfo(subArgs);
-                                break;
-
-                            case "n":
-                            case "now":
-                                Utils.ShowActiveSettingsHelp();
-                                break;
-
-                            default:
-                                Utils.ShowHelp();
-                                break;
-                        }
-                        break;
-
-                    case "/m":
-                    case "/myrole":
-                        canceled = true;
-                        if (!AmongUsClient.Instance.IsGameStarted) break;
-
-                        Utils.ShowMyRoleInfo(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.PlayerId);
-                        break;
-
-                    case "/t":
-                    case "/template":
-                        canceled = true;
-                        if (args.Length > 1) TemplateManager.SendTemplate(args[1]);
-                        else HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{GetString("ForExample")}:\n{args[0]} test");
-                        break;
-
-                    case "/mw":
-                    case "/messagewait":
-                        canceled = true;
-                        if (args.Length > 1 && float.TryParse(args[1], out float sec))
-                        {
-                            Main.MessageWait.Value = sec;
-                            Utils.SendMessageAutoSplit(string.Format(GetString("Message.SetToSeconds"), sec), true, sendTo: 0);
-                        }
-                        else Utils.SendMessageAutoSplit($"{GetString("Message.MessageWaitHelp")}\n{GetString("ForExample")}:\n{args[0]} 3", true, sendTo: 0);
-                        break;
-
-                    case "/say":
-                        canceled = true;
-                        if (args.Length > 1)
-                            Utils.SendMessageAutoSplit(args.Skip(1).Join(delimiter: " "), true, $"<color=#ff0000>{GetString("MessageFromTheHost")}</color>");
-                        break;
-
-                    case "/exile":
-                        canceled = true;
-                        if (args.Length < 2 || !int.TryParse(args[1], out int id)) break;
-                        Utils.GetPlayerById(id)?.RpcExileV3();
-                        break;
-
-                    case "/kill":
-                        canceled = true;
-                        if (args.Length < 2 || !int.TryParse(args[1], out int id2)) break;
-                        Utils.GetPlayerById(id2)?.RpcMurderPlayer(Utils.GetPlayerById(id2));
-                        break;
-
-                    case "/vo":
-                    case "/voice":
-                        canceled = true;
-                        if (args.Length > 1 && args[1] == "reset")
-                        {
-                            VoiceReader.ResetVoiceNo();
-                        }
-                        else if (args.Length > 1 && args[1] == "random")
-                        {
-                            VoiceReader.SetRandomVoiceNo();
-                        }
-                        else if (args.Length > 1 && int.TryParse(args[1], out int voiceNo))
-                        {
-                            var name = VoiceReader.SetHostVoiceNo(voiceNo);
-                            if (name != null && name != "")
-                            {
-                                Utils.SendMessageAutoSplit(string.Format(GetString("Message.VoiceChangeHost"), name), true, sendTo: 0);
-                            }
-                        }
-                        else
-                        {
-                            Utils.SendMessageAutoSplit(VoiceReader.GetVoiceIdxMsg(), true, sendTo: 0);
-                        }
-                        break;
-
-                    case "/killFlash":
-                    case "/kf":
-                        canceled = true;
-                        Utils.SetKillFlashAfterDead(PlayerControl.LocalPlayer, true);
-                        break;
-
-                    case "/brackout":
-                    case "/bo":
-                        canceled = true;
-                        if (GameStates.InGame)
-                            Main.AllPlayerControls.Do(pc => pc.KillFlash());
-                        break;
-
-                    //case "/offhat":
-                    //case "/offskin":
-                    //case "/offvisor":
-                    //case "/offpet":
-                    //case "/offskinall":
-                    //    canceled = true;
-                    //    if (args.Length > 1)
-                    //    {
-                    //        var colorName = args[1];
-                    //        var skinTarget = Utils.GetPlayerByColorName(colorName);
-                    //        if (skinTarget != null)
-                    //        {
-                    //            var hat = args[0] == "/offhat" || args[0] == "/offskinall";
-                    //            var skin = args[0] == "/offskin" || args[0] == "/offskinall";
-                    //            var visor = args[0] == "/offvisor" || args[0] == "/offskinall";
-                    //            var pet = args[0] == "/offpet" || args[0] == "/offskinall";
-                    //            SkinControle.RpcSetSkin(skinTarget, hat, skin, visor, pet);
-                    //            Utils.SendMessageAutoSplit($"ホストにより {SkinControle.GetSetTypeName(hat, skin, visor, pet)} がリセットにされました", true, sendTo: skinTarget.PlayerId);
-                    //        }
-                    //    }
-                    //    break;
-
-                    default:
-                        Main.isChatCommand = false;
-                        break;
-                }
+                var host = ChatCommandTable.Find(args[0])?.Host;
+                host?.Invoke(ctx);
+                canceled |= host != null;
+                Main.isChatCommand = host != null;
             }
+            cancelVal = ctx.CancelText;
             if (canceled)
             {
                 Logger.Info("Command Canceled", "ChatCommand");
@@ -498,7 +230,7 @@ namespace TownOfHostY
         }
 
 #if DEBUG
-        private static void SelectRolesCommand(string[] args)
+        internal static void SelectRolesCommand(string[] args)
         {
             if (!DebugModeManager.IsDebugMode)
             {
@@ -696,7 +428,6 @@ namespace TownOfHostY
             }
 
             string[] args = text.Split(' ');
-            string subArgs = "";
 
             if (args[0] != "/cmd" || args.Length <= 1)
             {
@@ -706,97 +437,7 @@ namespace TownOfHostY
             args = args.Skip(1).ToArray();
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
-            switch (args[0]?.ToLower())
-            {
-                case "/l":
-                case "/lastresult":
-                    Utils.ShowLastResult(player.PlayerId);
-                    break;
-
-                case "/kl":
-                case "/killlog":
-                    Utils.ShowKillLog(player.PlayerId);
-                    break;
-
-                case "/n":
-                case "/now":
-                    subArgs = args.Length < 2 ? "" : args[1];
-                    switch (subArgs)
-                    {
-                        case "r":
-                        case "roles":
-                            Utils.ShowActiveRoles(player.PlayerId);
-                            break;
-                        case "v":
-                        case "vanilla":
-                            Utils.ShowVanillaSetting(player.PlayerId);
-                            break;
-                        default:
-                            Utils.ShowActiveSettings(player.PlayerId);
-                            break;
-                    }
-                    break;
-
-                case "/h":
-                case "/help":
-                    subArgs = args.Length < 2 ? "" : args[1];
-                    switch (subArgs)
-                    {
-                        case "n":
-                        case "now":
-                            Utils.ShowActiveSettingsHelp(player.PlayerId);
-                            break;
-
-                        case "r":
-                        case "roles":
-                            subArgs = args.Length < 3 ? "" : args[2];
-                            GetRolesInfo(subArgs, player.PlayerId);
-                            break;
-                    }
-                    break;
-
-                case "/m":
-                case "/myrole":
-                    if (!AmongUsClient.Instance.IsGameStarted) break;
-
-                    Utils.ShowMyRoleInfo(player, player.PlayerId);
-                    break;
-
-                case "/t":
-                case "/template":
-                    if (args.Length > 1) TemplateManager.SendTemplate(args[1], player.PlayerId);
-                    else Utils.SendMessageAutoSplit($"{GetString("ForExample")}:\n{args[0]} test", true, sendTo: player.PlayerId);
-                    break;
-
-                case "/vo":
-                case "/voice":
-                    var color = Palette.GetColorName(player.Data.DefaultOutfit.ColorId);
-                    if (VoiceReader.VoiceReaderMode == null || !VoiceReader.VoiceReaderMode.GetBool())
-                        Utils.SendMessageAutoSplit(string.Format(GetString("Message.VoiceNotAvailable")), true, sendTo: player.PlayerId);
-                    else if (args.Length > 1 && args[1] == "n")
-                        Utils.SendMessageAutoSplit(string.Format(GetString("Message.VoiceNow"), color, VoiceReader.GetVoiceName(color)), true, sendTo: player.PlayerId);
-                    else if (args.Length > 1 && int.TryParse(args[1], out int voiceNo))
-                    {
-                        var name = VoiceReader.SetVoiceNo(color, voiceNo);
-                        if (name != null && name != "")
-                        {
-                            Utils.SendMessageAutoSplit(string.Format(GetString("Message.VoiceChange"), color, name), true, sendTo: player.PlayerId);
-                            break;
-                        }
-                        Utils.SendMessageAutoSplit(string.Format(GetString("Message.VoiceChangeFailed"), color), true, sendTo: player.PlayerId);
-                    }
-                    else
-                        Utils.SendMessageAutoSplit(VoiceReader.GetVoiceIdxMsg(), true, sendTo: player.PlayerId);
-                    break;
-
-                case "/killFlash":
-                case "/kf":
-                    Utils.SetKillFlashAfterDead(player);
-                    break;
-
-                default:
-                    break;
-            }
+            ChatCommandTable.Find(args[0])?.Remote?.Invoke(new ChatCommandContext(args, player, null));
         }
     }
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]

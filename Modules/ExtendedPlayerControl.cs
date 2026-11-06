@@ -6,17 +6,17 @@ using Hazel;
 using InnerNet;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Neutral;
-using TownOfHostY.Roles.AddOns.Impostor;
-using static TownOfHostY.Translator;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Neutral;
+using TownOfHostL.Roles.AddOns.Impostor;
+using static TownOfHostL.Translator;
 using AmongUs.Data;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 static class ExtendedPlayerControl
 {
@@ -76,7 +76,7 @@ static class ExtendedPlayerControl
     public static InnerNet.ClientData GetClient(this PlayerControl player)
     {
         if (player == null) return null;
-        return AmongUsClient.Instance.allClients.ToArray().FirstOrDefault(cd => cd != null && cd.Character != null && cd.Character.PlayerId == player.PlayerId);
+        return TownOfHostL.Core.Players.ClientOf(player.PlayerId);
     }
     public static int GetClientId(this PlayerControl player)
     {
@@ -891,7 +891,6 @@ static class NameRpcBatcher
     // (片方だけ変えると、1 件で上限を超えた名前が分割できない長いメッセージになる)
     private const int OfficialNameBytes = 900;
     private static readonly Dictionary<int, CustomRpcSender> senders = new();
-    private static bool scheduled;
 
     public static void Enqueue(int clientId, uint netId, uint dataNetId, string name, bool dontShowOnModdedClient)
     {
@@ -919,11 +918,7 @@ static class NameRpcBatcher
             .Write(name)
             .Write(dontShowOnModdedClient)
             .EndRpc();
-        if (!scheduled)
-        {
-            scheduled = true;
-            _ = new LateTask(Flush, 0f, "");
-        }
+        // 吐き出しは NotifyRolesNow の最後と、毎フレームの ModManager.LateUpdate で行う
     }
 
     // 文字の途中で切らず、末尾に書きかけのタグ (<color=#... など) が残ったら取り除く。書きかけのタグがあると表示が崩れる
@@ -945,9 +940,14 @@ static class NameRpcBatcher
         return trimmed;
     }
 
+    /// <summary>送らずに捨てる。部屋を出た後に前の部屋宛ての名前を送らないため、試合が閉じた時に呼ぶ。</summary>
+    public static void Discard()
+    {
+        senders.Clear();
+    }
+
     public static void Flush()
     {
-        scheduled = false;
         if (senders.Count == 0) return;
         var pending = senders.Values.ToList();
         senders.Clear();
@@ -955,14 +955,5 @@ static class NameRpcBatcher
         {
             sender.SendMessage();
         }
-    }
-}
-
-[HarmonyLib.HarmonyPatch(typeof(Utils), nameof(Utils.NotifyRoles))]
-class NotifyRolesFlushPatch
-{
-    public static void Postfix()
-    {
-        NameRpcBatcher.Flush();
     }
 }

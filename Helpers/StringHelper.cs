@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class StringHelper
 {

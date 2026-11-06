@@ -5,13 +5,13 @@ using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Templates;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Crewmate;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Templates;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Crewmate;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch]
     public static class CredentialsPatch
@@ -196,7 +196,7 @@ namespace TownOfHostY
                 logoTransform.parent = rightpanel;
                 logoTransform.localPosition = new(0f, 0.18f, 1f);
                 //logoTransform.localScale *= 1f;
-                TohLogo.sprite = Utils.LoadSprite("TownOfHost_Y.Resources.TownOfHostY-Logo.png", 300f);
+                TohLogo.sprite = Utils.LoadSprite("TownOfHost_L.Resources.TownOfHostL-Logo.png", 300f);
             }
         }
         [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
@@ -208,6 +208,13 @@ namespace TownOfHostY
 
                 LateTask.Update(Time.deltaTime);
                 CheckMurderPatch.Update();
+                // 1 つが投げても残りは止めない (切断の直後は送信が投げることがある)
+                try { TownOfHostL.Core.NotifyRolesQueue.Flush(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
+                try { NameRpcBatcher.Flush(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
+                try { OptionSaver.Tick(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
             }
             public static void Postfix(ModManager __instance)
             {

@@ -1,4 +1,4 @@
-namespace TownOfHostY.Roles.Core.Interfaces;
+namespace TownOfHostL.Roles.Core.Interfaces;
 
 /// <summary>
 /// キルボタン持ち役職の必須要素

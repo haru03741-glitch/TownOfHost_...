@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TownOfHostY.Modules.Net;
+namespace TownOfHostL.Modules.Net;
 
 // ホストが送った SnapTo の本数を数える。公式サーバーは SnapTo を直近約6秒で約330本送るとホストを切断する
 // (送る速さには関係なく本数で切られる)。ここでは数えて警告するだけで、送信は止めない。

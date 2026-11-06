@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TownOfHostY.Patches
+namespace TownOfHostL.Patches
 {
     [HarmonyPatch(typeof(ChatBubble), nameof(ChatBubble.SetRight))]
     class ChatBubbleSetRightPatch

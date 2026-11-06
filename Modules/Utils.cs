@@ -14,20 +14,20 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using Il2CppInterop.Runtime.InteropTypes;
 using InnerNet;
 using Microsoft.VisualBasic;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using TownOfHostY.Roles.AddOns.Impostor;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.AddOns.Impostor;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
 using UnityEngine;
-using static TownOfHostY.Translator;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class Utils
 {
@@ -287,26 +287,8 @@ public static class Utils
     {
         return GetString("DeathReason." + Enum.GetName(typeof(CustomDeathReason), status));
     }
-    // 役職の色は起動後に変わらないので、読み取れた色は覚えておく (毎回の色コード解析はゲーム側の呼び出しになる)
-    private static readonly Dictionary<CustomRoles, Color> RoleColorCache = new();
-    public static Color GetRoleColor(CustomRoles role)
-    {
-        if (RoleColorCache.TryGetValue(role, out var cached)) return cached;
-        if (!Main.roleColors.TryGetValue(role, out var hexColor))
-        {
-            hexColor = role.GetRoleInfo()?.RoleColorCode;
-        }
-        if (ColorUtility.TryParseHtmlString(hexColor, out Color c)) RoleColorCache[role] = c;
-        return c;
-    }
-    public static string GetRoleColorCode(CustomRoles role)
-    {
-        if (!Main.roleColors.TryGetValue(role, out var hexColor))
-        {
-            hexColor = role.GetRoleInfo()?.RoleColorCode;
-        }
-        return hexColor;
-    }
+    public static Color GetRoleColor(CustomRoles role) => TownOfHostL.Core.RoleCatalog.Get(role).Color;
+    public static string GetRoleColorCode(CustomRoles role) => TownOfHostL.Core.RoleCatalog.Get(role).ColorCode;
     public static string GetVitalText(byte playerId, bool RealKillerColor = false)
     {
         var state = PlayerState.GetByPlayerId(playerId);
@@ -858,7 +840,7 @@ public static class Utils
             }
 
             formatTag = "<size=65%><line-height=1.5pic>";
-            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
             {
                 // 常時表示しないオプション
                 if (Options.NotShowOption(opt.Name)) continue;
@@ -914,7 +896,7 @@ public static class Utils
             sb.Clear().Append(text.RemoveHtmlTags());
         }
         sb.Append($"━━━━━━━━━━━━【{GetString("Settings")}】━━━━━━━━━━━━");
-        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
         {
             if (!Options.NotShowOption(opt.Name))
                 sb.Append($"\n【{opt.GetName(true)}】\n");
@@ -1348,13 +1330,13 @@ public static class Utils
             //else if (Options.IsONMode)
             //    name = $"<color={GetRoleColorCode(CustomRoles.ONVillager)}>TOH_Y {GetString("OneNight")}</color>\r\n" + name;
             else if (AmongUsClient.Instance.IsGamePublic)
-                name = $"<color={Main.ModColor}>TownOfHost_Y v{Main.PluginVersion}</color>\r\n" + name;
+                name = $"<color={Main.ModColor}>TownOfHost_L v{Main.PluginVersion}</color>\r\n" + name;
             switch (Options.GetSuffixMode())
             {
                 case SuffixModes.None:
                     break;
-                case SuffixModes.TOH_Y:
-                    name += $"\r\n<color={Main.ModColor}>TOH_Y v{Main.PluginVersion}</color>";
+                case SuffixModes.TOH_L:
+                    name += $"\r\n<color={Main.ModColor}>TOH_L v{Main.PluginVersion}</color>";
                     break;
                 case SuffixModes.Streaming:
                     name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Streaming")}</color>";
@@ -1372,17 +1354,10 @@ public static class Utils
         }
         if (name != PlayerControl.LocalPlayer.name && PlayerControl.LocalPlayer.CurrentOutfitType == PlayerOutfitType.Default) PlayerControl.LocalPlayer.RpcSetName(name);
     }
-    private static Dictionary<byte, PlayerControl> cachedPlayers = new(15);
     public static PlayerControl GetPlayerById(int playerId) => GetPlayerById((byte)playerId);
     public static PlayerControl GetPlayerById(byte playerId)
     {
-        if (cachedPlayers.TryGetValue(playerId, out var cachedPlayer) && cachedPlayer != null)
-        {
-            return cachedPlayer;
-        }
-        var player = Main.AllPlayerControls.Where(pc => pc.PlayerId == playerId).FirstOrDefault();
-        cachedPlayers[playerId] = player;
-        return player;
+        return TownOfHostL.Core.Players.ById(playerId);
     }
     public static PlayerControl GetPlayerByColorName(string colorName)
     {
@@ -1402,13 +1377,41 @@ public static class Utils
     }
 
     public static NetworkedPlayerInfo GetPlayerInfoById(int PlayerId) =>
-        GameData.Instance.AllPlayers.ToArray().Where(info => info.PlayerId == PlayerId).FirstOrDefault();
+        PlayerId is >= 0 and <= byte.MaxValue ? GameData.Instance.GetPlayerById((byte)PlayerId) : null;
     private static StringBuilder SelfMark = new(20);
     private static StringBuilder SelfSuffix = new(20);
     private static StringBuilder SelfLower = new(20);
     private static StringBuilder TargetMark = new(20);
     private static StringBuilder TargetSuffix = new(20);
+    /// <summary>
+    /// 名前の表示を送り直す。会議以外の呼び出しはフレームの終わりにまとめて 1 回だけ組み立てる (NotifyRolesQueue)。
+    /// 会議用 (isForMeeting) はその場で組み立てて送る。
+    /// </summary>
     public static void NotifyRoles(bool isForMeeting = false, PlayerControl SpecifySeer = null, bool NoCache = false, bool ForceLoop = false)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!isForMeeting)
+        {
+            TownOfHostL.Core.NotifyRolesQueue.Enqueue(SpecifySeer, NoCache, ForceLoop);
+            return;
+        }
+        // 先に頼まれていた会議外の分を、会議用より前に送る
+        TownOfHostL.Core.NotifyRolesQueue.Flush();
+        NotifyRolesNow(isForMeeting, SpecifySeer, NoCache, ForceLoop);
+    }
+    /// <summary>溜めずにその場で組み立てて送る。</summary>
+    public static void NotifyRolesNow(bool isForMeeting = false, PlayerControl SpecifySeer = null, bool NoCache = false, bool ForceLoop = false)
+    {
+        try
+        {
+            BuildAndSendNames(isForMeeting, SpecifySeer, NoCache, ForceLoop);
+        }
+        finally
+        {
+            NameRpcBatcher.Flush();
+        }
+    }
+    private static void BuildAndSendNames(bool isForMeeting, PlayerControl SpecifySeer, bool NoCache, bool ForceLoop)
     {
         if (!AmongUsClient.Instance.AmHost) return;
         if (Main.AllPlayerControls == null) return;
@@ -1418,12 +1421,13 @@ public static class Utils
 
         if (MushroomMixupUpdateSystemPatch.InSabotage) return; //キノコカオス中は無効
 
-        var caller = new System.Diagnostics.StackFrame(1, false);
-        var callerMethod = caller.GetMethod();
-        string callerMethodName = callerMethod?.Name;
-        string callerClassName = callerMethod?.DeclaringType?.FullName;
         var logger = Logger.Handler("NotifyRoles");
-        logger.Info("NotifyRolesが" + callerClassName + "." + callerMethodName + "から呼び出されました");
+        // 呼び出し元を StackFrame で調べるのは重いので、ログが出る時だけにする
+        if (Logger.IsTagEnabled(logger.Tag))
+        {
+            var callerMethod = new System.Diagnostics.StackFrame(1, false).GetMethod();
+            logger.Info($"NotifyRolesが{callerMethod?.DeclaringType?.FullName}.{callerMethod?.Name}から呼び出されました");
+        }
         HudManagerPatch.NowCallNotifyRolesCount++;
         HudManagerPatch.LastSetNameDesyncCount = 0;
 
@@ -1443,7 +1447,7 @@ public static class Utils
             //if (seer.IsModClient()) continue;
             string fontSize = isForMeeting ? "1.5" : Main.RoleTextSize.ToString();
             if (isForMeeting && (seer.GetClient().PlatformData.Platform is Platforms.Playstation or Platforms.Switch)) fontSize = "70%";
-            logger.Info("NotifyRoles-Loop1-" + seer.GetNameWithRole() + ":START");
+            logger.Info($"NotifyRoles-Loop1-{seer.GetNameWithRole()}:START");
 
             var seerRole = seer.GetRoleClass();
 
@@ -1593,7 +1597,7 @@ public static class Utils
                 {
                     //targetがseer自身の場合は何もしない
                     if (target == seer) continue;
-                    logger.Info("NotifyRoles-Loop2-" + target.GetNameWithRole() + ":START");
+                    logger.Info($"NotifyRoles-Loop2-{target.GetNameWithRole()}:START");
 
                     //名前の後ろに付けるマーカー
                     TargetMark.Clear();
@@ -1620,7 +1624,7 @@ public static class Utils
                     // 空でなければ先頭に改行を挿入
                     if (TargetSuffix.Length > 0)
                     {
-                        TargetSuffix.Insert(0, "\r\n<size={fontSize}>");
+                        TargetSuffix.Insert(0, $"\r\n<size={fontSize}>");
                         TargetSuffix.Append("</size>");
                     }
 
@@ -1648,10 +1652,10 @@ public static class Utils
                     //適用
                     target.RpcSetNamePrivate(TargetName, true, seer, force: NoCache);
 
-                    logger.Info("NotifyRoles-Loop2-" + target.GetNameWithRole() + ":END");
+                    logger.Info($"NotifyRoles-Loop2-{target.GetNameWithRole()}:END");
                 }
             }
-            logger.Info("NotifyRoles-Loop1-" + seer.GetNameWithRole() + ":END");
+            logger.Info($"NotifyRoles-Loop1-{seer.GetNameWithRole()}:END");
         }
     }
     public static void MarkEveryoneDirtySettings()
@@ -1766,7 +1770,7 @@ public static class Utils
     }
     public static DirectoryInfo GetLogFolder(bool auto = false)
     {
-        var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_Y/Logs");
+        var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_L/Logs");
         if (auto)
         {
             folder = Directory.CreateDirectory($"{folder.FullName}/AutoLogs");

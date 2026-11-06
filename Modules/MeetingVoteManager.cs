@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Madmate;
-using TownOfHostY.Roles.Crewmate;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Madmate;
+using TownOfHostL.Roles.Crewmate;
 using System.Diagnostics.Metrics;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public class MeetingVoteManager
 {

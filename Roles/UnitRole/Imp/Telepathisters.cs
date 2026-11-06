@@ -4,12 +4,12 @@ using HarmonyLib;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
-using static TownOfHostY.Utils;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
+using static TownOfHostL.Utils;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 
 public sealed class Telepathisters : RoleBase, IImpostor, IKillFlashSeeable
 {

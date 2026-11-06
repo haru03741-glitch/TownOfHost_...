@@ -3,11 +3,11 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Roles.Unit.GodfatherAndJanitor;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Roles.Unit.GodfatherAndJanitor;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 
 public sealed class Janitor : RoleBase, IImpostor
 {
@@ -20,7 +20,8 @@ public sealed class Janitor : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.UnitImp + 100,//使用しない
             null,
-            "ジャニター"
+            "ジャニター",
+            flags: RoleFlags.DontShowOption
         );
     public Janitor(PlayerControl player)
     : base(

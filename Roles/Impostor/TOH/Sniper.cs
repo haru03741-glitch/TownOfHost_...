@@ -4,11 +4,12 @@ using Hazel;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
+using TownOfHostL.Core;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class Sniper : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -90,7 +91,7 @@ public sealed class Sniper : RoleBase, IImpostor
     }
     private void SendRPC()
     {
-        Logger.Info($"{Player.GetNameWithRole()}:SendRPC", "Sniper");
+        Log.Info("Sniper", $"{Player.GetNameWithRole()}:SendRPC");
         using var sender = CreateSender(CustomRPC.SniperSync);
 
         var snList = ShotNotify;
@@ -111,7 +112,7 @@ public sealed class Sniper : RoleBase, IImpostor
             ShotNotify.Add(reader.ReadByte());
             count--;
         }
-        Logger.Info($"{Player.GetNameWithRole()}:ReceiveRPC", "Sniper");
+        Log.Info("Sniper", $"{Player.GetNameWithRole()}:ReceiveRPC");
     }
     public bool CanUseKillButton()
     {
@@ -155,8 +156,8 @@ public sealed class Sniper : RoleBase, IImpostor
             var target_dir = target_pos.normalized;
             //内積を取る
             var target_dot = Vector3.Dot(dir, target_dir);
-            Logger.Info($"{target?.Data?.PlayerName}:pos={target_pos} dir={target_dir}", "Sniper");
-            Logger.Info($"  Dot={target_dot}", "Sniper");
+            Log.Info("Sniper", $"{target?.Data?.PlayerName}:pos={target_pos} dir={target_dir}");
+            Log.Info("Sniper", $"  Dot={target_dot}");
 
             //ある程度正確なら登録
             if (target_dot < 0.995) continue;
@@ -166,7 +167,7 @@ public sealed class Sniper : RoleBase, IImpostor
                 //射線との誤差確認
                 //単位ベクトルとの外積をとれば大きさ=誤差になる。
                 var err = Vector3.Cross(dir, target_pos).magnitude;
-                Logger.Info($"  err={err}", "Sniper");
+                Log.Info("Sniper", $"  err={err}");
                 if (err < 0.5)
                 {
                     //ある程度正確なら登録
@@ -177,7 +178,7 @@ public sealed class Sniper : RoleBase, IImpostor
             {
                 //近い順に判定する
                 var err = target_pos.magnitude;
-                Logger.Info($"  err={err}", "Sniper");
+                Log.Info("Sniper", $"  err={err}");
                 targets.Add(target, err);
             }
         }

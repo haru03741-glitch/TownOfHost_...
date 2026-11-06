@@ -1,7 +1,7 @@
 using HarmonyLib;
 using AmongUs.GameOptions;
 
-namespace TownOfHostY.Patches
+namespace TownOfHostL.Patches
 {
     [HarmonyPatch(typeof(LogicOptions), nameof(LogicOptions.GetKillDistance))]
     class LogicOptionsGetKillDistancePatch

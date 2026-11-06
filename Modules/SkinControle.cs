@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Text;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 public static class SkinControle
 {
     /*

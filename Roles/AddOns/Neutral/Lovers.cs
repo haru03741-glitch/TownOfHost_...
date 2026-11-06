@@ -1,15 +1,23 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Lovers
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Lovers,
+        AddOnGroup.Neutral,
+        "#ff6be4",
+        setupOptions: SetupCustomOption,
+        onAdd: Add,
+        flags: RoleFlags.FirstWriteAddOn | RoleFlags.Pair);
+
+    private static Color RoleColor => Utils.GetRoleColor(CustomRoles.Lovers);
     private static readonly int Id = (int)offsetId.AddonNeu + 0;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Lovers);
     public static List<PlayerControl> playersList = new(2);
     private static bool isLoversDead = false;
     public static OptionItem LoversAddWin;

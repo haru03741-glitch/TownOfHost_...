@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using System.Text;
 using HarmonyLib;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Impostor;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Impostor;
 using UnityEngine;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     class FixedUpdatePatch

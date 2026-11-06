@@ -2,10 +2,10 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Roles.Unit.CounselorAndMadDilemma;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Roles.Unit.CounselorAndMadDilemma;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Counselor : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -18,7 +18,8 @@ public sealed class Counselor : RoleBase
             (int)Options.offsetId.UnitMix + 0,//使用しない
             null,
             "カウンセラー",
-            "#ffc0cb"
+            "#ffc0cb",
+            flags: RoleFlags.DontShowOption
         );
     public Counselor(PlayerControl player)
     : base(

@@ -3,11 +3,12 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using Hazel;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 
 class Penguin : RoleBase, IImpostor
 {
@@ -57,6 +58,9 @@ class Penguin : RoleBase, IImpostor
         public float Timer;
     }
     private static readonly Dictionary<byte, AbductState> AbductStates = new();
+    // 試合中の役職の付け替えでは引き継ぐが、次の試合へは持ち越さない
+    [GameModuleInitializer]
+    public static void ResetAbductStates() => AbductStates.Clear();
 
     public PlayerControl AbductVictim;
     private float AbductTimer;

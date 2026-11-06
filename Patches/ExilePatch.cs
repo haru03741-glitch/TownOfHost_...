@@ -2,12 +2,12 @@ using AmongUs.Data;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using System.Collections;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Neutral;
 using AmongUs.GameOptions;
-namespace TownOfHostY
+namespace TownOfHostL
 {
     class ExileControllerWrapUpPatch
     {

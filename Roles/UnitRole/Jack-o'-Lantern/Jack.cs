@@ -1,11 +1,11 @@
 using AmongUs.GameOptions;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Roles.Unit.JackOLantern;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Roles.Unit.JackOLantern;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class Jack : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -17,7 +17,8 @@ public sealed class Jack : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.UnitMix + 100,//使用しない
             null,
-            "ジャック"
+            "ジャック",
+            flags: RoleFlags.DontShowOption
         );
     public Jack(PlayerControl player)
     : base(

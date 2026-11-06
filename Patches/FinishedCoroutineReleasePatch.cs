@@ -2,7 +2,7 @@ using System.Collections;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 
-namespace TownOfHostY.Patches
+namespace TownOfHostL.Patches
 {
     // マネージドの IEnumerator を StartCoroutine に渡すと Il2CppManagedEnumerator で包まれ、その包みは
     // コルーチンが終わった後も GCHandle で生き残る。包みが中身の IEnumerator を握ったままだと、

@@ -1,13 +1,13 @@
 using System.Linq;
 using System.Text;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Utils;
-using static TownOfHostY.Translator;
-using static TownOfHostY.CatchCat.Option;
-using static TownOfHostY.CatchCat.Common;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Utils;
+using static TownOfHostL.Translator;
+using static TownOfHostL.CatchCat.Option;
+using static TownOfHostL.CatchCat.Common;
 using UnityEngine;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
 static class Infomation
 {
@@ -127,7 +127,7 @@ static class Infomation
             sb.Append($" ・{M_ColorCatCount.GetName(true)}\n");
 
         sb.Append($"</line-height>\n");
-        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && ((x.Id >= 100000 && x.Id < Id) || x.Id >= Id + 10000) && !x.IsHiddenOn(Options.CurrentGameMode)))
+        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && (x.Id < Id || x.Id >= Id + 10000) && !x.IsHiddenOn(Options.CurrentGameMode)))
         {
             if (Options.NotShowOption(opt.Name)) continue;
 

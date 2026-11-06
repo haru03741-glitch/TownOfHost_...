@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 class DisplayComingOut
 {
@@ -38,7 +38,7 @@ class DisplayComingOut
             if (type is CustomRoleTypes.Unit) continue;
 
             Dictionary<string, string> replacementDic = new() { { "%type%", Translator.GetString($"CustomRoleTypes.{type}") } };
-            EachTypes[type] = BooleanOptionItem.Create(idOffset, "displayComingOut%type%", false, TabGroup.ModMainSettings, true).SetParent(Enable);
+            EachTypes[type] = BooleanOptionItem.Create(idOffset, "displayComingOut%type%", false, TabGroup.ModMainSettings, true).SetParent(Enable).SetKeyName($"displayComingOut.{type}");
             EachTypes[type].ReplacementDictionary = replacementDic;
 
             SetupRoleComingOut(type, baseId);
@@ -55,7 +55,7 @@ class DisplayComingOut
 
             var roleName = Utils.GetRoleName(role);
             Dictionary<string, string> replacementDic = new() { { "%role%", Utils.ColorString(Utils.GetRoleColor(role), roleName) } };
-            EachRoles[role] = StringOptionItem.Create(idOffset, "displayComingOut%role%", displayComingOut, 0, TabGroup.ModMainSettings, true).SetParent(EachTypes[type]);
+            EachRoles[role] = StringOptionItem.Create(idOffset, "displayComingOut%role%", displayComingOut, 0, TabGroup.ModMainSettings, true).SetParent(EachTypes[type]).SetKeyName($"displayComingOut.{role}");
             EachRoles[role].ReplacementDictionary = replacementDic;
             idOffset++;
         }

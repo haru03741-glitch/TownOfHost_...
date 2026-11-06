@@ -1,16 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Refusing
 {
+    public static readonly AddOnInfo Info = new(
+        CustomRoles.Refusing,
+        AddOnGroup.Buff,
+        "#61b26c",
+        "Rf",
+        setupOptions: SetupCustomOption,
+        onAdd: Add);
+
     private static readonly int Id = (int)offsetId.AddonBuff + 1200;
-    private static Color RoleColor = Utils.GetRoleColor(CustomRoles.Refusing);
-    public static string SubRoleMark = Utils.ColorString(RoleColor, "Rf");
     private static List<byte> playerIdList = new();
     private static List<byte> IgnoreExiled = new();
 

@@ -1,15 +1,16 @@
 using System;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 using TMPro;
-using TownOfHostY.Templates;
-using TownOfHostY.Modules;
+using TownOfHostL.Templates;
+using TownOfHostL.Modules;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(HudManager))]
 class HudManagerPatch
@@ -316,18 +317,24 @@ class TaskPanelBehaviourPatch
 class HudManagerCoShowIntroPatch
 {
     public static bool Cancel = true;
-    public static bool Prefix(HudManager __instance)
+    public static bool Prefix(HudManager __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
         if (AmongUsClient.Instance.AmHost
             && Options.CurrentGameMode == CustomGameMode.Standard
             && Cancel)
         {
             Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");
+            // 本編の CoSetRole は戻り値をそのまま StartCoroutine に渡すので、null だと例外でその先が止まる
+            __result = Empty().WrapToIl2Cpp();
             return false;
         }
 
         Cancel = true;
         return true;
+    }
+    private static System.Collections.IEnumerator Empty()
+    {
+        yield break;
     }
 }
 class RepairSender

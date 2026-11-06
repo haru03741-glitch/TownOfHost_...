@@ -1,11 +1,11 @@
 using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.Core;
 using Epic.OnlineServices.Presence;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 
 public sealed class MadSnitch : RoleBase
 {
@@ -19,7 +19,8 @@ public sealed class MadSnitch : RoleBase
             (int)Options.offsetId.MadTOH + 200,
             SetupOptionItem,
             "マッドスニッチ",
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontSelectLoyalty
         );
     public MadSnitch(PlayerControl player)
     : base(

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Unit;
+namespace TownOfHostL.Roles.Unit;
 public sealed class GodfatherAndJanitor : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -21,7 +21,8 @@ public sealed class GodfatherAndJanitor : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Godfather, CustomRoles.Janitor }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public GodfatherAndJanitor(PlayerControl player)
     : base(

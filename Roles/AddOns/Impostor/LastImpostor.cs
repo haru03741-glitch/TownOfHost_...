@@ -1,14 +1,21 @@
 using System;
 using System.Linq;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
 
-using static TownOfHostY.Options;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.AddOns.Impostor
+namespace TownOfHostL.Roles.AddOns.Impostor
 {
     public static class LastImpostor
     {
+        public static readonly AddOnInfo Info = new(
+            CustomRoles.LastImpostor,
+            AddOnGroup.Impostor,
+            "#ff1919",
+            setupOptions: SetupCustomOption,
+            flags: RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty);
+
         private static readonly int Id = (int)offsetId.AddonImp + 0;
         public static byte currentId = byte.MaxValue;
         public static OptionItem IsChangeKillCooldown;

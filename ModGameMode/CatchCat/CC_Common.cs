@@ -1,12 +1,12 @@
 using System;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Utils;
-using static TownOfHostY.CatchCat.Option;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Utils;
+using static TownOfHostL.CatchCat.Option;
 using UnityEngine;
 using System.Collections.Generic;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
 static class Common
 {
