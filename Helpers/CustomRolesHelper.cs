@@ -1,10 +1,10 @@
 using System.Linq;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 using TownOfHostL.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 static class CustomRolesHelper
 {

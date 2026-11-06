@@ -1,9 +1,9 @@
 using HarmonyLib;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Patches;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Patches;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     //参考元:https://github.com/yukieiji/ExtremeRoles/blob/master/ExtremeRoles/Patches/AirShipStatusPatch.cs
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.PrespawnStep))]

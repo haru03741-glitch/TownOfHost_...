@@ -2,9 +2,9 @@
 using HarmonyLib;
 using Hazel;
 using InnerNet;
-using TownOfHostY.Modules.Net;
+using TownOfHostL.Modules.Net;
 
-namespace TownOfHostY.Patches;
+namespace TownOfHostL.Patches;
 
 // ホストが出す全パケットの最後の関所。
 // 公式サーバーは 1 メッセージ 1200 バイト以上 (ヘッダ込み) を Hacking として即切断する。実測では 999 バイト以下は安全、

@@ -1,10 +1,10 @@
 using AmongUs.GameOptions;
 using HarmonyLib;
 
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
 class SelectRolesHASModePatch

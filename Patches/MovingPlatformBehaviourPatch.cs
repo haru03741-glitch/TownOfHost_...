@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TownOfHostY.Patches;
+namespace TownOfHostL.Patches;
 
 [HarmonyPatch(typeof(MovingPlatformBehaviour))]
 public static class MovingPlatformBehaviourPatch

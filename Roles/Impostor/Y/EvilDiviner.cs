@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using Hazel;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class EvilDiviner : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =

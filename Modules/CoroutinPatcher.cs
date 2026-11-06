@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using Il2CppInterop.Runtime;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public class CoroutinPatcher : Attribute
 {

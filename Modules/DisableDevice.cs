@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     //参考元 : https://github.com/ykundesu/SuperNewRoles/blob/master/SuperNewRoles/Mode/SuperHostRoles/BlockTool.cs
     class DisableDevice

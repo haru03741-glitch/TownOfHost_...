@@ -4,11 +4,11 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using Hazel;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSeeable, IKillFlashSeeable//MAD時に使用
 {

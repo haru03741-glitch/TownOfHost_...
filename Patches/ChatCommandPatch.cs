@@ -7,12 +7,12 @@ using Assets.CoreScripts;
 using HarmonyLib;
 using Hazel;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Madmate;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Madmate;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
     class ChatCommands

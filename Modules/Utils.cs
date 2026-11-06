@@ -14,20 +14,20 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using Il2CppInterop.Runtime.InteropTypes;
 using InnerNet;
 using Microsoft.VisualBasic;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using TownOfHostY.Roles.AddOns.Impostor;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.AddOns.Impostor;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
 using UnityEngine;
-using static TownOfHostY.Translator;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 public static class Utils
 {
@@ -1330,13 +1330,13 @@ public static class Utils
             //else if (Options.IsONMode)
             //    name = $"<color={GetRoleColorCode(CustomRoles.ONVillager)}>TOH_Y {GetString("OneNight")}</color>\r\n" + name;
             else if (AmongUsClient.Instance.IsGamePublic)
-                name = $"<color={Main.ModColor}>TownOfHost_Y v{Main.PluginVersion}</color>\r\n" + name;
+                name = $"<color={Main.ModColor}>TownOfHost_L v{Main.PluginVersion}</color>\r\n" + name;
             switch (Options.GetSuffixMode())
             {
                 case SuffixModes.None:
                     break;
-                case SuffixModes.TOH_Y:
-                    name += $"\r\n<color={Main.ModColor}>TOH_Y v{Main.PluginVersion}</color>";
+                case SuffixModes.TOH_L:
+                    name += $"\r\n<color={Main.ModColor}>TOH_L v{Main.PluginVersion}</color>";
                     break;
                 case SuffixModes.Streaming:
                     name += $"\r\n<color={Main.ModColor}>{GetString("SuffixMode.Streaming")}</color>";
@@ -1770,7 +1770,7 @@ public static class Utils
     }
     public static DirectoryInfo GetLogFolder(bool auto = false)
     {
-        var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_Y/Logs");
+        var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_L/Logs");
         if (auto)
         {
             folder = Directory.CreateDirectory($"{folder.FullName}/AutoLogs");

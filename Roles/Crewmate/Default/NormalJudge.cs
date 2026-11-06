@@ -3,11 +3,11 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 
 public sealed class NormalJudge : RoleBase
 {

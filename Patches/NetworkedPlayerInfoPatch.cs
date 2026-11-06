@@ -1,7 +1,7 @@
 //参考：TOH-K
 using HarmonyLib;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 
 

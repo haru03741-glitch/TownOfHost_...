@@ -9,13 +9,13 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
 using UnityEngine;
 
-[assembly: AssemblyFileVersionAttribute(TownOfHostY.Main.PluginVersion)]
-[assembly: AssemblyInformationalVersionAttribute(TownOfHostY.Main.PluginVersion)]
-namespace TownOfHostY;
+[assembly: AssemblyFileVersionAttribute(TownOfHostL.Main.PluginVersion)]
+[assembly: AssemblyInformationalVersionAttribute(TownOfHostL.Main.PluginVersion)]
+namespace TownOfHostL;
 
 [BepInPlugin(PluginGuid, "Town Of Host_L", PluginVersion)]
 [BepInIncompatibility("com.yumenopai.townofhosty")]
@@ -146,24 +146,24 @@ public class Main : BasePlugin
     public override void Load()
     {
         Instance = this;
-        TownOfHostY.Modules.IncrementalGcGate.Apply();
-        TownOfHostY.Modules.OptionSaver.Initialize(); // オプション保存用ディレクトリ・ファイルを起動時に作成
+        TownOfHostL.Modules.IncrementalGcGate.Apply();
+        TownOfHostL.Modules.OptionSaver.Initialize(); // オプション保存用ディレクトリ・ファイルを起動時に作成
 
         //Client Options
-        HideName = Config.Bind("Client Options", "Hide Game Code Name", "TOH_Y");
+        HideName = Config.Bind("Client Options", "Hide Game Code Name", "TOH_L");
         HideColor = Config.Bind("Client Options", "Hide Game Code Color", $"{ModColor}");
         ForceJapanese = Config.Bind("Client Options", "Force Japanese", false);
         JapaneseRoleName = Config.Bind("Client Options", "Japanese Role Name", true);
         IsMuteLobbyBGM = Config.Bind("Client Options", "Mute Lobby BGM", false);
         DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
 
-        Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_Y");
-        TownOfHostY.Logger.Enable();
-        TownOfHostY.Logger.Disable("NotifyRoles");
-        TownOfHostY.Logger.Disable("SendRPC");
-        TownOfHostY.Logger.Disable("ReceiveRPC");
-        TownOfHostY.Logger.Disable("SwitchSystem");
-        TownOfHostY.Logger.Disable("CustomRpcSender");
+        Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_L");
+        TownOfHostL.Logger.Enable();
+        TownOfHostL.Logger.Disable("NotifyRoles");
+        TownOfHostL.Logger.Disable("SendRPC");
+        TownOfHostL.Logger.Disable("ReceiveRPC");
+        TownOfHostL.Logger.Disable("SwitchSystem");
+        TownOfHostL.Logger.Disable("CustomRpcSender");
         //TownOfHost.Logger.isDetail = true;
 
         // 認証関連-初期化
@@ -207,17 +207,17 @@ public class Main : BasePlugin
         }
         catch (ArgumentException ex)
         {
-            TownOfHostY.Logger.Error("エラー:Dictionaryの値の重複を検出しました", "LoadDictionary");
-            TownOfHostY.Logger.Exception(ex, "LoadDictionary");
+            TownOfHostL.Logger.Error("エラー:Dictionaryの値の重複を検出しました", "LoadDictionary");
+            TownOfHostL.Logger.Exception(ex, "LoadDictionary");
             hasArgumentException = true;
             ExceptionMessage = ex.Message;
             ExceptionMessageIsShown = false;
         }
         // 役職の分類の表は、全役職クラスの RoleInfo が揃ってから組む (登録で重複が出ても組む)
         TownOfHostL.Core.RoleCatalog.Build();
-        TownOfHostY.Logger.Info($"{Application.version}", "AmongUs Version");
+        TownOfHostL.Logger.Info($"{Application.version}", "AmongUs Version");
 
-        var handler = TownOfHostY.Logger.Handler("GitVersion");
+        var handler = TownOfHostL.Logger.Handler("GitVersion");
         handler.Info($"{nameof(ThisAssembly.Git.Branch)}: {ThisAssembly.Git.Branch}");
         handler.Info($"{nameof(ThisAssembly.Git.BaseTag)}: {ThisAssembly.Git.BaseTag}");
         handler.Info($"{nameof(ThisAssembly.Git.Commit)}: {ThisAssembly.Git.Commit}");
@@ -230,11 +230,11 @@ public class Main : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<BooleanOptionItem.BooleanGameSetting>();
         ClassInjector.RegisterTypeInIl2Cpp<LabelHoverBehaviour>();
 
-        TownOfHostY.Modules.DelegateTypeCache.Install(Harmony);
+        TownOfHostL.Modules.DelegateTypeCache.Install(Harmony);
         Harmony.PatchAll();
         Application.quitting += new Action(Utils.SaveNowLog);
         // まとめて保存する設定を、終了前に書き切る
-        Application.quitting += new Action(TownOfHostY.Modules.OptionSaver.Flush);
+        Application.quitting += new Action(TownOfHostL.Modules.OptionSaver.Flush);
     }
 }
 public enum CustomDeathReason
@@ -301,7 +301,7 @@ public enum CustomWinner
 public enum SuffixModes
 {
     None = 0,
-    TOH_Y,
+    TOH_L,
     Streaming,
     Recording,
     RoomHost,

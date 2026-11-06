@@ -3,12 +3,12 @@ using System.Linq;
 using System.Text;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
 using UnityEngine;
-using static TownOfHostY.Translator;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 
 public sealed class GrudgeSheriff : RoleBase
 {

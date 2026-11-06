@@ -3,12 +3,12 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using Hazel;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 
 class Penguin : RoleBase, IImpostor
 {

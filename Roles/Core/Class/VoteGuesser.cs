@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
 
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Neutral;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY.Roles.Core.Class;
+namespace TownOfHostL.Roles.Core.Class;
 
 public abstract class VoteGuesser : RoleBase
 {

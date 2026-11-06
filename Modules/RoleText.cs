@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.AddOns;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.AddOns;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 public static class RoleText
 {
     /// <summary>

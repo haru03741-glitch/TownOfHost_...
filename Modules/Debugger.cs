@@ -5,9 +5,9 @@ using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using LogLevel = BepInEx.Logging.LogLevel;
-using TownOfHostY.Modules;
+using TownOfHostL.Modules;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     class Webhook
     {

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
 using AmongUs.GameOptions;
-using TownOfHostY.Attributes;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class AddLight
 {

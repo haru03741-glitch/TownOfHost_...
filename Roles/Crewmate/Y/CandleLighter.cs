@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class CandleLighter : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

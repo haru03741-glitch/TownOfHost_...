@@ -1,8 +1,8 @@
 using System.Linq;
 using HarmonyLib;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Patches;
+namespace TownOfHostL.Patches;
 
 // reference :: TOH-H Patches/SpawnInMinigamePatch.cs
 [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.SpawnAt))]

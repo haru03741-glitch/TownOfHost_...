@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-using static TownOfHostY.Utils;
-using static TownOfHostY.Translator;
+using static TownOfHostL.Utils;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class FortuneTeller : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

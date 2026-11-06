@@ -3,9 +3,9 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using static TownOfHostY.Options;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.Core;
+namespace TownOfHostL.Roles.Core;
 
 public class SimpleRoleInfo
 {

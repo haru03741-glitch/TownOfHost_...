@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 /// <summary>
 /// 62進数 整数を短縮して扱える

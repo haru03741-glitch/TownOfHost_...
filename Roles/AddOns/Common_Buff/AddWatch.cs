@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class AddWatch
 {

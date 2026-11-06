@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Unit;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Impostor;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using TownOfHostY.Roles.AddOns;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Unit;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Impostor;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.AddOns;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [Flags]
 public enum CustomGameMode

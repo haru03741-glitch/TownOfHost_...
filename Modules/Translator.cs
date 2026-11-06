@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using TownOfHostY.Attributes;
-using TownOfHostY.Modules;
+using TownOfHostL.Attributes;
+using TownOfHostL.Modules;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public static class Translator
     {
@@ -25,7 +25,7 @@ namespace TownOfHostY
         public static void LoadLangs()
         {
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            var stream = assembly.GetManifestResourceStream("TownOfHost_Y.Resources.string.csv");
+            var stream = assembly.GetManifestResourceStream("TownOfHost_L.Resources.string.csv");
             translateMaps = new Dictionary<string, Dictionary<int, string>>();
 
             foreach (var line in CsvLite.Read(stream))

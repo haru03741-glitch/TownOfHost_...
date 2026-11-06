@@ -5,14 +5,14 @@ using AmongUs.GameOptions;
 using HarmonyLib;
 using InnerNet;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
-using static TownOfHostY.Translator;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameJoined))]
     class OnGameJoinedPatch

@@ -1,7 +1,7 @@
 using AmongUs.Data;
 using HarmonyLib;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 // Based on https://github.com/Rabek009/MoreGamemodes (Patches/ClientPatch.cs CheckOnlinePermissionsPatch, GPL-3.0)
 // 試合の途中で抜けると、本編は手元の保存データの banPoints を積み、一定の点数で部屋の作成と参加を一時的に塞ぐ。

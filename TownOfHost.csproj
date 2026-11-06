@@ -11,7 +11,7 @@
 		<Company>tukasa0001(EmptyBottle), integral0131, yumenopai</Company>
 		<Product>TownOfHost_L</Product>
 		<AssemblyName>TownOfHost_L</AssemblyName>
-		<RootNamespace>TownOfHost_Y</RootNamespace>
+		<RootNamespace>TownOfHost_L</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DefineConstants>TRACE</DefineConstants>

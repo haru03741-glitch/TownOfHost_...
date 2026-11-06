@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using TownOfHostY.Roles.AddOns.Impostor;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using TownOfHostL.Roles.AddOns.Impostor;
 
-namespace TownOfHostY.Roles.AddOns;
+namespace TownOfHostL.Roles.AddOns;
 
 /// <summary>
 /// 属性の登録の一覧。並びは設定のタブに出る順。属性を足す時はクラスに Info を持たせ、ここに 1 行足す。

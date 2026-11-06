@@ -1,8 +1,8 @@
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
-class GameEndPredicate : TownOfHostY.GameEndPredicate
+class GameEndPredicate : TownOfHostL.GameEndPredicate
 {
     public override bool CheckForEndGame(out GameOverReason reason)
     {

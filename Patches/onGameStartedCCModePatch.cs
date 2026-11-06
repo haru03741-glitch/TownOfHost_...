@@ -3,11 +3,11 @@ using System.Linq;
 using AmongUs.GameOptions;
 using HarmonyLib;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
 class SelectRolesCCModePatch

@@ -4,14 +4,14 @@ using System.Text;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using InnerNet;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Impostor;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
 using UnityEngine;
-using static TownOfHostY.Translator;
-namespace TownOfHostY;
+using static TownOfHostL.Translator;
+namespace TownOfHostL;
 
 [HarmonyPatch]
 public static class MeetingHudPatch

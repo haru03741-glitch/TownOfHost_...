@@ -4,7 +4,7 @@ using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY;
+using TownOfHostL;
 
 namespace TownOfHostL.Core;
 

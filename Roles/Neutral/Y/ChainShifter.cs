@@ -1,12 +1,12 @@
 using System.Linq;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.AddOns.Common;
-using static TownOfHostY.Roles.Neutral.SchrodingerCat;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.AddOns.Common;
+using static TownOfHostL.Roles.Neutral.SchrodingerCat;
 using UnityEngine;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class ChainShifter : RoleBase
 {

@@ -5,13 +5,13 @@ using HarmonyLib;
 using TMPro;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Templates;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Crewmate;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Templates;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Crewmate;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch]
     public static class CredentialsPatch
@@ -196,7 +196,7 @@ namespace TownOfHostY
                 logoTransform.parent = rightpanel;
                 logoTransform.localPosition = new(0f, 0.18f, 1f);
                 //logoTransform.localScale *= 1f;
-                TohLogo.sprite = Utils.LoadSprite("TownOfHost_Y.Resources.TownOfHostY-Logo.png", 300f);
+                TohLogo.sprite = Utils.LoadSprite("TownOfHost_L.Resources.TownOfHostL-Logo.png", 300f);
             }
         }
         [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]

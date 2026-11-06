@@ -3,11 +3,11 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public static class OptionShower
     {

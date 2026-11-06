@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Attributes;
-using static TownOfHostY.Options;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Attributes;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Revealer
 {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Unit;
+namespace TownOfHostL.Roles.Unit;
 public sealed class GodfatherAndJanitor : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

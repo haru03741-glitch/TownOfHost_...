@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace TownOfHostY.Attributes;
+namespace TownOfHostL.Attributes;
 
 /// <summary>初期化メソッドの属性の共通の土台。アセンブリの走査を 1 回で済ませるために使う。</summary>
 [AttributeUsage(AttributeTargets.Method)]

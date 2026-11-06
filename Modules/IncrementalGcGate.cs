@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using BepInEx.Logging;
 using Il2CppInterop.Runtime;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 // Based on https://github.com/Dolly1016/Nebula-Public (NebulaPluginNova/Utilities/IncrementalGcInvalidator.cs, GPL-3.0)
 // and https://github.com/waffle-ful/Aeterna-End-K-not (Modules/IncrementalGcInvalidator.cs, GPL-3.0)

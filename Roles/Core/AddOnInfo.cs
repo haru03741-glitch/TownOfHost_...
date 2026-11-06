@@ -1,7 +1,7 @@
 using System;
 using AmongUs.GameOptions;
 
-namespace TownOfHostY.Roles.Core;
+namespace TownOfHostL.Roles.Core;
 
 /// <summary>属性の設定のタブで、どの見出しの下に並ぶか</summary>
 public enum AddOnGroup

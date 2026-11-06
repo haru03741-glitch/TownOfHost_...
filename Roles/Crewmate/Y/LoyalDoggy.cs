@@ -5,10 +5,10 @@ using System.Threading.Channels;
 using AmongUs.GameOptions;
 using Hazel;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class LoyalDoggy : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

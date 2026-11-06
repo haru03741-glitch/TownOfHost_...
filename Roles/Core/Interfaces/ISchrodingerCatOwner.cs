@@ -1,7 +1,7 @@
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY.Roles.Core.Interfaces;
+namespace TownOfHostL.Roles.Core.Interfaces;
 
 /// <summary>
 /// シュレディンガーの猫をキルして仲間に引き入れる事ができる役職のインタフェイス

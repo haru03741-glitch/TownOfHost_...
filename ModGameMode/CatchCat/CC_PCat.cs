@@ -1,11 +1,11 @@
 using System.Linq;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Utils;
-using static TownOfHostY.CatchCat.Option;
-using static TownOfHostY.CatchCat.Common;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Utils;
+using static TownOfHostL.CatchCat.Option;
+using static TownOfHostL.CatchCat.Common;
 using AmongUs.GameOptions;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
 static class CatPlayer
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace TownOfHostY.Roles.Core;
+namespace TownOfHostL.Roles.Core;
 
 /// <summary>
 /// 役職の分類。役職クラスを持つ役職は SimpleRoleInfo.Create の flags で、持たない役職 (属性・CC・HAS など) は

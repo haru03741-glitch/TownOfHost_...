@@ -1,8 +1,8 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadDilemma : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

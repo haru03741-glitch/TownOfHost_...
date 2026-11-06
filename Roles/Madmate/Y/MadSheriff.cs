@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadSheriff : RoleBase, IKiller
 {
     public static readonly SimpleRoleInfo RoleInfo =

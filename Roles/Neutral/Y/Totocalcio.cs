@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 using System.Linq;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-namespace TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class Totocalcio : RoleBase, IKiller, IAdditionalWinner
 {

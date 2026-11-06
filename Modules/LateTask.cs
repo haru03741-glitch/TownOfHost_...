@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using TownOfHostL.Core;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     /// <summary>
     /// 指定した秒数の後にメインスレッドで 1 回だけ走る処理。

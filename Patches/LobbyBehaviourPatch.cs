@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 // https://github.com/SuperNewRoles/SuperNewRoles/blob/master/SuperNewRoles/Patches/LobbyBehaviourPatch.cs
 [HarmonyPatch(typeof(LobbyBehaviour))]

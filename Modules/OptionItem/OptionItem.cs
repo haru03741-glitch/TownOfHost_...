@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TownOfHostY.Modules;
+using TownOfHostL.Modules;
 using UnityEngine;
 using static Il2CppSystem.Net.Mail.SmtpClient;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public abstract class OptionItem
     {

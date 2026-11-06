@@ -1,9 +1,9 @@
 using System.Linq;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.CatchCat.Option;
-using static TownOfHostY.CatchCat.Common;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.CatchCat.Option;
+using static TownOfHostL.CatchCat.Common;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
 static class LeaderPlayer
 {

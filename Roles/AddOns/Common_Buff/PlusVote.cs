@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
-using TownOfHostY.Attributes;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class PlusVote
 {

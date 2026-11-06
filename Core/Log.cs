@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
 
-using TownOfHostY;
-using TownOfHostY.Modules;
+using TownOfHostL;
+using TownOfHostL.Modules;
 
 namespace TownOfHostL.Core;
 
@@ -13,22 +13,22 @@ namespace TownOfHostL.Core;
 /// </summary>
 internal static class Log
 {
-    public static bool IsEnabled(string tag) => TownOfHostY.Logger.IsTagEnabled(tag);
+    public static bool IsEnabled(string tag) => TownOfHostL.Logger.IsTagEnabled(tag);
 
     public static void Info(string tag, [InterpolatedStringHandlerArgument("tag")] ref LogText text)
     {
-        if (text.Enabled) TownOfHostY.Logger.Info(text.ToStringAndClear(), tag);
+        if (text.Enabled) TownOfHostL.Logger.Info(text.ToStringAndClear(), tag);
     }
-    public static void Info(string tag, string text) => TownOfHostY.Logger.Info(text, tag);
+    public static void Info(string tag, string text) => TownOfHostL.Logger.Info(text, tag);
 
     public static void Warn(string tag, [InterpolatedStringHandlerArgument("tag")] ref LogText text)
     {
-        if (text.Enabled) TownOfHostY.Logger.Warn(text.ToStringAndClear(), tag);
+        if (text.Enabled) TownOfHostL.Logger.Warn(text.ToStringAndClear(), tag);
     }
-    public static void Warn(string tag, string text) => TownOfHostY.Logger.Warn(text, tag);
+    public static void Warn(string tag, string text) => TownOfHostL.Logger.Warn(text, tag);
 
-    public static void Error(string tag, string text) => TownOfHostY.Logger.Error(text, tag);
-    public static void Exception(string tag, Exception ex) => TownOfHostY.Logger.Exception(ex, tag);
+    public static void Error(string tag, string text) => TownOfHostL.Logger.Error(text, tag);
+    public static void Exception(string tag, Exception ex) => TownOfHostL.Logger.Exception(ex, tag);
 }
 
 /// <summary>タグが無効なら何も組み立てない補間文字列。</summary>
@@ -40,7 +40,7 @@ internal ref struct LogText
 
     public LogText(int literalLength, int formattedCount, string tag, out bool shouldAppend)
     {
-        Enabled = shouldAppend = TownOfHostY.Logger.IsTagEnabled(tag);
+        Enabled = shouldAppend = TownOfHostL.Logger.IsTagEnabled(tag);
         inner = Enabled ? new DefaultInterpolatedStringHandler(literalLength, formattedCount) : default;
     }
 

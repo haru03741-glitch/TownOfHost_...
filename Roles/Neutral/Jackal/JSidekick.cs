@@ -1,11 +1,11 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Modules;
 using static UnityEngine.RemoteConfigSettingsHelper;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 
 public sealed class JSidekick : RoleBase, IKiller, ISchrodingerCatOwner
 {

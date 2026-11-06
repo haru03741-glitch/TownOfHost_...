@@ -2,12 +2,12 @@ using System.Linq;
 using System.Collections.Generic;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Modules;
 using AmongUs.Data.Player;
 
-namespace TownOfHostY.Roles.Neutral
+namespace TownOfHostL.Roles.Neutral
 {
     public sealed class Jackal : RoleBase, IKiller, ISchrodingerCatOwner
     {

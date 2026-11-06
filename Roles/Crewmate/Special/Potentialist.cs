@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Modules;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Potentialist : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

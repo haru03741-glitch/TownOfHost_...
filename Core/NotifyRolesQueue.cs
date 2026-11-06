@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 
-using TownOfHostY;
+using TownOfHostL;
 
 namespace TownOfHostL.Core;
 
@@ -84,7 +84,7 @@ public static class NotifyRolesQueue
         }
         catch (Exception ex)
         {
-            TownOfHostY.Logger.Exception(ex, "NotifyRolesQueue");
+            TownOfHostL.Logger.Exception(ex, "NotifyRolesQueue");
         }
     }
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace TownOfHostY.Modules.Net;
+namespace TownOfHostL.Modules.Net;
 
 // Innersloth 公式サーバーにいるかどうか。公式サーバーは送信の形や量を検査して Hacking 理由でホストを切断するので、
 // 送信まわりの安全装置はこの判定で切り替える。

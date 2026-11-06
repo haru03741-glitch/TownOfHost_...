@@ -11,7 +11,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Networking;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch]
 public class ModNews

@@ -1,8 +1,8 @@
 using System;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 using UnityEngine; // ScriptableObject 用
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public class BooleanOptionItem : OptionItem
     {

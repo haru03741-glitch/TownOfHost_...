@@ -1,11 +1,11 @@
 using AmongUs.GameOptions;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Roles.Unit.GodfatherAndJanitor;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Roles.Unit.GodfatherAndJanitor;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 
 public sealed class Godfather : RoleBase, IImpostor
 {

@@ -2,14 +2,14 @@ using System;
 using HarmonyLib;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 using TMPro;
-using TownOfHostY.Templates;
-using TownOfHostY.Modules;
+using TownOfHostL.Templates;
+using TownOfHostL.Modules;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(HudManager))]
 class HudManagerPatch

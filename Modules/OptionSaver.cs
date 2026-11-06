@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public static class OptionSaver
 {
-    private static readonly DirectoryInfo SaveDataDirectoryInfo = new("./TOHY_DATA/SaveData/");
+    private static readonly DirectoryInfo SaveDataDirectoryInfo = new("./TOHL_DATA/SaveData/");
     private static readonly DirectoryInfo PresetsDirectoryInfo = new($"{SaveDataDirectoryInfo.FullName}/Presets/");
-    private static readonly FileInfo OptionSaverFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHY.json");
+    private static readonly FileInfo OptionSaverFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHL.json");
     private static readonly LogHandler logger = Logger.Handler(nameof(OptionSaver));
 
     public static void Initialize()

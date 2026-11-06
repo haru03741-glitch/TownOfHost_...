@@ -4,11 +4,11 @@ using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 using TownOfHostL.Core;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public enum CustomRPC
     {

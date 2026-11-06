@@ -2,10 +2,10 @@ using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Roles.Unit.CounselorAndMadDilemma;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Roles.Unit.CounselorAndMadDilemma;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Counselor : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

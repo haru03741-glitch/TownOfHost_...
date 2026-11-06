@@ -1,11 +1,11 @@
 using HarmonyLib;
 using Hazel;
-using TownOfHostY.Attributes;
-using TownOfHostY.Modules;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
+using TownOfHostL.Attributes;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
-namespace TownOfHostY.Patches.ISystemType;
+namespace TownOfHostL.Patches.ISystemType;
 
 [HarmonyPatch(typeof(SabotageSystemType), nameof(SabotageSystemType.UpdateSystem))]
 public static class SabotageSystemTypeUpdateSystemPatch

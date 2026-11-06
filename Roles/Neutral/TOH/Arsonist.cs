@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 using Hazel;
 
-namespace TownOfHostY.Roles.Neutral;
+namespace TownOfHostL.Roles.Neutral;
 public sealed class Arsonist : RoleBase, IKiller
 {
     public static readonly SimpleRoleInfo RoleInfo =

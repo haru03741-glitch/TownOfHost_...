@@ -1,15 +1,15 @@
 using UnityEngine;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class Administer : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =

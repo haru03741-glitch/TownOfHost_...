@@ -1,9 +1,9 @@
 using System;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.Vanilla;
+namespace TownOfHostL.Roles.Vanilla;
 
 public sealed class Judge : RoleBase
 {

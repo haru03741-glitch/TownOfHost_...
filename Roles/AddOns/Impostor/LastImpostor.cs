@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
-using TownOfHostY.Attributes;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Attributes;
+using TownOfHostL.Roles.Core;
 
-using static TownOfHostY.Options;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.AddOns.Impostor
+namespace TownOfHostL.Roles.AddOns.Impostor
 {
     public static class LastImpostor
     {

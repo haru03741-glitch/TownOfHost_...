@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using AmongUs.GameOptions;
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Crewmate;
+namespace TownOfHostL.Roles.Crewmate;
 public sealed class Medic : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

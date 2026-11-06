@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 public static class ChainShifterAddon
 {
     public static readonly AddOnInfo Info = new(

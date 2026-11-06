@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 class DisplayComingOut
 {

@@ -4,11 +4,11 @@ using UnityEngine;
 using Hazel;
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using static TownOfHostY.Translator;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY.Roles.Impostor;
+namespace TownOfHostL.Roles.Impostor;
 public sealed class Puppeteer : RoleBase, IImpostor
 {
     public static readonly SimpleRoleInfo RoleInfo =

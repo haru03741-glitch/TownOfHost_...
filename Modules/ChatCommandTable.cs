@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-using static TownOfHostY.Translator;
+using static TownOfHostL.Translator;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 /// <summary>コマンドを打った人と引数</summary>
 public sealed class ChatCommandContext

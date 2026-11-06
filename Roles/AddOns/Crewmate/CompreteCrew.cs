@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY.Roles.AddOns.Crewmate
+namespace TownOfHostL.Roles.AddOns.Crewmate
 {
     public static class CompreteCrew
     {

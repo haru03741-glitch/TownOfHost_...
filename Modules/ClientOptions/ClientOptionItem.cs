@@ -2,7 +2,7 @@ using System;
 using BepInEx.Configuration;
 using UnityEngine;
 
-namespace TownOfHostY.Modules.ClientOptions;
+namespace TownOfHostL.Modules.ClientOptions;
 public sealed class ClientOptionItem : ClientActionItem
 {
     public ConfigEntry<bool> Config { get; private set; }

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using TownOfHostY;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.AddOns;
+using TownOfHostL;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.AddOns;
 
 namespace TownOfHostL.Core;
 

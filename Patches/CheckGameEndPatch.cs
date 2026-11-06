@@ -6,13 +6,13 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using UnityEngine;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Crewmate;
-using TownOfHostY.Roles.Neutral;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Crewmate;
+using TownOfHostL.Roles.Neutral;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
     class GameEndChecker

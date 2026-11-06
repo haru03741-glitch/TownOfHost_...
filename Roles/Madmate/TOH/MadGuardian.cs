@@ -1,9 +1,9 @@
 using AmongUs.GameOptions;
 
-using TownOfHostY.Roles.Core;
-using static TownOfHostY.Options;
+using TownOfHostL.Roles.Core;
+using static TownOfHostL.Options;
 
-namespace TownOfHostY.Roles.Madmate;
+namespace TownOfHostL.Roles.Madmate;
 public sealed class MadGuardian : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =

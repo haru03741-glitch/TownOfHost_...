@@ -2,7 +2,7 @@ using System;
 using HarmonyLib;
 using Hazel;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.Serialize))]
     class GameManagerSerializeFix

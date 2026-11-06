@@ -5,7 +5,7 @@ using InnerNet;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfHostL.Core;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public class CustomRpcSender
     {

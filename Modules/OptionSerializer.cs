@@ -6,13 +6,13 @@ using System.Text;
 using UnityEngine;
 using AmongUs.GameOptions;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 public static class OptionSerializer
 {
     private static LogHandler logger = Logger.Handler(nameof(OptionSerializer));
     private const string Header = "%TOHOptions%", Footer = "%End%";
-    private static readonly DirectoryInfo exportDir = new("./TOHY_DATA/OptionOutputs");
+    private static readonly DirectoryInfo exportDir = new("./TOHL_DATA/OptionOutputs");
     public static void SaveToClipboard()
     {
         GUIUtility.systemCopyBuffer = GenerateOptionsString();

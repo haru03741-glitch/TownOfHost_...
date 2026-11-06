@@ -1,9 +1,9 @@
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Modules;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Modules;
 using UnityEngine;
 using static Il2CppSystem.Uri;
 
-namespace TownOfHostY.CatchCat;
+namespace TownOfHostL.CatchCat;
 
 static class Option
 {

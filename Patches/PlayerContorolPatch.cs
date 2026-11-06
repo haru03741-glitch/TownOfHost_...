@@ -6,18 +6,18 @@ using HarmonyLib;
 using Hazel;
 using UnityEngine;
 
-using TownOfHostY.Modules;
-using TownOfHostY.Roles;
-using TownOfHostY.Roles.Core;
-using TownOfHostY.Roles.Core.Interfaces;
-using TownOfHostY.Roles.Neutral;
-using TownOfHostY.Roles.AddOns.Common;
-using TownOfHostY.Roles.AddOns.Crewmate;
-using static TownOfHostY.Translator;
-using TownOfHostY.Roles.Impostor;
+using TownOfHostL.Modules;
+using TownOfHostL.Roles;
+using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
+using TownOfHostL.Roles.Neutral;
+using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns.Crewmate;
+using static TownOfHostL.Translator;
+using TownOfHostL.Roles.Impostor;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckProtect))]
 class CheckProtectPatch

@@ -1,7 +1,7 @@
 using System;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-namespace TownOfHostY
+namespace TownOfHostL
 {
     public class StringOptionItem : OptionItem
     {

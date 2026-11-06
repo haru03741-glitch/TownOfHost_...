@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TownOfHostY.Roles.Core;
+using TownOfHostL.Roles.Core;
 
-using static TownOfHostY.Options;
-using static TownOfHostY.Translator;
-using static TownOfHostY.Utils;
-using TownOfHostY.Attributes;
+using static TownOfHostL.Options;
+using static TownOfHostL.Translator;
+using static TownOfHostL.Utils;
+using TownOfHostL.Attributes;
 
-namespace TownOfHostY.Roles.AddOns.Common;
+namespace TownOfHostL.Roles.AddOns.Common;
 
 public static class Sending
 {

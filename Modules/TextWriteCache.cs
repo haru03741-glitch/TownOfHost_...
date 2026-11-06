@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Il2CppInterop.Runtime;
 using TMPro;
 
-namespace TownOfHostY.Modules;
+namespace TownOfHostL.Modules;
 
 // 毎フレーム同じ文字を TMP に書き込むと、そのたびに文字列がゲーム側のヒープへ写され (GC のゴミになる)、
 // 呼び出しもゲーム側を通る。前回書いた文字列と、TMP が持っている文字列の場所を覚えておき、

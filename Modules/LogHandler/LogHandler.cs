@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using TownOfHostL.Core;
 
-namespace TownOfHostY.Modules
+namespace TownOfHostL.Modules
 {
     class LogHandler : ILogHandler
     {

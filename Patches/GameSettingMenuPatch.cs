@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TownOfHostY;
+namespace TownOfHostL;
 
 [HarmonyPatch(typeof(GameSettingMenu))]
 public class GameSettingMenuPatch
@@ -30,7 +30,7 @@ public class GameSettingMenuPatch
     // ボタンに表示する名前
     public static string[] buttonName = new string[]{
         "Game Settings",
-        "TOH_Y Settings",
+        "TOH_L Settings",
         "Impostor Roles",
         "Madmate Roles",
         "Crewmate Roles",
@@ -142,9 +142,9 @@ public class GameSettingMenuPatch
             // ボタンテキストの選択中の色変更
             button.selectedTextColor = Color.blue;
 
-            var activeButton = Utils.LoadSprite($"TownOfHost_Y.Resources.Tab_Active_{tab}.png", 100f);
+            var activeButton = Utils.LoadSprite($"TownOfHost_L.Resources.Tab_Active_{tab}.png", 100f);
             // 各種スプライトをオリジナルのものに変更
-            button.inactiveSprites.GetComponent<SpriteRenderer>().sprite = Utils.LoadSprite($"TownOfHost_Y.Resources.Tab_Small_{tab}.png", 100f);
+            button.inactiveSprites.GetComponent<SpriteRenderer>().sprite = Utils.LoadSprite($"TownOfHost_L.Resources.Tab_Small_{tab}.png", 100f);
             button.activeSprites.GetComponent<SpriteRenderer>().sprite = activeButton;
             button.selectedSprites.GetComponent<SpriteRenderer>().sprite = activeButton;
 
@@ -273,9 +273,9 @@ public class GameSettingMenuPatch
         // ボタンテキストの選択中の色変更
         gameSettingButton.selectedTextColor = Color.blue;
 
-        var vanillaActiveButton = Utils.LoadSprite($"TownOfHost_Y.Resources.Tab_Active_VanillaGameSettings.png", 100f);
+        var vanillaActiveButton = Utils.LoadSprite($"TownOfHost_L.Resources.Tab_Active_VanillaGameSettings.png", 100f);
         // 各種スプライトをオリジナルのものに変更
-        gameSettingButton.inactiveSprites.GetComponent<SpriteRenderer>().sprite = Utils.LoadSprite($"TownOfHost_Y.Resources.Tab_Small_VanillaGameSettings.png", 100f);
+        gameSettingButton.inactiveSprites.GetComponent<SpriteRenderer>().sprite = Utils.LoadSprite($"TownOfHost_L.Resources.Tab_Small_VanillaGameSettings.png", 100f);
         gameSettingButton.activeSprites.GetComponent<SpriteRenderer>().sprite = vanillaActiveButton;
         gameSettingButton.selectedSprites.GetComponent<SpriteRenderer>().sprite = vanillaActiveButton;
         // ボタンの座標設定
