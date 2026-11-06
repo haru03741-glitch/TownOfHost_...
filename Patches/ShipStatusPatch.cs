@@ -125,18 +125,25 @@ namespace TownOfHostY
             //ホストの役職初期設定はここで行うべき？
         }
     }
+    // タスク勝利は GameEndChecker (CheckGameEndByTask) が、タスク勝利なし・ベントタスク・勝者の決定まで含めて判定する。
+    // 本編の判定が先に走ると (会議の開始と最後のタスクが重なった時など) それらを飛ばして本編のまま試合が終わるので、
+    // 本編側のタスク勝利の判定は常に止める。
     [HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckTaskCompletion))]
     class CheckTaskCompletionPatch
     {
         public static bool Prefix(ref bool __result)
         {
-            if (Options.DisableTaskWin.GetBool() || Options.NoGameEnd.GetBool() || TaskState.InitialTotalTasks == 0
-                || Options.IsCCMode/* || Options.IsONMode*/)
-            {
-                __result = false;
-                return false;
-            }
-            return true;
+            __result = false;
+            return false;
+        }
+    }
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckEndGameViaTasks))]
+    class CheckEndGameViaTasksPatch
+    {
+        public static bool Prefix(ref bool __result)
+        {
+            __result = false;
+            return false;
         }
     }
 }
