@@ -71,6 +71,7 @@ namespace TownOfHostL
                     Camouflage.RpcSetSkin(false, pc, ForceRevert: true);
                     SkinChangeMode.RpcSetSkin(pc, pc);
                 });
+                Modules.Net.OutfitSync.SendAllNow();
 
                 var originalWinnerTeam = CustomWinnerHolder.WinnerTeam;
                 var baseWinnerOverridden = false;

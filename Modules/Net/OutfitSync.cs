@@ -17,9 +17,20 @@ public static class OutfitSync
 {
     // PlayerInfo を送れない間 (試合開始の直後・AntiBlackout の退避中) に変えた人。送れるようになった所で送り直す
     static readonly HashSet<byte> pending = new();
+    // 送る順番待ち。全員を一度に変える呼び出し (通信妨害・イビル真っ赤など) で 1 フレームに人数分の Reliable を出さないよう、
+    // Interval ごとに PerInterval 人ずつ送る。送る時に Data を serialize するので、待つ間に変わっても最後の外見が届く
+    static readonly List<byte> queue = new();
+    const float Interval = 0.25f;
+    const int PerInterval = 2;
+    static float nextSendAt;
 
     [GameModuleInitializer]
-    public static void Init() => pending.Clear();
+    public static void Init()
+    {
+        pending.Clear();
+        queue.Clear();
+        nextSendAt = 0f;
+    }
 
     public static bool Apply(PlayerControl target, NetworkedPlayerInfo.PlayerOutfit outfit)
     {
@@ -40,41 +51,73 @@ public static class OutfitSync
         if (!string.IsNullOrEmpty(outfit.NamePlateId)) current.NamePlateId = outfit.NamePlateId;
 
         // 変身中の人は、受け手でも変身したままにする。解除した時に本編が既定の外見 (= ここで変えた物) へ戻す
-        bool shifted = IsShifted(target);
-        if (!shifted) target.RawSetOutfit(current, PlayerOutfitType.Default);
+        if (!IsShifted(target)) target.RawSetOutfit(current, PlayerOutfitType.Default);
 
-        Send(target, data, refresh: !shifted);
+        if (!queue.Contains(target.PlayerId)) queue.Add(target.PlayerId);
         return true;
     }
 
-    static void Send(PlayerControl target, NetworkedPlayerInfo data, bool refresh)
+    // 毎フレーム呼ぶ
+    public static void Tick()
+    {
+        if (queue.Count == 0 || AmongUsClient.Instance == null || !AmongUsClient.Instance.AmHost) return;
+        float now = UnityEngine.Time.realtimeSinceStartup;
+        if (now < nextSendAt) return;
+        nextSendAt = now + Interval;
+        SendQueued(PerInterval);
+    }
+
+    // 試合の終わりに呼ぶ。結果画面に変える前に、戻した外見を全部届ける
+    public static void SendAllNow() => SendQueued(int.MaxValue);
+
+    static void SendQueued(int max)
+    {
+        int sent = 0;
+        while (queue.Count > 0 && sent < max)
+        {
+            var id = queue[0];
+            queue.RemoveAt(0);
+            var pc = Utils.GetPlayerById(id);
+            if (pc == null || pc.Data == null || pc.Data.Disconnected) continue;
+            if (Send(pc)) sent++;
+        }
+    }
+
+    static bool Send(PlayerControl target)
     {
         // 試合開始の直後は PlayerInfo の送信を止めている (送っても中身が空になる)。AntiBlackout の退避中は IsDead が偽りの値になっている
         if (GameDataSerializePatch.DontTouch || AntiBlackout.IsCached)
         {
-            Logger.Info($"{data.PlayerName}: 今は PlayerInfo を送れないので外見の送信を後に回す", "OutfitSync");
+            Logger.Info($"{target.Data.PlayerName}: 今は PlayerInfo を送れないので外見の送信を後に回す", "OutfitSync");
             pending.Add(target.PlayerId);
-            return;
+            return false;
         }
         pending.Remove(target.PlayerId);
+        bool refresh = !IsShifted(target);
+        WriteAndSend(target, target.Data, refresh);
+        // 変身解除を受けたクライアントは名前を PlayerInfo の名前に戻すので、見る人ごとに配った名前 (役職表示や隠した名前) を送り直す
+        if (refresh) ResendNames(target);
+        return true;
+    }
 
-        WriteAndSend(target, data, refresh);
+    static void ResendNames(PlayerControl target)
+    {
+        if (Main.LastNotifyNames == null) return;
+        foreach (var seer in Main.AllPlayerControls)
+        {
+            if (seer == null || seer.AmOwner) continue;
+            if (Main.LastNotifyNames.TryGetValue((target.PlayerId, seer.PlayerId), out var name) && name != null)
+                target.RpcSetNamePrivate(name, true, seer, force: true);
+        }
     }
 
     // イントロの終わりと追放の画面の終わりに呼ぶ
     public static void FlushPending()
     {
         if (pending.Count == 0 || !AmongUsClient.Instance.AmHost) return;
-        foreach (var id in new List<byte>(pending))
-        {
-            var pc = Utils.GetPlayerById(id);
-            if (pc == null || pc.Data == null)
-            {
-                pending.Remove(id);
-                continue;
-            }
-            Send(pc, pc.Data, refresh: !IsShifted(pc));
-        }
+        foreach (var id in pending)
+            if (!queue.Contains(id)) queue.Add(id);
+        pending.Clear();
     }
 
     static bool IsShifted(PlayerControl pc)
