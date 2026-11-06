@@ -38,3 +38,18 @@ jobs:
           path: build/TownOfHost_L.dll
           retention-days: 30
           if-no-files-found: error
+
+      # 外部から部品を取るので、PR では走らせない
+      - name: Package (BepInEx + TownOfHost_L)
+        if: github.event_name != 'pull_request'
+        shell: pwsh
+        run: ./tools/package.ps1 -Dll build/TownOfHost_L.dll -Out build/TownOfHost_L.zip
+
+      - name: Upload TownOfHost_L.zip
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: TownOfHost_L-package-${{ github.sha }}
+          path: build/TownOfHost_L.zip
+          retention-days: 30
+          if-no-files-found: error
