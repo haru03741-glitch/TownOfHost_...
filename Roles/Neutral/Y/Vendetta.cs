@@ -23,7 +23,8 @@ public sealed class Vendetta : RoleBase, IKiller, IAdditionalWinner
             assignInfo: new RoleAssignInfo(CustomRoles.Vendetta, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount | RoleFlags.DontShowOption  // 封印中
         );
     public Vendetta(PlayerControl player)
     : base(

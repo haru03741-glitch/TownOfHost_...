@@ -20,7 +20,8 @@ public sealed class EvilDyer : RoleBase, IImpostor
             assignInfo: new(CustomRoles.EvilDyer, CustomRoleTypes.Impostor)
             {
                 IsInitiallyAssignableCallBack = () => !Options.IsSyncColorMode
-            }
+            },
+            flags: RoleFlags.DontShowOption  // 封印中
         );
     public EvilDyer(PlayerControl player)
     : base(

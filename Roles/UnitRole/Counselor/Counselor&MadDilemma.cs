@@ -21,7 +21,8 @@ public sealed class CounselorAndMadDilemma : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Counselor, CustomRoles.MadDilemma }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public CounselorAndMadDilemma(PlayerControl player)
     : base(

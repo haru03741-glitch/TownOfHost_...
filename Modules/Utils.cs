@@ -287,26 +287,8 @@ public static class Utils
     {
         return GetString("DeathReason." + Enum.GetName(typeof(CustomDeathReason), status));
     }
-    // 役職の色は起動後に変わらないので、読み取れた色は覚えておく (毎回の色コード解析はゲーム側の呼び出しになる)
-    private static readonly Dictionary<CustomRoles, Color> RoleColorCache = new();
-    public static Color GetRoleColor(CustomRoles role)
-    {
-        if (RoleColorCache.TryGetValue(role, out var cached)) return cached;
-        if (!Main.roleColors.TryGetValue(role, out var hexColor))
-        {
-            hexColor = role.GetRoleInfo()?.RoleColorCode;
-        }
-        if (ColorUtility.TryParseHtmlString(hexColor, out Color c)) RoleColorCache[role] = c;
-        return c;
-    }
-    public static string GetRoleColorCode(CustomRoles role)
-    {
-        if (!Main.roleColors.TryGetValue(role, out var hexColor))
-        {
-            hexColor = role.GetRoleInfo()?.RoleColorCode;
-        }
-        return hexColor;
-    }
+    public static Color GetRoleColor(CustomRoles role) => TownOfHostL.Core.RoleCatalog.Get(role).Color;
+    public static string GetRoleColorCode(CustomRoles role) => TownOfHostL.Core.RoleCatalog.Get(role).ColorCode;
     public static string GetVitalText(byte playerId, bool RealKillerColor = false)
     {
         var state = PlayerState.GetByPlayerId(playerId);

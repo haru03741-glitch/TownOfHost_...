@@ -22,7 +22,8 @@ public sealed class EvilHacker : RoleBase, IImpostor
             assignInfo: new(CustomRoles.EvilHacker, CustomRoleTypes.Impostor)
             {
                 IsInitiallyAssignableCallBack = () => (MapNames)Main.NormalOptions.MapId is not MapNames.Fungle
-            }
+            },
+            flags: RoleFlags.DontShowOption  // 封印中
         );
     public EvilHacker(PlayerControl player)
     : base(

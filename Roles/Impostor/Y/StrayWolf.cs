@@ -22,7 +22,8 @@ public sealed class StrayWolf : RoleBase, IImpostor
             assignInfo: new RoleAssignInfo(CustomRoles.StrayWolf, CustomRoleTypes.Impostor)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount
         );
     public StrayWolf(PlayerControl player)
     : base(

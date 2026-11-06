@@ -19,7 +19,8 @@ public sealed class MadSnitch : RoleBase
             (int)Options.offsetId.MadTOH + 200,
             SetupOptionItem,
             "マッドスニッチ",
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontSelectLoyalty
         );
     public MadSnitch(PlayerControl player)
     : base(

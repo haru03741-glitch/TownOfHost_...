@@ -22,7 +22,8 @@ public sealed class JackOLantern : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[3] { CustomRoles.Jack, CustomRoles.jO, CustomRoles.Lantern }
-            }
+            },
+            flags: RoleFlags.Pair | RoleFlags.DontShowOption  // 期間限定
         );
     public JackOLantern(PlayerControl player)
     : base(

@@ -2,6 +2,7 @@ using System.Linq;
 using AmongUs.GameOptions;
 
 using TownOfHostY.Roles.Core;
+using TownOfHostL.Core;
 
 namespace TownOfHostY;
 
@@ -19,48 +20,19 @@ static class CustomRolesHelper
     /// <summary>HASモードのメイン役職</summary>
     public static readonly CustomRoles[] AllHASRoles = { CustomRoles.HASFox, CustomRoles.HASTroll };
     /// <summary>CCモードのメイン役職</summary>
+    // static 初期化は RoleCatalog.Build より先に走る。ここで分類を引けるのは、表 (Unclassed) だけで決まる役職に限る
     public static readonly CustomRoles[] AllCCRoles = EnumHelper.GetAllValues<CustomRoles>().Where(role => role.IsCCRole()).ToArray();
 
-    public static bool IsImpostor(this CustomRoles role)
-    {
-        var roleInfo = role.GetRoleInfo();
-        if (roleInfo != null)
-            return roleInfo.CustomRoleType == CustomRoleTypes.Impostor;
-        
-        return role == CustomRoles.CCRedLeader;
-    }
-    public static bool IsMadmate(this CustomRoles role)
-    {
-        var roleInfo = role.GetRoleInfo();
-        if (roleInfo != null)
-            return roleInfo.CustomRoleType == CustomRoleTypes.Madmate;
-        return role == CustomRoles.SKMadmate;
-    }
-    public static bool IsImpostorTeam(this CustomRoles role) => role.IsImpostor() || role.IsMadmate();
-    public static bool IsNeutral(this CustomRoles role)
-    {
-        var roleInfo = role.GetRoleInfo();
-        if (roleInfo != null)
-            return roleInfo.CustomRoleType == CustomRoleTypes.Neutral;
-        return role is CustomRoles.HASTroll or CustomRoles.HASFox;
-    }
-    public static bool IsCrewmate(this CustomRoles role) => role.GetRoleInfo()?.CustomRoleType == CustomRoleTypes.Crewmate || (!role.IsImpostorTeam() && !role.IsNeutral());
-    public static bool IsVanilla(this CustomRoles role)
-    {
-        return
-            role is CustomRoles.Crewmate or
-            CustomRoles.Engineer or
-            CustomRoles.Scientist or
-            CustomRoles.Tracker or
-            CustomRoles.Noisemaker or
-            CustomRoles.Detective or
-            CustomRoles.Judge or
-            CustomRoles.GuardianAngel or
-            CustomRoles.Impostor or
-            CustomRoles.Shapeshifter or
-            CustomRoles.Phantom or
-            CustomRoles.Viper;
-    }
+    // 分類は役職ごとの定義 (SimpleRoleInfo.Create の flags と RoleCatalog の表) から引く
+    private static RoleDef Def(this CustomRoles role) => RoleCatalog.Get(role);
+
+    public static bool IsImpostor(this CustomRoles role) => role.Def().Team == CustomRoleTypes.Impostor;
+    public static bool IsMadmate(this CustomRoles role) => role.Def().Team == CustomRoleTypes.Madmate;
+    public static bool IsImpostorTeam(this CustomRoles role) => role.Def().Team is CustomRoleTypes.Impostor or CustomRoleTypes.Madmate;
+    public static bool IsNeutral(this CustomRoles role) => role.Def().Team == CustomRoleTypes.Neutral;
+    /// <summary>インポスター陣営でも第三陣営でもない役職 (ユニット役職の親も含む)</summary>
+    public static bool IsCrewmate(this CustomRoles role) => role.Def().Team is not (CustomRoleTypes.Impostor or CustomRoleTypes.Madmate or CustomRoleTypes.Neutral);
+    public static bool IsVanilla(this CustomRoles role) => role.Def().Has(RoleFlags.Vanilla);
     public static CustomRoles VanillaRoleConversion(this CustomRoles role)
     {
         return role switch
@@ -78,171 +50,27 @@ static class CustomRolesHelper
             _ => role
         };
     }
-    public static bool IsNormalVanillaRole(this CustomRoles role)
-    {
-        return role is
-            CustomRoles.NormalImpostor or
-            CustomRoles.NormalShapeshifter or
-            CustomRoles.NormalPhantom or
-            CustomRoles.NormalEngineer or
-            CustomRoles.NormalScientist or
-            CustomRoles.NormalTracker or
-            CustomRoles.NormalNoisemaker or
-            CustomRoles.NormalViper or
-            CustomRoles.NormalDetective or
-            CustomRoles.NormalJudge;
-    }
+    public static bool IsNormalVanillaRole(this CustomRoles role) => role.VanillaRoleConversion() != role;
 
-    // 新役職等(トップ掲載の常設役職)
-    public static bool IsNewRole(this CustomRoles role)
-    {
-        //if (Main.IsInitialRelease && role == CustomRoles.Bakery)
-        //    return true;
-
-        //return role is CustomRoles.Administer
-        //    or CustomRoles.Charger
-        //    or CustomRoles.GrudgeCharger;
-
-        return false;
-    }
-
-    public static bool IsPairRole(this CustomRoles role)
-    {
-        return role is CustomRoles.Lovers
-            or CustomRoles.Sympathizer
-            or CustomRoles.CounselorAndMadDilemma
-            or CustomRoles.GodfatherAndJanitor
-            or CustomRoles.JackOLantern;
-    }
-    public static bool IsFixedCountRole(this CustomRoles role)
-    {
-        if (IsPairRole(role)) return true;
-
-        return role is CustomRoles.Jackal
-            or CustomRoles.StrayWolf
-            or CustomRoles.DarkHide
-            or CustomRoles.Pirate
-            or CustomRoles.ChainShifter
-            or CustomRoles.PlatonicLover
-            or CustomRoles.FoxSpirit
-            or CustomRoles.Vendetta;
-    }
-
-    public static bool IsDontShowOptionRole(this CustomRoles role)
-    {
-        return role is CustomRoles.Counselor or CustomRoles.MadDilemma
-            or CustomRoles.Godfather or CustomRoles.Janitor
-            // 期間限定で
-            or CustomRoles.JackOLantern
-            or CustomRoles.Jack or CustomRoles.jO or CustomRoles.Lantern
-            or CustomRoles.Gang
-            or CustomRoles.SKMadmate
-          
-            or CustomRoles.EvilHacker //一旦封印
-            or CustomRoles.EvilDyer //封印
-            or CustomRoles.Vendetta //封印
-            or CustomRoles.Potentialist
-            or CustomRoles.Impostor or CustomRoles.Crewmate;
-    }
-    public static bool IsDontSelectLoyaltyRole(this CustomRoles role)
-    {
-        return role is CustomRoles.CustomImpostor or CustomRoles.CustomCrewmate
-            or CustomRoles.MadSnitch
-            or CustomRoles.MadDilemma
-            or CustomRoles.MadConnecter
-            or CustomRoles.jO
-
-            or CustomRoles.Jackal or CustomRoles.JClient or
-            CustomRoles.LastImpostor or CustomRoles.CompleteCrew;
-    }
-
-    public static bool IsAddAddOn(this CustomRoles role)
-    {
-        return role.IsMadmate() || 
-            role is CustomRoles.CustomImpostor or CustomRoles.CustomCrewmate or CustomRoles.Jackal or CustomRoles.JClient;
-    }
-    public static bool IsAddOn(this CustomRoles role) => role.IsBuffAddOn() || role.IsDebuffAddOn();
-    public static bool IsBuffAddOn(this CustomRoles role)
-    {
-        return
-            role is CustomRoles.AddWatch or
-            CustomRoles.AddLight or
-            CustomRoles.AddSeer or
-            CustomRoles.Autopsy or
-            CustomRoles.VIP or
-            CustomRoles.Revenger or
-            CustomRoles.Management or
-            CustomRoles.Sending or
-            CustomRoles.TieBreaker or
-            CustomRoles.Loyalty or
-            CustomRoles.PlusVote or
-            CustomRoles.Guarding or
-            CustomRoles.AddBait or
-            CustomRoles.Refusing or
-            CustomRoles.Revealer;
-    }
-    public static bool IsDebuffAddOn(this CustomRoles role)
-    {
-        return
-            role is
-            CustomRoles.Sunglasses or
-            CustomRoles.Clumsy or
-            CustomRoles.InfoPoor or
-            CustomRoles.NonReport;
-    }
-    public static bool IsOtherAddOn(this CustomRoles role)
-    {
-        return
-            role is
-            CustomRoles.LastImpostor or
-            CustomRoles.Workhorse or
-            CustomRoles.CompleteCrew or
-            CustomRoles.Lovers;
-    }
-
-    public static bool IsFirstWriteAddOn(this CustomRoles role)
-    {
-        return
-            role is
-            CustomRoles.LastImpostor or
-            CustomRoles.Workhorse or
-            CustomRoles.CompleteCrew or
-            CustomRoles.Archenemy or
-            CustomRoles.ChainShifterAddon or
-            CustomRoles.Lovers;
-    }
-
-    public static bool IsDirectKillRole(this CustomRoles role)
-    {
-        return role is
-            CustomRoles.Arsonist or
-            CustomRoles.PlatonicLover or
-            CustomRoles.Totocalcio or
-            CustomRoles.MadSheriff or
-            CustomRoles.MadConnecter or
-            CustomRoles.Pirate or
-            CustomRoles.jO;
-    }
+    /// <summary>新役職等 (トップ掲載の常設役職)</summary>
+    public static bool IsNewRole(this CustomRoles role) => role.Def().Has(RoleFlags.NewRole);
+    public static bool IsPairRole(this CustomRoles role) => role.Def().Has(RoleFlags.Pair);
+    public static bool IsFixedCountRole(this CustomRoles role) => role.Def().Has(RoleFlags.Pair | RoleFlags.FixedCount);
+    public static bool IsDontShowOptionRole(this CustomRoles role) => role.Def().Has(RoleFlags.DontShowOption);
+    public static bool IsDontSelectLoyaltyRole(this CustomRoles role) => role.Def().Has(RoleFlags.DontSelectLoyalty);
+    public static bool IsAddAddOn(this CustomRoles role) => role.IsMadmate() || role.Def().Has(RoleFlags.AddAddOn);
+    public static bool IsAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.BuffAddOn | RoleFlags.DebuffAddOn);
+    public static bool IsBuffAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.BuffAddOn);
+    public static bool IsDebuffAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.DebuffAddOn);
+    public static bool IsOtherAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.OtherAddOn);
+    public static bool IsFirstWriteAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.FirstWriteAddOn);
+    public static bool IsDirectKillRole(this CustomRoles role) => role.Def().Has(RoleFlags.DirectKill);
 
     //CC
-    public static bool IsCCRole(this CustomRoles role) => role.IsCCLeaderRoles() || role.IsCCCatRoles();
-    public static bool IsCCLeaderRoles(this CustomRoles role)
-    {
-        return
-            role is
-            CustomRoles.CCRedLeader or
-            CustomRoles.CCBlueLeader or
-            CustomRoles.CCYellowLeader;
-    }
-    public static bool IsCCCatRoles(this CustomRoles role) => role.IsCCColorCatRoles() || role == CustomRoles.CCNoCat;
-    public static bool IsCCColorCatRoles(this CustomRoles role)
-    {
-        return
-            role is
-            CustomRoles.CCRedCat or
-            CustomRoles.CCYellowCat or
-            CustomRoles.CCBlueCat;
-    }
+    public static bool IsCCRole(this CustomRoles role) => role.Def().Has(RoleFlags.CCLeader | RoleFlags.CCColorCat | RoleFlags.CCNoCat);
+    public static bool IsCCLeaderRoles(this CustomRoles role) => role.Def().Has(RoleFlags.CCLeader);
+    public static bool IsCCCatRoles(this CustomRoles role) => role.Def().Has(RoleFlags.CCColorCat | RoleFlags.CCNoCat);
+    public static bool IsCCColorCatRoles(this CustomRoles role) => role.Def().Has(RoleFlags.CCColorCat);
 
     public static bool IsNotAssignedRoles(this CustomRoles role)
     {
@@ -260,19 +88,7 @@ static class CustomRolesHelper
             CustomRoles.MaxAddon;
     }
 
-    public static CustomRoleTypes GetCustomRoleTypes(this CustomRoles role)
-    {
-        CustomRoleTypes type = CustomRoleTypes.Crewmate;
-
-        var roleInfo = role.GetRoleInfo();
-        if (roleInfo != null)
-            return roleInfo.CustomRoleType;
-
-        if (role.IsImpostor()) type = CustomRoleTypes.Impostor;
-        if (role.IsNeutral()) type = CustomRoleTypes.Neutral;
-        if (role.IsMadmate()) type = CustomRoleTypes.Madmate;
-        return type;
-    }
+    public static CustomRoleTypes GetCustomRoleTypes(this CustomRoles role) => role.Def().Team;
     public static int GetCount(this CustomRoles role)
     {
         if (role.IsVanilla())

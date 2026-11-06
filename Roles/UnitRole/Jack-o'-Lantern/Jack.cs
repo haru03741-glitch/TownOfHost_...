@@ -17,7 +17,8 @@ public sealed class Jack : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.UnitMix + 100,//使用しない
             null,
-            "ジャック"
+            "ジャック",
+            flags: RoleFlags.DontShowOption
         );
     public Jack(PlayerControl player)
     : base(

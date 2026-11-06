@@ -15,7 +15,8 @@ public sealed class CustomImpostor : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.ImpDefault + 900,
             SetupOptionItem,
-            "カスタムインポスター"
+            "カスタムインポスター",
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
         );
     public CustomImpostor(PlayerControl player)
     : base(

@@ -15,7 +15,8 @@ public sealed class MadDilemma : RoleBase
             (int)Options.offsetId.UnitMix + 0,//使用しない
             null,
             "マッドジレンマ",
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontShowOption | RoleFlags.DontSelectLoyalty
         );
     public MadDilemma(PlayerControl player)
     : base(

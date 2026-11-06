@@ -19,7 +19,8 @@ public sealed class Gang : RoleBase, IAdditionalWinner
             (int)Options.offsetId.NeuY + 1000,//使用しない
             null,
             "一味",
-            "#cc4b33"
+            "#cc4b33",
+            flags: RoleFlags.DontShowOption
         );
     public Gang(PlayerControl player)
     : base(

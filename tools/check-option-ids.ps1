@@ -19,7 +19,7 @@
     <式> は数値、(int)offsetId.X、RoleInfo.ConfigId、同じファイルの const / static readonly int を
     + と - でつないだものだけ解く。それ以外 (ループ変数や引数) は解かずに件数だけ数える。
 
-    メニューに出さない役職 (IsDontShowOptionRole) は出現率と人数を数えない。その役職のファイルにある
+    メニューに出さない役職 (SimpleRoleInfo.Create の flags に RoleFlags.DontShowOption) は出現率と人数を数えない。その役職のファイルにある
     Create(RoleInfo, N) は実際には登録されないこともあるが、手で登録する役職 (JackOLantern など) が
     あるので数えたままにしている。ここで重複が出たら誤検知のこともある。
 
@@ -135,21 +135,13 @@ foreach ($m in [regex]::Matches((Remove-Comments $enumBody), '(\w+)\s*=\s*(\d+)'
 }
 if ($script:offsets.Count -eq 0) { throw 'offsetId を読めませんでした (Modules/OptionHolder.cs)' }
 
-# --- SetUpAddOnOptions が並べるバフ / デバフの数 ---
-$helper = Get-Content -Raw -Encoding UTF8 (Join-Path $root 'Helpers/CustomRolesHelper.cs')
-function Get-PredicateCount([string]$name) {
-    $body = [regex]::Match($helper, "static\s+bool\s+$name\(this\s+CustomRoles\s+role\)\s*\{(.*?)\}", 'Singleline').Groups[1].Value
-    ([regex]::Matches((Remove-Comments $body), 'CustomRoles\.\w+')).Count
-}
-# メニューに出さない役職は SetupRoleOptions(info) を通らないので、出現率と人数の ID を使わない
-$hiddenBody = [regex]::Match($helper, 'static\s+bool\s+IsDontShowOptionRole\(this\s+CustomRoles\s+role\)\s*\{(.*?)\}', 'Singleline').Groups[1].Value
-$hiddenRoles = @{}
-foreach ($m in [regex]::Matches((Remove-Comments $hiddenBody), 'CustomRoles\.(\w+)')) { $hiddenRoles[$m.Groups[1].Value] = $true }
-if ($hiddenRoles.Count -eq 0) { throw 'IsDontShowOptionRole を読めませんでした (Helpers/CustomRolesHelper.cs)' }
-
-$buffCount = Get-PredicateCount 'IsBuffAddOn'
-$debuffCount = Get-PredicateCount 'IsDebuffAddOn'
-if ($buffCount -eq 0 -or $debuffCount -eq 0) { throw 'IsBuffAddOn / IsDebuffAddOn を読めませんでした (Helpers/CustomRolesHelper.cs)' }
+# --- SetUpAddOnOptions が並べるバフ / デバフの数 (RoleCatalog の表の行数) ---
+$catalog = Remove-Comments (Get-Content -Raw -Encoding UTF8 (Join-Path $root 'Core/RoleCatalog.cs'))
+$buffCount = [regex]::Matches($catalog, '\(CustomRoles\.\w+,[^
+]*RoleFlags\.BuffAddOn').Count
+$debuffCount = [regex]::Matches($catalog, '\(CustomRoles\.\w+,[^
+]*RoleFlags\.DebuffAddOn').Count
+if ($buffCount -eq 0 -or $debuffCount -eq 0) { throw 'バフ / デバフの属性を読めませんでした (Core/RoleCatalog.cs)' }
 
 # --- 各ファイルを走査 ---
 $uses = @{}          # id -> 使用箇所の配列
@@ -186,7 +178,8 @@ foreach ($f in $files) {
         if ($a.Count -ge 6) { $configId = Resolve-Expr $a[5] @{} $null }
         $roleName = if ($a.Count -ge 3) { $a[2] -replace '^CustomRoles\.', '' } else { '' }
         if ($null -eq $configId) { $unresolved.Add("${rel}:${line}: SimpleRoleInfo.Create の configId '$($a[5])'") }
-        elseif (-not $hiddenRoles.ContainsKey($roleName)) {
+        # メニューに出さない役職は SetupRoleOptions(info) を通らないので、出現率と人数の ID を使わない
+        elseif (-not ($a | Where-Object { $_ -match '^\s*flags\s*:' -and $_ -match 'RoleFlags\.DontShowOption' })) {
             Add-Use $configId "${rel}:${line} (役職の出現率)"
             Add-Use ($configId + 1) "${rel}:${line} (役職の人数)"
         }

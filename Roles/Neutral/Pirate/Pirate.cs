@@ -25,7 +25,8 @@ public sealed class Pirate : RoleBase, IKiller
             assignInfo: new RoleAssignInfo(CustomRoles.Pirate, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount | RoleFlags.DirectKill
         );
     public Pirate(PlayerControl player)
     : base(

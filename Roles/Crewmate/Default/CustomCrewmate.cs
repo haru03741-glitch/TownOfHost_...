@@ -14,7 +14,8 @@ public sealed class CustomCrewmate : RoleBase
             (int)Options.offsetId.CrewDefault + 900,
             SetupOptionItem,
             "カスタムクルーメイト",
-            "#8cffff"
+            "#8cffff",
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
         );
     public CustomCrewmate(PlayerControl player)
     : base(

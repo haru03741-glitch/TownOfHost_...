@@ -20,7 +20,8 @@ public sealed class Potentialist : RoleBase
             (int)Options.offsetId.CrewSpecial + 0,
             null,
             "ポテンシャリスト",
-            "#ffff00"
+            "#ffff00",
+            flags: RoleFlags.DontShowOption
         );
     public Potentialist(PlayerControl player)
     : base(

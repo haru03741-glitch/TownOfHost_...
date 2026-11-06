@@ -19,7 +19,8 @@ public sealed class Lantern : RoleBase
             (int)Options.offsetId.UnitMix + 100,//使用しない
             null,
             "ランタン",
-            "#e5a323"
+            "#e5a323",
+            flags: RoleFlags.DontShowOption
         );
     public Lantern(PlayerControl player)
     : base(

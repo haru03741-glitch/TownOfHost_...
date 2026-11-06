@@ -21,7 +21,8 @@ public sealed class GodfatherAndJanitor : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Godfather, CustomRoles.Janitor }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public GodfatherAndJanitor(PlayerControl player)
     : base(

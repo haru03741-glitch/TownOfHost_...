@@ -22,7 +22,8 @@ public sealed class Arsonist : RoleBase, IKiller
             "アーソニスト",
             "#ff6633",
             true,
-            introSound: () => GetIntroSound(RoleTypes.Crewmate)
+            introSound: () => GetIntroSound(RoleTypes.Crewmate),
+            flags: RoleFlags.DirectKill
         );
     public Arsonist(PlayerControl player)
     : base(

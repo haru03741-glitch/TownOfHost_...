@@ -23,7 +23,8 @@ public sealed class PlatonicLover : RoleBase, IKiller
             assignInfo: new RoleAssignInfo(CustomRoles.PlatonicLover, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount | RoleFlags.DirectKill
         );
     public PlatonicLover(PlayerControl player)
     : base(

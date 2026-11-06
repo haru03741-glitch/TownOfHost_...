@@ -22,7 +22,8 @@ public sealed class Sympathizer : RoleBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Sympathizer, CustomRoles.Sympathizer }
-            }
+            },
+            flags: RoleFlags.Pair
         );
     public Sympathizer(PlayerControl player)
     : base(

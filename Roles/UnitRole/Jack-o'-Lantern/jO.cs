@@ -21,7 +21,8 @@ public sealed class JO : RoleBase, IKiller
             null,
             "オー",
             countType:CountTypes.Crew,
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.DontShowOption | RoleFlags.DontSelectLoyalty | RoleFlags.DirectKill
         );
     public JO(PlayerControl player)
     : base(

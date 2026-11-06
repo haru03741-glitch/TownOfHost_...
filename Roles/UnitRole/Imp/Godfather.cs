@@ -18,7 +18,8 @@ public sealed class Godfather : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.UnitImp + 100,//使用しない
             null,
-            "ゴッドファーザー"
+            "ゴッドファーザー",
+            flags: RoleFlags.DontShowOption
         );
     public Godfather(PlayerControl player)
     : base(

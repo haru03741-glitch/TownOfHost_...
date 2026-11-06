@@ -24,7 +24,8 @@ public sealed class ChainShifter : RoleBase
             assignInfo: new RoleAssignInfo(CustomRoles.ChainShifter, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            flags: RoleFlags.FixedCount
         );
     public ChainShifter(PlayerControl player)
     : base(

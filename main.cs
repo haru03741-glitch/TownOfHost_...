@@ -100,7 +100,6 @@ public class Main : BasePlugin
     public static Dictionary<(byte, byte), string> LastNotifyNames;
     public static Dictionary<byte, Color32> PlayerColors = new();
     public static Dictionary<byte, CustomDeathReason> AfterMeetingDeathPlayers = new();
-    public static Dictionary<CustomRoles, string> roleColors;
     public static List<byte> winnerList;
     public static List<int> clientIdList;
     public static List<(string, byte, string, bool)> MessagesToSend;
@@ -197,59 +196,6 @@ public class Main : BasePlugin
         ExceptionMessage = "";
         try
         {
-            roleColors = new Dictionary<CustomRoles, string>()
-            {
-                // マッドメイト役職
-                {CustomRoles.SKMadmate, "#ff1919"},
-                //特殊クルー役職
-                //HideAndSeek
-                {CustomRoles.HASFox, "#e478ff"},
-                {CustomRoles.HASTroll, "#00ff00"},
-                // GM
-                {CustomRoles.GM, "#ff5b70"},
-                //サブ役職
-                {CustomRoles.LastImpostor, "#ff1919"},
-                {CustomRoles.Lovers, "#ff6be4"},
-                {CustomRoles.Workhorse, "#00ffff"},
-                {CustomRoles.CompleteCrew, "#ffff00"},
-
-                {CustomRoles.AddWatch, "#800080"},
-                {CustomRoles.AddLight, "#eee5be"},
-                {CustomRoles.AddSeer, "#61b26c"},
-                {CustomRoles.Autopsy, "#80ffdd"},
-                {CustomRoles.VIP, "#ffff00"},
-                {CustomRoles.Revenger, "#00ffff"},
-                {CustomRoles.Management, "#80ffdd"},
-                {CustomRoles.Sending, "#883fd1"},
-                {CustomRoles.TieBreaker, "#204d42"},
-                {CustomRoles.Loyalty, "#b8fb4f"},
-                {CustomRoles.PlusVote, "#204d42"},
-                {CustomRoles.Guarding, "#8cffff"},
-                {CustomRoles.AddBait, "#00f7ff"},
-                {CustomRoles.Refusing, "#61b26c"},
-                {CustomRoles.Revealer, "#e478ff"},
-
-                {CustomRoles.Sunglasses, "#883fd1"},
-                {CustomRoles.Clumsy, "#696969"},
-                {CustomRoles.InfoPoor, "#556b2f"},
-                {CustomRoles.NonReport, "#883fd1"},
-
-                {CustomRoles.Archenemy, "#ff6347"},
-                {CustomRoles.ChainShifterAddon, "#666666"},
-
-                // CatchCat
-                {CustomRoles.CCRedLeader, "#ff0000"},
-                {CustomRoles.CCBlueLeader, "#00b4eb"},
-                {CustomRoles.CCYellowLeader, "#f8cd46"},
-                {CustomRoles.CCNoCat, "#696969"},
-                {CustomRoles.CCRedCat, "#ff0000"},
-                {CustomRoles.CCBlueCat, "#00b4eb"},
-                {CustomRoles.CCYellowCat, "#f8cd46"},
-
-
-                {CustomRoles.NotAssigned, "#ffffff"}
-            };
-
             var type = typeof(RoleBase);
             var roleClassArray =
             CustomRoleManager.AllRolesClassType = Assembly.GetAssembly(type)
@@ -267,6 +213,8 @@ public class Main : BasePlugin
             ExceptionMessage = ex.Message;
             ExceptionMessageIsShown = false;
         }
+        // 役職の分類の表は、全役職クラスの RoleInfo が揃ってから組む (登録で重複が出ても組む)
+        TownOfHostL.Core.RoleCatalog.Build();
         TownOfHostY.Logger.Info($"{Application.version}", "AmongUs Version");
 
         var handler = TownOfHostY.Logger.Handler("GitVersion");

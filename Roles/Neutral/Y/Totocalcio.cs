@@ -18,7 +18,8 @@ public sealed class Totocalcio : RoleBase, IKiller, IAdditionalWinner
             SetupOptionItem,
             "トトカルチョ",
             "#00ff00",
-            true
+            true,
+            flags: RoleFlags.DirectKill
         );
     public Totocalcio(PlayerControl player)
     : base(

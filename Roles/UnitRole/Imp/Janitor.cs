@@ -20,7 +20,8 @@ public sealed class Janitor : RoleBase, IImpostor
             CustomRoleTypes.Impostor,
             (int)Options.offsetId.UnitImp + 100,//使用しない
             null,
-            "ジャニター"
+            "ジャニター",
+            flags: RoleFlags.DontShowOption
         );
     public Janitor(PlayerControl player)
     : base(

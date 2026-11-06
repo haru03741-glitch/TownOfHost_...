@@ -22,7 +22,8 @@ public sealed class JClient : RoleBase, IAdditionalWinner
             assignInfo: new(CustomRoles.JClient, CustomRoleTypes.Neutral)
             {
                 IsInitiallyAssignableCallBack = () => CustomRoles.Jackal.IsEnable()
-            }
+            },
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
         );
     public JClient(PlayerControl player)
     : base(

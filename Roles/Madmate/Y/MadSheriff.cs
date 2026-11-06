@@ -16,7 +16,8 @@ public sealed class MadSheriff : RoleBase, IKiller
             (int)Options.offsetId.MadY + 300,
             SetupOptionItem,
             "マッドシェリフ",
-            isDesyncImpostor: true
+            isDesyncImpostor: true,
+            flags: RoleFlags.DirectKill
         );
     public MadSheriff(PlayerControl player)
     : base(

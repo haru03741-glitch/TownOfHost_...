@@ -18,7 +18,8 @@ public sealed class Counselor : RoleBase
             (int)Options.offsetId.UnitMix + 0,//使用しない
             null,
             "カウンセラー",
-            "#ffc0cb"
+            "#ffc0cb",
+            flags: RoleFlags.DontShowOption
         );
     public Counselor(PlayerControl player)
     : base(
