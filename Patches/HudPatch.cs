@@ -1,4 +1,5 @@
 using System;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using UnityEngine;
 
@@ -316,18 +317,24 @@ class TaskPanelBehaviourPatch
 class HudManagerCoShowIntroPatch
 {
     public static bool Cancel = true;
-    public static bool Prefix(HudManager __instance)
+    public static bool Prefix(HudManager __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
         if (AmongUsClient.Instance.AmHost
             && Options.CurrentGameMode == CustomGameMode.Standard
             && Cancel)
         {
             Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");
+            // 本編の CoSetRole は戻り値をそのまま StartCoroutine に渡すので、null だと例外でその先が止まる
+            __result = Empty().WrapToIl2Cpp();
             return false;
         }
 
         Cancel = true;
         return true;
+    }
+    private static System.Collections.IEnumerator Empty()
+    {
+        yield break;
     }
 }
 class RepairSender
