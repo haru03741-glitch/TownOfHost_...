@@ -57,7 +57,6 @@ class ChangeRoleSettings
             if (Options.IsCCMode) Main.NormalOptions.NumImpostors = 1;
 
             Main.AllPlayerKillCooldown = new Dictionary<byte, float>();
-            Main.AllPlayerSpeed = new Dictionary<byte, float>();
 
             Main.SKMadmateNowCount = 0;
 
@@ -188,7 +187,6 @@ class ChangeRoleSettings
                 if (!Main.AllPlayerNames.ContainsKey(pc.PlayerId))
                     Main.AllPlayerNames[pc.PlayerId] = pc?.Data?.PlayerName;
                 Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
-                Main.AllPlayerSpeed[pc.PlayerId] = Main.RealOptionsData.GetFloat(FloatOptionNames.PlayerSpeedMod);
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId] = new();
                 pc.cosmetics.nameText.text = pc.name;
 
