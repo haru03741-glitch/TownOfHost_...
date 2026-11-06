@@ -25,18 +25,16 @@ public static class HeliSabotageSystemUpdateSystemPatch
     }
 }
 
-//参考
-//https://github.com/Koke1024/Town-Of-Moss/blob/main/TownOfMoss/Patches/MeltDownBoost.cs
-
+// 墜落サボタージュの残り時間を、設定した制限時間より長くしない。
+// HeliSabotageSystem はエアシップにしか無いので、マップは確かめない。
 [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.Deteriorate))]
 public static class HeliSabotageSystemPatch
 {
     public static void Prefix(HeliSabotageSystem __instance)
     {
-        if (!__instance.IsActive || !Options.SabotageTimeControl_Airship.GetBool())
-            return;
-        if (AirshipStatus.Instance != null)
-            if (__instance.Countdown >= Options.AirshipReactorTimeLimit.GetFloat())
-                __instance.Countdown = Options.AirshipReactorTimeLimit.GetFloat();
+        if (!__instance.IsActive || !Options.SabotageTimeControl_Airship.GetBool()) return;
+
+        float limit = Options.AirshipReactorTimeLimit.GetFloat();
+        if (__instance.Countdown > limit) __instance.Countdown = limit;
     }
 }
