@@ -59,17 +59,15 @@ public static class Revealer
             pc.RpcSetName(string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName));
         }
         
-        _ = new LateTask(() =>
+        if (pc == PlayerControl.LocalPlayer)
         {
-            if (pc == PlayerControl.LocalPlayer)
-            {
-                Main.nickName = exiledName;
-            }
-            else
-            {
-                pc.RpcSetName(exiledName);
-            }
-        }, 8f, "SetName");
+            // Main.nickName は試合をまたいで残るので、戻す前に試合が閉じても戻す
+            _ = new LateTask(() => Main.nickName = exiledName, 8f, "SetName", outlivesSession: true);
+        }
+        else
+        {
+            _ = new LateTask(() => pc.RpcSetName(exiledName), 8f, "SetName");
+        }
     }
 
     public static void OverrideDisplayRoleNameAsSeen(PlayerControl seen, bool isMeeting, ref bool enabled, ref string roleText)

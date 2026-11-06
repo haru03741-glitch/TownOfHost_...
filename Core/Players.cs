@@ -25,13 +25,15 @@ public static class Players
     private static readonly Func<PlayerControl, bool> isAlive = static pc => pc.IsAlive();
     private static readonly Func<PlayerControl, bool> isDead = static pc => !pc.IsAlive();
 
-    /// <summary>部屋にいる全員 (破棄済みを除く)。返した配列は書き換えない。</summary>
-    public static IReadOnlyList<PlayerControl> All
+    private static readonly Func<PlayerControl, bool> notDestroyed = static pc => pc != null;
+
+    /// <summary>部屋にいる全員 (破棄済みを除く)。破棄されたかは走査した時点で判定する。</summary>
+    public static IEnumerable<PlayerControl> All
     {
         get
         {
             Refresh();
-            return all;
+            return all.Where(notDestroyed);
         }
     }
 
@@ -41,7 +43,7 @@ public static class Players
     /// <summary>死んでいる人。生死は走査した時点で判定する。</summary>
     public static IEnumerable<PlayerControl> Dead => All.Where(isDead);
 
-    public static int Count => All.Count;
+    public static int Count => All.Count();
 
     /// <summary>playerId から引く。いなければ null (破棄済みの Unity オブジェクトではなく本当の null)。</summary>
     public static PlayerControl ById(byte playerId)

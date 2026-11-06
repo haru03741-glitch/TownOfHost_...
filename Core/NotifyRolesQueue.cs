@@ -59,23 +59,32 @@ public static class NotifyRolesQueue
             }
             bySeer.Clear();
 
+            // 1 つの呼び出しの例外で、残りの見る人の分まで捨てない
             if (allMode != 0)
-                Utils.NotifyRolesNow(false, null, allMode.HasFlag(Mode.NoCache), allMode.HasFlag(Mode.ForceLoop));
+                Run(null, allMode);
             foreach (var (seerId, mode) in flushBuffer)
             {
                 var seer = Players.ById(seerId);
                 if (seer == null) continue;
-                Utils.NotifyRolesNow(false, seer, mode.HasFlag(Mode.NoCache), mode.HasFlag(Mode.ForceLoop));
+                Run(seer, mode);
             }
-        }
-        catch (Exception ex)
-        {
-            TownOfHostY.Logger.Exception(ex, "NotifyRolesQueue");
         }
         finally
         {
             flushBuffer.Clear();
             flushing = false;
+        }
+    }
+
+    private static void Run(PlayerControl seer, Mode mode)
+    {
+        try
+        {
+            Utils.NotifyRolesNow(false, seer, mode.HasFlag(Mode.NoCache), mode.HasFlag(Mode.ForceLoop));
+        }
+        catch (Exception ex)
+        {
+            TownOfHostY.Logger.Exception(ex, "NotifyRolesQueue");
         }
     }
 

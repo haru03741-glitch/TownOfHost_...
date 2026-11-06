@@ -29,12 +29,13 @@ namespace TownOfHostY
             }
             return false;
         }
-        public LateTask(Action action, float time, string name = "No Name Task")
+        /// <param name="outlivesSession">true なら試合が閉じても捨てない。試合の外まで残る static な状態を戻す処理に使う。</param>
+        public LateTask(Action action, float time, string name = "No Name Task", bool outlivesSession = false)
         {
             this.action = action;
             this.timer = time;
             this.name = name;
-            owner = GameSession.Current;
+            owner = outlivesSession ? null : GameSession.Current;
             Tasks.Add(this);
             if (name != "")
                 Log.Info("LateTask", $"\"{name}\" is created");

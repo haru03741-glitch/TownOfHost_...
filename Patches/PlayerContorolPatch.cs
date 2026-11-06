@@ -720,23 +720,17 @@ class CoEnterVentPatch
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek && Options.IgnoreVent.GetBool())
                 __instance.RpcBootFromVent(id);
 
-            OnEnterVent(__instance, id);
+            // ホストが RpcEnterVent を呼んだ時は、その中で CoEnterVent も走る。役職へは RpcEnterVent の後置処理から 1 回だけ渡す
+            if (RpcEnterVentPatch.Depth == 0)
+                OnEnterVent(__instance, id);
         }
         return true;
     }
-
-    // ホスト自身の入室は RpcEnterVent の中で CoEnterVent も走るので、両方のフックに来る。
-    // 同じフレームの同じ入室は 1 回だけ役職へ渡す
-    private static (byte playerId, int ventId, int frame) lastHandled = (byte.MaxValue, -1, -1);
 
     public static void OnEnterVent(PlayerPhysics physics, int id)
     {
         var user = physics.myPlayer;
         if (user == null) return;
-
-        var key = (user.PlayerId, id, Time.frameCount);
-        if (lastHandled == key) return;
-        lastHandled = key;
 
         bool roleAllowsVent = user.GetRoleClass()?.OnEnterVent(physics, id) ?? false;
         bool ventTaskAllows = VentEnterTask.OnEnterVent(physics, id);
@@ -758,6 +752,12 @@ class CoEnterVentPatch
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
 class RpcEnterVentPatch
 {
+    /// <summary>RpcEnterVent の実行中なら 1 以上</summary>
+    public static int Depth;
+
+    public static void Prefix() => Depth++;
+    public static void Finalizer() => Depth--;
+
     public static void Postfix(PlayerPhysics __instance, [HarmonyArgument(0)] int id)
     {
         if (!AmongUsClient.Instance.AmHost) return;

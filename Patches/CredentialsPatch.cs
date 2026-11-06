@@ -209,6 +209,7 @@ namespace TownOfHostY
                 LateTask.Update(Time.deltaTime);
                 CheckMurderPatch.Update();
                 TownOfHostL.Core.NotifyRolesQueue.Flush();
+                NameRpcBatcher.Flush();
                 OptionSaver.Tick();
             }
             public static void Postfix(ModManager __instance)

@@ -891,7 +891,6 @@ static class NameRpcBatcher
     // (片方だけ変えると、1 件で上限を超えた名前が分割できない長いメッセージになる)
     private const int OfficialNameBytes = 900;
     private static readonly Dictionary<int, CustomRpcSender> senders = new();
-    private static bool scheduled;
 
     public static void Enqueue(int clientId, uint netId, uint dataNetId, string name, bool dontShowOnModdedClient)
     {
@@ -919,11 +918,7 @@ static class NameRpcBatcher
             .Write(name)
             .Write(dontShowOnModdedClient)
             .EndRpc();
-        if (!scheduled)
-        {
-            scheduled = true;
-            _ = new LateTask(Flush, 0f, "");
-        }
+        // 吐き出しは NotifyRolesNow の最後と、毎フレームの ModManager.LateUpdate で行う
     }
 
     // 文字の途中で切らず、末尾に書きかけのタグ (<color=#... など) が残ったら取り除く。書きかけのタグがあると表示が崩れる
@@ -945,9 +940,14 @@ static class NameRpcBatcher
         return trimmed;
     }
 
+    /// <summary>送らずに捨てる。部屋を出た後に前の部屋宛ての名前を送らないため、試合が閉じた時に呼ぶ。</summary>
+    public static void Discard()
+    {
+        senders.Clear();
+    }
+
     public static void Flush()
     {
-        scheduled = false;
         if (senders.Count == 0) return;
         var pending = senders.Values.ToList();
         senders.Clear();

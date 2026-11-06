@@ -59,6 +59,7 @@ public sealed class GameSession
         if (Current == session) Current = null;
         Log.Info("GameSession", $"#{session.Id} を閉じる ({reason})");
         NotifyRolesQueue.Clear();
+        NameRpcBatcher.Discard();
         try
         {
             Closed?.Invoke(session);
