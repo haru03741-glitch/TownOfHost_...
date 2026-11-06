@@ -210,6 +210,7 @@ namespace TownOfHostL
         private static void SendChunk(string SendName, string text, string name, PlayerControl sender)
         {
             var crs = CustomRpcSender.Create("AllSend");
+            var restoreName = GameStates.IsInGame ? TownOfHostL.Core.ChatSenderName.RestoreFor(sender) : name;
 
             crs.AutoStartRpc(sender.NetId, (byte)RpcCalls.SetName)
                 .Write(sender.Data.NetId)
@@ -220,9 +221,10 @@ namespace TownOfHostL
                 .EndRpc()
                 .AutoStartRpc(sender.NetId, (byte)RpcCalls.SetName)
                 .Write(sender.Data.NetId)
-                .Write(name)
+                .Write(restoreName)
                 .EndRpc()
                 .SendMessage();
+            TownOfHostL.Core.ChatSenderName.Restored(sender, restoreName, -1);
 
             sender.SetName(SendName);
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(sender, text);
@@ -487,12 +489,14 @@ namespace TownOfHostL
                 writer.StartRpc(player.NetId, (byte)RpcCalls.SendChat)
                     .Write(msg)
                     .EndRpc();
+                var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(player);
                 writer.StartRpc(player.NetId, (byte)RpcCalls.SetName)
                     .Write(player.Data.NetId)
-                    .Write(player.Data.PlayerName)
+                    .Write(restoreName)
                     .EndRpc();
                 writer.EndMessage();
                 writer.SendMessage();
+                TownOfHostL.Core.ChatSenderName.Restored(player, restoreName, clientId);
             }
             __instance.timeSinceLastMessage = 0f;
         }
@@ -517,6 +521,7 @@ namespace TownOfHostL
             else
             {
                 var writer = CustomRpcSender.Create("CustomSend");
+                var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(sender);
                 writer.StartMessage(clientId);
                 writer.StartRpc(sender.NetId, (byte)RpcCalls.SetName)
                     .Write(sender.Data.NetId)
@@ -527,10 +532,11 @@ namespace TownOfHostL
                     .EndRpc()
                     .StartRpc(sender.NetId, (byte)RpcCalls.SetName)
                     .Write(sender.Data.NetId)
-                    .Write(name)
+                    .Write(restoreName)
                     .EndRpc()
                     .EndMessage()
                     .SendMessage();
+                TownOfHostL.Core.ChatSenderName.Restored(sender, restoreName, clientId);
             }
         }
         private static void AddChatAsAlive(PlayerControl player, string msg)
@@ -574,9 +580,10 @@ namespace TownOfHostL
                     writer.StartRpc(host.NetId, (byte)RpcCalls.SendChat)
                         .Write(msg)
                         .EndRpc();
+                    var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(host);
                     writer.StartRpc(host.NetId, (byte)RpcCalls.SetName)
                         .Write(host.Data.NetId)
-                        .Write(host.Data.PlayerName)
+                        .Write(restoreName)
                         .EndRpc();
 
                     if (target.IsAlive())
@@ -590,6 +597,7 @@ namespace TownOfHostL
 
                     writer.EndMessage();
                     writer.SendMessage();
+                    TownOfHostL.Core.ChatSenderName.Restored(host, restoreName, targetClientId);
                 }
             }
             finally
