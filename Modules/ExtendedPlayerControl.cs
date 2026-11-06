@@ -834,8 +834,14 @@ static class ExtendedPlayerControl
         PlayerState.GetByPlayerId(player.PlayerId).SetDead();
         player.Data.IsDead = true;
         GameDataSerializePatch.SerializeMessageCount++;
-        RpcSyncAllNetworkedPlayer();
-        GameDataSerializePatch.SerializeMessageCount--;
+        try
+        {
+            RpcSyncAllNetworkedPlayer();
+        }
+        finally
+        {
+            GameDataSerializePatch.SerializeMessageCount--;
+        }
     }
     // 参考元: SuperNewRoles / TOH-K
     public static void RpcSyncAllNetworkedPlayer(int targetClientId = -1, SendOption sendOption = SendOption.None)

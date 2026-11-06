@@ -4,6 +4,19 @@ using UnityEngine;
 
 namespace TownOfHostL
 {
+    // 部屋はクイックチャット専用かどうかを作る時に決めるので、部屋を立てる前にフリーチャットへ直す。
+    // クイックチャット専用の部屋でホストがフリーチャット (案内やコマンドの返事) を送ると、公式サーバーはホストを切断する。
+    [HarmonyPatch(typeof(InnerNet.InnerNetClient), nameof(InnerNet.InnerNetClient.HostGame))]
+    class HostGameChatModePatch
+    {
+        public static void Prefix()
+        {
+            if (DataManager.Settings.Multiplayer.ChatMode != InnerNet.QuickChatModes.QuickChatOnly) return;
+            DataManager.Settings.Multiplayer.ChatMode = InnerNet.QuickChatModes.FreeChatOrQuickChat;
+            Logger.Info("クイックチャット専用の設定をフリーチャットに直してから部屋を立てます", "HostGameChatMode");
+        }
+    }
+
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
     class ChatControllerUpdatePatch
     {

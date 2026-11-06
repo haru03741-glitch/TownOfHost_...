@@ -155,6 +155,7 @@ public class Main : BasePlugin
 
         Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_L");
         TownOfHostL.Logger.Enable();
+        TownOfHostL.Modules.ConsoleQuickEdit.Disable();
         TownOfHostL.Logger.Disable("NotifyRoles");
         TownOfHostL.Logger.Disable("SendRPC");
         TownOfHostL.Logger.Disable("ReceiveRPC");

@@ -201,6 +201,8 @@ namespace TownOfHostL
         // 外部からの操作
         public virtual void Refresh()
         {
+            // メニューを閉じると行は破棄される。is の型判定は破棄済み (Unity の null) を弾かないので先に見る
+            if (OptionBehaviour == null) return;
             if (OptionBehaviour is StringOption stringOption)
             {
                 stringOption.TitleText.text = GetName();

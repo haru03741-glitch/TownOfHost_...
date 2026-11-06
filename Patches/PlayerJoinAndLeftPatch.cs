@@ -154,7 +154,9 @@ namespace TownOfHostL
                 }
                 else
                 {
-                    if (GameStates.IsInGame)
+                    // 試合の開始からイントロまでの間 (IsInGame がまだ false) に抜けた人も、試合中の離脱として扱う
+                    if ((GameStates.IsInGame || AmongUsClient.Instance.IsGameStarted)
+                        && PlayerState.GetByPlayerId(data.Character.PlayerId) is PlayerState state)
                     {
                         if (data.Character.Is(CustomRoles.Lovers) && !data.Character.Data.IsDead)
                         {
@@ -164,7 +166,6 @@ namespace TownOfHostL
                                 PlayerState.GetByPlayerId(lovers.PlayerId).RemoveSubRole(CustomRoles.Lovers);
                             }
                         }
-                        var state = PlayerState.GetByPlayerId(data.Character.PlayerId);
                         if (state.DeathReason == CustomDeathReason.etc) //死因が設定されていなかったら
                         {
                             state.DeathReason = CustomDeathReason.Disconnected;
