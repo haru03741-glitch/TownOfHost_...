@@ -79,6 +79,7 @@ TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwi
 - [Nebula on the Ship](https://github.com/Dolly1016/Nebula)
   - タイトル画面から見れるInfoアナウンス画面
   - ドクター・スナイパーのアイデア
+  - incremental GC を実行時に切る方法 ([Nebula-Public](https://github.com/Dolly1016/Nebula-Public))
 - [Foolers Mod](https://github.com/MengTube/Foolers-Mod)
   - テロリスト
 - [Town-Of-Us-R](https://github.com/eDonnes124/Town-Of-Us-R)
@@ -92,6 +93,7 @@ TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwi
 - [End K not](https://github.com/waffle-ful/Aeterna-End-K-not)
   - 終わったコルーチンが持っていた参照の解放
   - 起動時のパッチ当てで作る delegate 型の使い回し
+  - Il2CppInterop.Runtime を write barrier 経由に書き換える手順と、それに合わせた incremental GC の切り替え
 - [TownOfHost-K](https://github.com/KYMario/TownOfHost-K)
   - プレイヤー情報 (NetworkedPlayerInfo) の同期
 - [template-unity](https://github.com/vpmedia/template-unity) (MIT)

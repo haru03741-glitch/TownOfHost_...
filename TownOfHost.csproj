@@ -30,6 +30,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- tools/ の補助プログラムを本体 DLL に混ぜない -->
+		<Compile Remove="tools/**" />
 		<EmbeddedResource Include=".\Resources\*.png" />
 		<EmbeddedResource Include=".\Resources\string.csv" />
 	</ItemGroup>

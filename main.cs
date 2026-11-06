@@ -147,6 +147,7 @@ public class Main : BasePlugin
     public override void Load()
     {
         Instance = this;
+        TownOfHostY.Modules.IncrementalGcGate.Apply();
         TownOfHostY.Modules.OptionSaver.Initialize(); // オプション保存用ディレクトリ・ファイルを起動時に作成
 
         //Client Options
