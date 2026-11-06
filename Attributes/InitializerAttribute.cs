@@ -21,7 +21,6 @@ public abstract class InitializerAttributeBase : Attribute
     internal static void ScanOnce()
     {
         if (scanned) return;
-        scanned = true;
         foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
         {
             foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
@@ -30,6 +29,8 @@ public abstract class InitializerAttributeBase : Attribute
                     attribute.Bind(method);
             }
         }
+        // 走査が途中で投げた時は、途中まで集めた分で黙って進まないよう、済みの印は最後に付ける
+        scanned = true;
     }
 }
 

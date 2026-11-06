@@ -94,6 +94,12 @@ public sealed class GameSession
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnDisconnected))]
     private static class DisconnectPatch
     {
-        public static void Postfix() => CloseLatest("切断");
+        public static void Postfix()
+        {
+            CloseLatest("切断");
+            // ロビーで抜けた時は閉じる試合が無いので、前の部屋宛ての溜まりはここで必ず捨てる
+            NotifyRolesQueue.Clear();
+            NameRpcBatcher.Discard();
+        }
     }
 }

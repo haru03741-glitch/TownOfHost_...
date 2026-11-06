@@ -208,9 +208,13 @@ namespace TownOfHostY
 
                 LateTask.Update(Time.deltaTime);
                 CheckMurderPatch.Update();
-                TownOfHostL.Core.NotifyRolesQueue.Flush();
-                NameRpcBatcher.Flush();
-                OptionSaver.Tick();
+                // 1 つが投げても残りは止めない (切断の直後は送信が投げることがある)
+                try { TownOfHostL.Core.NotifyRolesQueue.Flush(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
+                try { NameRpcBatcher.Flush(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
+                try { OptionSaver.Tick(); }
+                catch (System.Exception ex) { Logger.Exception(ex, "ModManagerLateUpdate"); }
             }
             public static void Postfix(ModManager __instance)
             {
