@@ -2,16 +2,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TownOfHostY.Modules;
 
 namespace TownOfHostY.Attributes;
 
+/// <summary>初期化メソッドの属性の共通の土台。アセンブリの走査を 1 回で済ませるために使う。</summary>
 [AttributeUsage(AttributeTargets.Method)]
-public abstract class InitializerAttribute<T> : Attribute
+public abstract class InitializerAttributeBase : Attribute
+{
+    private static bool scanned;
+
+    internal abstract void Bind(MethodInfo method);
+
+    /// <summary>
+    /// アセンブリ内の初期化メソッドを、種類 (起動時・試合ごと) を問わず 1 回の走査で集める。
+    /// 以前は種類ごとに全型の全 public メソッドを走査していて、試合ごとの分は最初の試合の開始の瞬間に走っていた。
+    /// 初期化メソッドは Invoke(null, null) で呼ぶので static に限られ、static メソッドだけを見ればよい。
+    /// </summary>
+    internal static void ScanOnce()
+    {
+        if (scanned) return;
+        scanned = true;
+        foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+        {
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly))
+            {
+                foreach (var attribute in method.GetCustomAttributes<InitializerAttributeBase>(false))
+                    attribute.Bind(method);
+            }
+        }
+    }
+}
+
+public abstract class InitializerAttribute<T> : InitializerAttributeBase
 {
     /// <summary>全初期化メソッド</summary>
     private static MethodInfo[] allInitializers = null;
-    private static LogHandler logger = Logger.Handler(nameof(InitializerAttribute<T>));
+    private static readonly List<InitializerAttribute<T>> found = new(32);
 
     public InitializerAttribute() : this(InitializePriority.Normal) { }
     public InitializerAttribute(InitializePriority priority)
@@ -23,32 +49,17 @@ public abstract class InitializerAttribute<T> : Attribute
     /// <summary>初期化時に呼び出されるメソッド</summary>
     private MethodInfo targetMethod;
 
+    internal override void Bind(MethodInfo method)
+    {
+        targetMethod = method;
+        found.Add(this);
+    }
+
     private static void FindInitializers()
     {
-        var initializers = new HashSet<InitializerAttribute<T>>(32);
-
-        // TownOfHost.dll内の
-        var assembly = Assembly.GetExecutingAssembly();
-        // 全クラス内の
-        var types = assembly.GetTypes();
-        foreach (var type in types)
-        {
-            // 全メソッドについて
-            var methods = type.GetMethods();
-            foreach (var method in methods)
-            {
-                // InitializerAttributeを取得
-                var attribute = method.GetCustomAttribute<InitializerAttribute<T>>();
-                if (attribute != null)
-                {
-                    // 取得できたら登録
-                    attribute.targetMethod = method;
-                    initializers.Add(attribute);
-                }
-            }
-        }
-        // 見つかった初期化メソッドをpriority順に並べ替えて配列に変換
-        allInitializers = initializers.OrderBy(initializer => initializer.priority).Select(initializer => initializer.targetMethod).ToArray();
+        ScanOnce();
+        // 見つかった初期化メソッドをpriority順に並べ替えて配列に変換 (同じ priority の中では見つかった順)
+        allInitializers = found.OrderBy(initializer => initializer.priority).Select(initializer => initializer.targetMethod).ToArray();
     }
     public static void InitializeAll()
     {
@@ -59,7 +70,6 @@ public abstract class InitializerAttribute<T> : Attribute
         }
         foreach (var initializer in allInitializers)
         {
-            //logger.Info($"初期化: {initializer.DeclaringType.Name}.{initializer.Name}");
             initializer.Invoke(null, null);
         }
     }
