@@ -54,6 +54,8 @@ public sealed class God : RoleBase, ISystemTypeUpdateHook
         OptionViewVoteFor = BooleanOptionItem.Create(RoleInfo, 11, OptionName.GodViewVoteFor, false, false);
         Tasks = Options.OverrideTasksData.Create(RoleInfo, 20);
     }
+    public override bool NeedsSeenNames => true;
+
     public override void ApplyGameOptions(IGameOptions opt)
     {
         if (viewVoteFor)

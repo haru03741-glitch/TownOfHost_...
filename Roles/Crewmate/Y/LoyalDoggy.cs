@@ -38,6 +38,8 @@ public sealed class LoyalDoggy : RoleBase
         masterDecision = false;
         masterIsDead = false;
     }
+    public override bool NeedsSeenNames => true;
+
     public override void OnDestroy()
     {
         LoyalDoggies.Remove(this);

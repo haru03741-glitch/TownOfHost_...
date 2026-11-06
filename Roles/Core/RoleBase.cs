@@ -277,6 +277,12 @@ public abstract class RoleBase : IDisposable
     public virtual bool OnSabotage(PlayerControl player, SystemTypes systemType) => true;
 
     // NameSystem
+    /// <summary>
+    /// 自分が見る他人の名前 (マーク・色・役職名など) を、NotifyRoles のたびに組み立て直す必要があるか。
+    /// false の役職は、死んでいる・インポスターなどの他の条件に当たらない限り、他人の名前を送り直さない。
+    /// </summary>
+    public virtual bool NeedsSeenNames => false;
+
     // 名前は下記の構成で表示される
     // [Role][Progress]
     // [Name][Mark]

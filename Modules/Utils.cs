@@ -1431,6 +1431,7 @@ public static class Utils
         HudManagerPatch.NowCallNotifyRolesCount++;
         HudManagerPatch.LastSetNameDesyncCount = 0;
 
+        bool everyoneNeedsSeenNames = NoCache || ForceLoop || TownOfHostL.Core.NameParts.EveryoneNeedsSeenNames();
         var seerList = PlayerControl.AllPlayerControls;
         if (SpecifySeer != null)
         {
@@ -1526,41 +1527,7 @@ public static class Utils
             seer.RpcSetNamePrivate(name, true, force: NoCache);
 
             //seerが死んでいる場合など、必要なときのみ第二ループを実行する
-            if (seer.Data.IsDead //seerが死んでいる
-                || seer.GetCustomRole().IsImpostor() //seerがインポスター
-                || PlayerState.GetByPlayerId(seer.PlayerId).TargetColorData.Count > 0 //seer視点用の名前色データが一つ以上ある
-                || seer.Is(CustomRoles.Arsonist)
-                || seer.Is(CustomRoles.Lovers)
-                || Witch.IsSpelled()
-                || Bakery.IsPoisoned()
-                || seer.Is(CustomRoles.Executioner)
-                || seer.Is(CustomRoles.Doctor) //seerがドクター
-                || seer.Is(CustomRoles.Puppeteer)
-                || seer.Is(CustomRoles.God)
-                || seer.IsNeutralKiller() //seerがキル出来るニュートラル
-                || (IsActive(SystemTypes.Electrical) && CustomRoles.Mare.IsEnable())    //メアーが入っていない時は通さない
-                || (IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())   //カモフラオプションがない時は通さない
-                || EvilDyer.IsColorCamouflage    //カモフラがない時は通さない
-                || NoCache
-                || ForceLoop
-                || Options.IsCCMode
-                || Options.GetNameChangeModes() == NameChange.Crew
-                || (CustomRoles.Workaholic.IsEnable() && Workaholic.Seen)
-                || CustomRoles.Rainbow.IsEnable()
-                || (seer.Is(CustomRoles.FortuneTeller) && ((FortuneTeller)seer.GetRoleClass()).HasForecastResult())
-                || seer.Is(CustomRoles.Sympathizer)
-                || seer.Is(CustomRoles.Medic)
-                || seer.Is(CustomRoles.GrudgeSheriff)
-                || seer.Is(CustomRoles.AntiComplete)
-                || seer.Is(CustomRoles.Totocalcio)
-                || seer.Is(CustomRoles.Immoralist)
-                || seer.Is(CustomRoles.LoyalDoggy)
-                || seer.Is(CustomRoles.jO)
-                || seer.Is(CustomRoles.Vendetta)
-                || VentEnterTask.HaveTask(seer)
-
-                || Duelist.CheckNotify(seer)
-                )
+            if (everyoneNeedsSeenNames || TownOfHostL.Core.NameParts.NeedsSeenNames(seer))
             {
                 foreach (var target in Main.AllPlayerControls)
                 {

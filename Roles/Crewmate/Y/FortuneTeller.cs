@@ -73,6 +73,8 @@ public sealed class FortuneTeller : RoleBase
         OptionKillerOnly = BooleanOptionItem.Create(RoleInfo, 14, OptionName.FortuneTellerKillerOnly, true, false);
     }
 
+    public override bool NeedsSeenNames => HasForecastResult();
+
     public override (byte? votedForId, int? numVotes, bool doVote) ModifyVote(byte voterId, byte sourceVotedForId, bool isIntentional)
     {
         // 既定値

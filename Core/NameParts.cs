@@ -4,7 +4,9 @@ using UnityEngine;
 using TownOfHostL;
 using TownOfHostL.Roles.AddOns.Common;
 using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Crewmate;
 using TownOfHostL.Roles.Impostor;
+using TownOfHostL.Roles.Neutral;
 
 namespace TownOfHostL.Core;
 
@@ -82,4 +84,29 @@ public static class NameParts
         if (Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool() && !Options.IsSyncColorMode) return true;
         return EvilDyer.IsColorCamouflage;
     }
+
+    /// <summary>
+    /// 見る人に関わらず、全員の 2 周目 (他人の名前) を組み立て直す状況か。NotifyRoles 1 回につき 1 回だけ見る。
+    /// </summary>
+    public static bool EveryoneNeedsSeenNames()
+        => Witch.IsSpelled()
+            || Bakery.IsPoisoned()
+            || (Utils.IsActive(SystemTypes.Electrical) && CustomRoles.Mare.IsEnable())
+            || (Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
+            || EvilDyer.IsColorCamouflage
+            || Options.IsCCMode
+            || Options.GetNameChangeModes() == NameChange.Crew
+            || (CustomRoles.Workaholic.IsEnable() && Workaholic.Seen)
+            || CustomRoles.Rainbow.IsEnable();
+
+    /// <summary>seer が他人の名前を見る必要があるか (役職の宣言と、役職に関わらない状態)</summary>
+    public static bool NeedsSeenNames(PlayerControl seer)
+        => seer.Data.IsDead
+            || seer.GetCustomRole().IsImpostor()
+            || PlayerState.GetByPlayerId(seer.PlayerId).TargetColorData.Count > 0
+            || seer.IsNeutralKiller()
+            || seer.GetRoleClass()?.NeedsSeenNames == true
+            || seer.Is(CustomRoles.Lovers)
+            || VentEnterTask.HaveTask(seer)
+            || Duelist.CheckNotify(seer);
 }
