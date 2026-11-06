@@ -90,7 +90,7 @@ public sealed class EvilHacker : RoleBase, IImpostor
 
                 _ = new LateTask(() =>
                     {
-                        Player.SnapToTeleport(LastPosition);//元の位置へ。
+                        Player.SnapToTeleport(LastPosition, force: true);//元の位置へ。
                         SendRPC(Player.PlayerId);
                         Utils.NotifyRoles();
 

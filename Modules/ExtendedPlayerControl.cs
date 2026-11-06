@@ -765,12 +765,17 @@ static class ExtendedPlayerControl
         }
         return null;
     }
-    public static void RpcSnapTo(this PlayerControl pc, Vector2 position)
+    // 以下の TP は、公式サーバーで SnapTo を送りすぎている時は何もせず false を返す (Modules.Net.SnapToBudget)。
+    // force は、取りやめるとプレイヤーが戻れなくなる送信 (元の位置へ戻す TP など) にだけ使う。
+    public static bool RpcSnapTo(this PlayerControl pc, Vector2 position, bool force = false)
     {
+        if (!force && !Modules.Net.SnapToBudget.CanSend()) return false;
         pc.NetTransform.RpcSnapTo(position);
+        return true;
     }
-    public static void SnapToTeleport(this PlayerControl pc, Vector2 position)
+    public static bool SnapToTeleport(this PlayerControl pc, Vector2 position, bool force = false)
     {
+        if (!force && !Modules.Net.SnapToBudget.CanSend()) return false;
         var netTransform = pc.NetTransform;
         if (AmongUsClient.Instance.AmClient)
         {
@@ -781,15 +786,18 @@ static class ExtendedPlayerControl
         NetHelpers.WriteVector2(position, messageWriter);
         messageWriter.Write(newSid);
         AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+        return true;
     }
-    public static void RpcSnapToDesync(this PlayerControl pc, PlayerControl target, Vector2 position)
+    public static bool RpcSnapToDesync(this PlayerControl pc, PlayerControl target, Vector2 position, bool force = false)
     {
+        if (!force && !Modules.Net.SnapToBudget.CanSend()) return false;
         var net = pc.NetTransform;
         var num = (ushort)(net.lastSequenceId + 2);
         MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(net.NetId, (byte)RpcCalls.SnapTo, SendOption.None, target.GetClientId());
         NetHelpers.WriteVector2(position, messageWriter);
         messageWriter.Write(num);
         AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+        return true;
     }
     /// <summary>現在守護されているかどうか</summary>
     public static bool IsProtected(this PlayerControl self) => self.protectedByGuardianId > -1;

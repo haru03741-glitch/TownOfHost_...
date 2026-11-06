@@ -47,6 +47,8 @@ namespace TownOfHostL
         }
         public static void TP(CustomNetworkTransform nt, Vector2 location)
         {
+            if (!Modules.Net.SnapToBudget.CanSend()) return;
+
             //nt.SnapTo(location);
 
             //Modded
