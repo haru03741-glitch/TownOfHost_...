@@ -9,6 +9,7 @@ using TownOfHostL.Roles.Core.Interfaces;
 namespace TownOfHostL.Roles.Neutral;
 public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateHook
 {
+    public override bool RevengesOnExile => true;
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Immoralist),

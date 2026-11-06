@@ -82,18 +82,9 @@ namespace TownOfHostL
 
         public static bool IsInfoPoor(PlayerControl pc)
         {
-            try
-            {
-                if (pc == null) return false;
-                return ((pc.Is(CustomRoles.Sheriff) && (Sheriff.IsInfoPoor?.GetBool() ?? false))
-                        || (pc.Is(CustomRoles.SillySheriff) && (SillySheriff.IsInfoPoor?.GetBool() ?? false))
-                        || (pc.Is(CustomRoles.Hunter) && (Hunter.IsInfoPoor?.GetBool() ?? false))
-                        || pc.Is(CustomRoles.InfoPoor));
-            }
-            catch
-            {
-                return false;
-            }
+            // 抜けた直後の破棄済みの PlayerControl でも止まらないように
+            try { return Core.PlayerTraits.IsInfoPoor(pc); }
+            catch { return false; }
         }
 
         public static bool IsPoorEnableSafe()

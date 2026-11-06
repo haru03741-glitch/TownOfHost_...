@@ -470,11 +470,7 @@ public static class MeetingHudPatch
         var player = Utils.GetPlayerById(playerId);
         if (player == null) return;
         //道連れ能力持たない時は下を通さない
-        if (!((player.Is(CustomRoles.SKMadmate) && Options.MadmateRevengeCrewmate.GetBool())
-            || (player.Is(CustomRoles.NekoKabocha) && NekoKabocha.revengeOnExile)
-            || (player.Is(CustomRoles.SchrodingerCat) && SchrodingerCat.RevengeOnExile)
-            || player.Is(CustomRoles.EvilNekomata) || player.Is(CustomRoles.Nekomata)
-            || player.Is(CustomRoles.Immoralist) || player.Is(CustomRoles.Revenger))) return;
+        if (!Core.PlayerTraits.RevengesOnExile(player)) return;
 
         var target = PickRevengeTarget(player, deathReason);
         if (target == null) return;

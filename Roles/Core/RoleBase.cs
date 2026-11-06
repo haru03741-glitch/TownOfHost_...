@@ -253,6 +253,13 @@ public abstract class RoleBase : IDisposable
     /// <returns>falseを返すとバニラ処理をキャンセルする</returns>
     public virtual bool OnCompleteTask() => true;
 
+    /// <summary>停電・通信妨害を直せない (ドジ属性と同じ)。属性のドジは PlayerTraits.IsClumsy が別に見る</summary>
+    public virtual bool IsClumsy => false;
+    /// <summary>アドミン・カメラ・バイタルなどの情報機器を使えない (情報弱者属性と同じ)</summary>
+    public virtual bool IsInfoPoor => false;
+    /// <summary>投票で追放された時に誰かを道連れにする</summary>
+    public virtual bool RevengesOnExile => false;
+
     // == Sabotage関連処理 ==
     /// <summary>
     /// 自身がサボタージュを発生させたときに発火する
