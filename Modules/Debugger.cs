@@ -37,8 +37,8 @@ namespace TownOfHostY
             catch { }
         }
         public static bool isEnable;
-        public static List<string> disableList = new();
-        public static List<string> sendToGameList = new();
+        public static HashSet<string> disableList = new();
+        public static HashSet<string> sendToGameList = new();
         public static bool isDetail = false;
         public static bool isAlsoInGame = false;
         public static void Enable() => isEnable = true;
@@ -46,10 +46,12 @@ namespace TownOfHostY
         public static void Enable(string tag, bool toGame = false)
         {
             disableList.Remove(tag);
-            if (toGame && !sendToGameList.Contains(tag)) sendToGameList.Add(tag);
+            if (toGame) sendToGameList.Add(tag);
             else sendToGameList.Remove(tag);
         }
-        public static void Disable(string tag) { if (!disableList.Contains(tag)) disableList.Add(tag); }
+        public static void Disable(string tag) => disableList.Add(tag);
+        /// <summary>このタグのログが出るか。出ないなら文字列を組み立てる前に止められる。</summary>
+        public static bool IsTagEnabled(string tag) => isEnable && !disableList.Contains(tag);
         public static void SendInGame(string text, bool isAlways = false)
         {
             if (!isEnable) return;
@@ -94,8 +96,12 @@ namespace TownOfHostY
                     break;
             }
         }
-        public static void Info(string text, string tag, bool escapeCRLF = true, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string fileName = "") =>
+        public static void Info(string text, string tag, bool escapeCRLF = true, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string fileName = "")
+        {
+            // タグの判定を先にして、出さないログでタグ除去の正規表現を走らせない
+            if (!IsTagEnabled(tag)) return;
             SendToFile(text.RemoveHtmlTags(), LogLevel.Info, tag, escapeCRLF, lineNumber, fileName);
+        }
         public static void Warn(string text, string tag, bool escapeCRLF = true, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string fileName = "") =>
             SendToFile(text, LogLevel.Warning, tag, escapeCRLF, lineNumber, fileName);
         public static void Error(string text, string tag, bool escapeCRLF = true, [CallerLineNumber] int lineNumber = 0, [CallerFilePath] string fileName = "") =>

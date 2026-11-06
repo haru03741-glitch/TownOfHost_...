@@ -1,0 +1,59 @@
+using System;
+using System.Runtime.CompilerServices;
+
+using TownOfHostY;
+using TownOfHostY.Modules;
+
+namespace TownOfHostL.Core;
+
+/// <summary>
+/// タグを先に受け取るログ。
+/// 補間文字列 ($"...") を渡すと、タグが無効なら文字列を組み立てず、埋め込んだ式も評価しない。
+/// 止めてあるタグ (NotifyRoles・SendRPC など) を毎フレームの処理から呼んでも、費用は判定 1 回だけになる。
+/// </summary>
+internal static class Log
+{
+    public static bool IsEnabled(string tag) => TownOfHostY.Logger.IsTagEnabled(tag);
+
+    public static void Info(string tag, [InterpolatedStringHandlerArgument("tag")] ref LogText text)
+    {
+        if (text.Enabled) TownOfHostY.Logger.Info(text.ToStringAndClear(), tag);
+    }
+    public static void Info(string tag, string text) => TownOfHostY.Logger.Info(text, tag);
+
+    public static void Warn(string tag, [InterpolatedStringHandlerArgument("tag")] ref LogText text)
+    {
+        if (text.Enabled) TownOfHostY.Logger.Warn(text.ToStringAndClear(), tag);
+    }
+    public static void Warn(string tag, string text) => TownOfHostY.Logger.Warn(text, tag);
+
+    public static void Error(string tag, string text) => TownOfHostY.Logger.Error(text, tag);
+    public static void Exception(string tag, Exception ex) => TownOfHostY.Logger.Exception(ex, tag);
+}
+
+/// <summary>タグが無効なら何も組み立てない補間文字列。</summary>
+[InterpolatedStringHandler]
+internal ref struct LogText
+{
+    private DefaultInterpolatedStringHandler inner;
+    public bool Enabled { get; }
+
+    public LogText(int literalLength, int formattedCount, string tag, out bool shouldAppend)
+    {
+        Enabled = shouldAppend = TownOfHostY.Logger.IsTagEnabled(tag);
+        inner = Enabled ? new DefaultInterpolatedStringHandler(literalLength, formattedCount) : default;
+    }
+
+    public LogText(int literalLength, int formattedCount, LogHandler handler, out bool shouldAppend)
+        : this(literalLength, formattedCount, handler.Tag, out shouldAppend) { }
+
+    public void AppendLiteral(string value) => inner.AppendLiteral(value);
+    public void AppendFormatted<T>(T value) => inner.AppendFormatted(value);
+    public void AppendFormatted<T>(T value, string format) => inner.AppendFormatted(value, format);
+    public void AppendFormatted<T>(T value, int alignment) => inner.AppendFormatted(value, alignment);
+    public void AppendFormatted<T>(T value, int alignment, string format) => inner.AppendFormatted(value, alignment, format);
+    public void AppendFormatted(ReadOnlySpan<char> value) => inner.AppendFormatted(value);
+    public void AppendFormatted(string value) => inner.AppendFormatted(value);
+
+    public string ToStringAndClear() => Enabled ? inner.ToStringAndClear() : string.Empty;
+}

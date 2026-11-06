@@ -6,6 +6,7 @@ using Hazel;
 
 using TownOfHostY.Roles.Core;
 using static TownOfHostY.Translator;
+using TownOfHostL.Core;
 
 namespace TownOfHostY
 {
@@ -58,7 +59,7 @@ namespace TownOfHostY
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
             var rpcType = (RpcCalls)callId;
-            Logger.Info($"{__instance?.Data?.PlayerId}({__instance?.Data?.PlayerName}):{callId}({RPC.GetRpcName(callId)})", "ReceiveRPC");
+            Log.Info("ReceiveRPC", $"{__instance?.Data?.PlayerId}({__instance?.Data?.PlayerName}):{callId}({RPC.GetRpcName(callId)})");
             MessageReader subReader = MessageReader.Get(reader);
             switch (rpcType)
             {
@@ -375,7 +376,7 @@ namespace TownOfHostY
                 from = Main.AllPlayerControls.Where(c => c.NetId == targetNetId).FirstOrDefault()?.Data?.PlayerName;
             }
             catch { }
-            Logger.Info($"FromNetID:{targetNetId}({from}) TargetClientID:{targetClientId}({target}) CallID:{callId}({rpcName})", "SendRPC");
+            Log.Info("SendRPC", $"FromNetID:{targetNetId}({from}) TargetClientID:{targetClientId}({target}) CallID:{callId}({rpcName})");
         }
         public static string GetRpcName(byte callId)
         {
@@ -444,7 +445,7 @@ namespace TownOfHostY
             string target = targetClientId < 0 ? "All" : AmongUsClient.Instance.GetClient(targetClientId)?.PlayerName ?? targetClientId.ToString();
             string from = Main.AllPlayerControls.FirstOrDefault(c => c.NetId == targetNetId)?.Data?.PlayerName ?? targetNetId.ToString();
 
-            Logger.Info($"送信RPC From:{from} Target:{target} CallID:{callId}({rpcName})", "SendRPC");
+            Log.Info("SendRPC", $"送信RPC From:{from} Target:{target} CallID:{callId}({rpcName})");
         }
     }
 }

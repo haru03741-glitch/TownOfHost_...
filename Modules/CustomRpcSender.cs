@@ -3,6 +3,7 @@ using AmongUs.GameOptions;
 using Hazel;
 using InnerNet;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using TownOfHostL.Core;
 
 namespace TownOfHostY
 {
@@ -44,10 +45,10 @@ namespace TownOfHostY
             this.sendOption = sendOption;
             this.isUnsafe = isUnsafe;
             this.currentRpcTarget = -2;
-            onSendDelegate = () => Logger.Info($"{this.name}'s onSendDelegate =>", "CustomRpcSender");
+            onSendDelegate = () => Log.Info("CustomRpcSender", $"{this.name}'s onSendDelegate =>");
 
             currentState = State.Ready;
-            Logger.Info($"\"{name}\" is ready", "CustomRpcSender");
+            Log.Info("CustomRpcSender", $"\"{name}\" is ready");
         }
         public static CustomRpcSender Create(string name = "No Name Sender", SendOption sendOption = SendOption.None, bool isUnsafe = false)
         {
@@ -208,10 +209,10 @@ namespace TownOfHostY
             }
 
             if (keptMessages > 0) AmongUsClient.Instance.SendOrDisconnect(stream);
-            else Logger.Info($"\"{name}\" は中身が無いので送らない", "CustomRpcSender");
+            else Log.Info("CustomRpcSender", $"\"{name}\" は中身が無いので送らない");
             onSendDelegate();
             currentState = State.Finished;
-            Logger.Info($"\"{name}\" is finished", "CustomRpcSender");
+            Log.Info("CustomRpcSender", $"\"{name}\" is finished");
             stream.Recycle();
         }
 

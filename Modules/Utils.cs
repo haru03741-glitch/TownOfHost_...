@@ -1372,17 +1372,10 @@ public static class Utils
         }
         if (name != PlayerControl.LocalPlayer.name && PlayerControl.LocalPlayer.CurrentOutfitType == PlayerOutfitType.Default) PlayerControl.LocalPlayer.RpcSetName(name);
     }
-    private static Dictionary<byte, PlayerControl> cachedPlayers = new(15);
     public static PlayerControl GetPlayerById(int playerId) => GetPlayerById((byte)playerId);
     public static PlayerControl GetPlayerById(byte playerId)
     {
-        if (cachedPlayers.TryGetValue(playerId, out var cachedPlayer) && cachedPlayer != null)
-        {
-            return cachedPlayer;
-        }
-        var player = Main.AllPlayerControls.Where(pc => pc.PlayerId == playerId).FirstOrDefault();
-        cachedPlayers[playerId] = player;
-        return player;
+        return TownOfHostL.Core.Players.ById(playerId);
     }
     public static PlayerControl GetPlayerByColorName(string colorName)
     {
@@ -1402,7 +1395,7 @@ public static class Utils
     }
 
     public static NetworkedPlayerInfo GetPlayerInfoById(int PlayerId) =>
-        GameData.Instance.AllPlayers.ToArray().Where(info => info.PlayerId == PlayerId).FirstOrDefault();
+        PlayerId is >= 0 and <= byte.MaxValue ? GameData.Instance.GetPlayerById((byte)PlayerId) : null;
     private static StringBuilder SelfMark = new(20);
     private static StringBuilder SelfSuffix = new(20);
     private static StringBuilder SelfLower = new(20);

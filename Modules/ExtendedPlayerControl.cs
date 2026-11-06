@@ -76,7 +76,7 @@ static class ExtendedPlayerControl
     public static InnerNet.ClientData GetClient(this PlayerControl player)
     {
         if (player == null) return null;
-        return AmongUsClient.Instance.allClients.ToArray().FirstOrDefault(cd => cd != null && cd.Character != null && cd.Character.PlayerId == player.PlayerId);
+        return TownOfHostL.Core.Players.ClientOf(player.PlayerId);
     }
     public static int GetClientId(this PlayerControl player)
     {

@@ -138,9 +138,9 @@ public class Main : BasePlugin
     public static bool IsInitialRelease = DateTime.Now.Month == 11 && DateTime.Now.Day >= 1 && DateTime.Now.Day <= 8;
     public static bool IsChristmas = DateTime.Now.Month == 13 && DateTime.Now.Day <= 25;
 
-    public static IEnumerable<PlayerControl> AllPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null);
-    public static IEnumerable<PlayerControl> AllAlivePlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && p.IsAlive());
-    public static IEnumerable<PlayerControl> AllDeadPlayerControls => PlayerControl.AllPlayerControls.ToArray().Where(p => p != null && !p.IsAlive());
+    public static IEnumerable<PlayerControl> AllPlayerControls => TownOfHostL.Core.Players.All;
+    public static IEnumerable<PlayerControl> AllAlivePlayerControls => TownOfHostL.Core.Players.Alive;
+    public static IEnumerable<PlayerControl> AllDeadPlayerControls => TownOfHostL.Core.Players.Dead;
 
     public static Main Instance;
 
