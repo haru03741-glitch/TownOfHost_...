@@ -62,6 +62,8 @@ namespace TownOfHostL
             if (AmongUsClient.Instance.AmHost)
             {
                 AntiBlackout.RestoreIsDead(doSend: false);
+                // 各クライアントの追放の演出の締め (試合が終わるはずかの判定) を待ってから戻す
+                _ = new LateTask(AntiBlackout.RevertFilledCrew, 2f, "AntiBlackout.RevertFilledCrew");
                 if (exiled != null)
                 {
                     var role = exiled.GetCustomRole();
