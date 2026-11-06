@@ -96,6 +96,8 @@ TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwi
   - Il2CppInterop.Runtime を write barrier 経由に書き換える手順と、それに合わせた incremental GC の切り替え
 - [Endless Host Roles](https://github.com/Gurge44/EndlessHostRoles)
   - 配布物に入れる Unity Doorstop と、pietro による修正版 Il2CppInterop
+- [MoreGamemodes](https://github.com/Rabek009/MoreGamemodes)
+  - 退出ペナルティで部屋を立てられなくなるのを防ぐ処理
 - [TownOfHost-K](https://github.com/KYMario/TownOfHost-K)
   - プレイヤー情報 (NetworkedPlayerInfo) の同期
 - [template-unity](https://github.com/vpmedia/template-unity) (MIT)
