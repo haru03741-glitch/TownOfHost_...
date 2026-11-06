@@ -69,8 +69,8 @@ try {
 
     if (Test-Path $Out) { Remove-Item $Out -Force }
     New-Item -ItemType Directory -Force (Split-Path ([IO.Path]::GetFullPath($Out)) -Parent) | Out-Null
-    # -Force が無いと Linux では . で始まる .doorstop_version が落ちる
-    Compress-Archive -LiteralPath (Get-ChildItem -LiteralPath $stage -Force).FullName -DestinationPath $Out
+    # Compress-Archive は Linux で . で始まる .doorstop_version を拾えないので、.NET の ZipFile で固める
+    [IO.Compression.ZipFile]::CreateFromDirectory($stage, [IO.Path]::GetFullPath($Out))
     Write-Host "packaged: $Out"
 }
 finally {
