@@ -166,7 +166,7 @@ static class Infomation
                 sb.Append(GetString("CCInfo1OverrideKillOtherCat")).Append(GetString("CCInfo1OwnCatDontKill"));
                 break;
             case ColorCatKill.CCatAlwaysGuard:
-                sb.Append(GetString("CCInfo1CannotKillOtherCat"));
+                sb.Append(GetString("CCInfo1CannotKillColorCat"));
                 break;
             case ColorCatKill.CCatJustKill:
                 sb.Append(GetString("CCInfo1CanKillColorCat")).Append(GetString("CCInfo1CanKillColorCatAllKill"));
