@@ -49,7 +49,8 @@ public sealed class Rainbow : RoleBase
         CustomRpcSender.Create(name: $"RpcSetNamePlate({Player.Data.PlayerName})").AutoStartRpc(Player.NetId, (byte)RpcCalls.SetNamePlateStr)
             .Write("nameplate_flagRainbow")
             .Write(Player.GetNextRpcSequenceId(RpcCalls.SetNamePlateStr))
-            .EndRpc();
+            .EndRpc()
+            .SendMessage();
     }
     private static readonly int[] RainbowColors = { 8, 1, 10, 2, 11, 14, 5, 4, 17, 0, 3, 13, 7, 15, 6, 12, 9, 16 };
     private int lastSentColor = -1;
