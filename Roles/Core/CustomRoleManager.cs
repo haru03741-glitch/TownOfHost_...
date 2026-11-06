@@ -20,10 +20,11 @@ namespace TownOfHostL.Roles.Core;
 public static class CustomRoleManager
 {
     public static Type[] AllRolesClassType;
-    public static Dictionary<CustomRoles, SimpleRoleInfo> AllRolesInfo = new(CustomRolesHelper.AllRoles.Length);
+    // CustomRolesHelper の static 初期化は RoleCatalog 経由でここを引くので、この初期化から CustomRolesHelper を読まない
+    public static Dictionary<CustomRoles, SimpleRoleInfo> AllRolesInfo = new();
     public static Dictionary<byte, RoleBase> AllActiveRoles = new(15);
 
-    public static SimpleRoleInfo GetRoleInfo(this CustomRoles role) => AllRolesInfo.ContainsKey(role) ? AllRolesInfo[role] : null;
+    public static SimpleRoleInfo GetRoleInfo(this CustomRoles role) => AllRolesInfo.TryGetValue(role, out var info) ? info : null;
     public static RoleBase GetRoleClass(this PlayerControl player) => GetByPlayerId(player.PlayerId);
     public static RoleBase GetByPlayerId(byte playerId) => AllActiveRoles.TryGetValue(playerId, out var roleBase) ? roleBase : null;
     public static void Do<T>(this List<T> list, Action<T> action) => list.ToArray().Do(action);
