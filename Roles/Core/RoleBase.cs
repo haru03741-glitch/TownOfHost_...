@@ -263,6 +263,8 @@ public abstract class RoleBase : IDisposable
     public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
     /// <summary>この役職の人の役職の色が、全員に見えるか</summary>
     public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
+    /// <summary>キノコカオスの間も、キルできる相手の名前が見える (インポスターは役職によらず見える)</summary>
+    public virtual bool SeesNamesInMushroomMixup => false;
 
     // == Sabotage関連処理 ==
     /// <summary>
