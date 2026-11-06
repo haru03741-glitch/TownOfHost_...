@@ -60,7 +60,7 @@ public static class Options
 
     public static readonly string[] gameModes =
     {
-         "Standard",/* "HideAndSeek","CatchCat", "OneNight",*/
+         "Standard", "HideAndSeek", /*"CatchCat", "OneNight",*/
     };
 
     // MapActive
@@ -395,8 +395,7 @@ public static class Options
         // ゲームモード
         GameMode = StringOptionItem.Create(1, "GameMode", gameModes, 0, TabGroup.ModMainSettings, false)
             .SetColor(new Color32(204, 204, 0, 255))
-            .SetGameMode(CustomGameMode.All)
-            .SetHidden(true);//封印
+            .SetGameMode(CustomGameMode.All);
 
         HideGameSettings = StringOptionItem.Create((int)offsetId.FeatSpecial + 300, "HideGameSettings", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, true)
             .SetColor(Color.gray);
@@ -487,22 +486,20 @@ public static class Options
             .SetColor(Palette.LightBlue);
         RoleAssignManager.SetupOptionItem();
 
-        // HideAndSeek //封印
-        /********************************************************************************/
-        //SetupRoleOptions((int)offsetId.GModeHaS + 1000, TabGroup.ModMainSettings, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
-        //SetupRoleOptions((int)offsetId.GModeHaS + 1100, TabGroup.ModMainSettings, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
+        // HideAndSeek
+        SetupRoleOptions((int)offsetId.GModeHaS + 1000, TabGroup.ModMainSettings, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
+        SetupRoleOptions((int)offsetId.GModeHaS + 1100, TabGroup.ModMainSettings, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
 
-        //AllowCloseDoors = StringOptionItem.Create((int)offsetId.GModeHaS + 5000, "AllowCloseDoors", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
-        //    .SetHeader(true)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        //KillDelay = FloatOptionItem.Create((int)offsetId.GModeHaS + 5001, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.ModMainSettings, false)
-        //    .SetValueFormat(OptionFormat.Seconds)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        //IgnoreVent = StringOptionItem.Create((int)offsetId.GModeHaS + 5002, "IgnoreVent", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        /********************************************************************************/
+        AllowCloseDoors = StringOptionItem.Create((int)offsetId.GModeHaS + 5000, "AllowCloseDoors", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
+            .SetHeader(true)
+            .SetGameMode(CustomGameMode.HideAndSeek);
+        KillDelay = FloatOptionItem.Create((int)offsetId.GModeHaS + 5001, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.ModMainSettings, false)
+            .SetValueFormat(OptionFormat.Seconds)
+            .SetGameMode(CustomGameMode.HideAndSeek);
+        IgnoreVent = StringOptionItem.Create((int)offsetId.GModeHaS + 5002, "IgnoreVent", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
+            .SetGameMode(CustomGameMode.HideAndSeek);
 
-        // CC //封印
+        // CC: 今の試合開始の流れ (StandardIntroHelper) に載っておらず、客にイントロが届かず暗転するので選べないままにする
         //CatchCat.Option.SetupCustomOption();
 
         TextOptionItem.Create((int)offsetId.FeatMap, "Head.Map", TabGroup.ModMainSettings).SetColor(Palette.Orange).SetGameMode(CustomGameMode.All);
