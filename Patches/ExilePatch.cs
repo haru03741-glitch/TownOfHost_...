@@ -83,6 +83,7 @@ namespace TownOfHostL
                     if (CustomWinnerHolder.WinnerTeam != CustomWinner.Terrorist) PlayerState.GetByPlayerId(exiled.PlayerId).SetDead();
                 }
                 AntiBlackout.SendGameData();
+                Modules.Net.OutfitSync.FlushPending();
             }
             AfterMeetingTasks();
         }
