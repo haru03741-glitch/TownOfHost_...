@@ -34,6 +34,8 @@ public static class Options
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.Initialize)), HarmonyPostfix]
     public static void OptionsLoadStart()
     {
+        // 2 回目に呼ばれると設定を二重に作り、保存待ちの変更もファイルの値で上書きしてしまう
+        if (IsLoaded) return;
         Logger.Info("Options.Load Start", "Options");
         //taskOptionsLoad = Task.Run(Load);
         Load();

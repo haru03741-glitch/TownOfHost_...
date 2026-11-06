@@ -840,7 +840,7 @@ public static class Utils
             }
 
             formatTag = "<size=65%><line-height=1.5pic>";
-            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
             {
                 // 常時表示しないオプション
                 if (Options.NotShowOption(opt.Name)) continue;
@@ -896,7 +896,7 @@ public static class Utils
             sb.Clear().Append(text.RemoveHtmlTags());
         }
         sb.Append($"━━━━━━━━━━━━【{GetString("Settings")}】━━━━━━━━━━━━");
-        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
         {
             if (!Options.NotShowOption(opt.Name))
                 sb.Append($"\n【{opt.GetName(true)}】\n");

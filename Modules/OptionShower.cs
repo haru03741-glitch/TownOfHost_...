@@ -161,7 +161,7 @@ namespace TownOfHostL
                         }
                     }
                 }
-                foreach (var opt in OptionItem.AllOptions.Where(x => x.Id >= 100000 && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
+                foreach (var opt in OptionItem.AllOptions.Where(x => x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
                 {
                     if (opt.IsText) sb.Append('\n');
                     else

@@ -1,219 +1,161 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 
 namespace TownOfHostL.Modules;
 
+/// <summary>
+/// 設定の保存。シングルオプションと全プリセットを 1 つの JSON にまとめ、設定のキー (OptionItem.Key) で値を引く。
+/// 数値 ID を振り直しても保存した値はずれない。
+/// </summary>
 public static class OptionSaver
 {
     private static readonly DirectoryInfo SaveDataDirectoryInfo = new("./TOHL_DATA/SaveData/");
-    private static readonly DirectoryInfo PresetsDirectoryInfo = new($"{SaveDataDirectoryInfo.FullName}/Presets/");
-    private static readonly FileInfo OptionSaverFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHL.json");
+    private static readonly FileInfo SaveFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options.json");
     private static readonly LogHandler logger = Logger.Handler(nameof(OptionSaver));
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+    /// <summary>形式に互換性のない変更 (キーの付け方・プリセット数など) を加える時に上げる</summary>
+    public const int Version = 1;
 
     public static void Initialize()
     {
+        SaveDataDirectoryInfo.Refresh();
         if (!SaveDataDirectoryInfo.Exists)
         {
             SaveDataDirectoryInfo.Create();
             SaveDataDirectoryInfo.Attributes |= FileAttributes.Hidden;
         }
-        if (!PresetsDirectoryInfo.Exists)
+    }
+
+    /// <summary>すべての設定を読み込む。全部の設定が作られた後に 1 回呼ぶ。</summary>
+    public static void Load()
+    {
+        OptionItem.FinalizeKeys();
+
+        SaveData data = null;
+        try
         {
-            PresetsDirectoryInfo.Create();
+            SaveFileInfo.Refresh();
+            if (SaveFileInfo.Exists)
+            {
+                var json = File.ReadAllText(SaveFileInfo.FullName);
+                if (json.Length > 0) data = JsonSerializer.Deserialize<SaveData>(json);
+            }
         }
-        if (!OptionSaverFileInfo.Exists)
+        catch (Exception ex)
         {
-            OptionSaverFileInfo.Create().Dispose();
+            logger.Warn($"設定の読み込みに失敗しました。前のファイルを .bak に残して既定値で始めます: {ex.Message}");
+            Backup();
+            data = null;
         }
 
-        // Ensure preset files exist (create defaults if missing)
-        for (int i = 0; i < OptionItem.NumPresets; i++)
+        if (data == null || data.Version != Version)
         {
-            var path = GetPresetFilePath(i);
-            if (!File.Exists(path))
+            if (data != null)
             {
-                try
-                {
-                    File.WriteAllText(path, JsonSerializer.Serialize(new SerializablePresetData { Version = Version, PresetOptions = new Dictionary<int, int>() }, new JsonSerializerOptions { WriteIndented = true }));
-                }
-                catch (Exception ex)
-                {
-                    logger.Warn($"Preset file の作成に失敗しました: {ex.Message}");
-                }
+                logger.Info($"保存した設定の形式 ({data.Version}) が今の形式 ({Version}) と違うので、前のファイルを .bak に残して既定値で始めます");
+                Backup();
+            }
+            WriteNow();
+            return;
+        }
+
+        if (data.Single != null)
+        {
+            foreach (var (key, value) in data.Single)
+                if (OptionItem.TryGetByKey(key, out var option) && option.IsSingleValue)
+                    option.SetValue(value, doSave: false);
+        }
+        if (data.Presets != null)
+        {
+            for (int i = 0; i < data.Presets.Length && i < OptionItem.NumPresets; i++)
+            {
+                if (data.Presets[i] == null) continue;
+                foreach (var (key, value) in data.Presets[i])
+                    if (OptionItem.TryGetByKey(key, out var option) && !option.IsSingleValue)
+                        option.AllValues[i] = value;
             }
         }
     }
 
-    /// <summary>シングルオプションのみを生成</summary>
-    private static SerializableSingleOptionsData GenerateSingleOptionsData()
+    private static SaveData Generate()
     {
-        Dictionary<int, int> singleOptions = new();
+        var single = new Dictionary<string, int>();
+        var presets = new Dictionary<string, int>[OptionItem.NumPresets];
+        for (int i = 0; i < presets.Length; i++) presets[i] = new();
+
         foreach (var option in OptionItem.AllOptions)
         {
             if (option.IsSingleValue)
-            {
-                if (!singleOptions.TryAdd(option.Id, option.SingleValue))
-                {
-                    logger.Warn($"SingleOptionのID {option.Id} が重複");
-                }
-            }
+                single[option.Key] = option.SingleValue;
+            else
+                for (int i = 0; i < presets.Length && i < option.AllValues.Length; i++)
+                    presets[i][option.Key] = option.AllValues[i];
         }
-        return new SerializableSingleOptionsData
-        {
-            Version = Version,
-            SingleOptions = singleOptions,
-        };
+        return new SaveData { Version = Version, Single = single, Presets = presets };
     }
 
-    /// <summary>指定プリセットのオプションデータを生成</summary>
-    private static SerializablePresetData GeneratePresetData(int presetIndex)
-    {
-        Dictionary<int, int> presetOptions = new();
-        foreach (var option in OptionItem.AllOptions)
-        {
-            if (!option.IsSingleValue && option.AllValues.Length > presetIndex)
-            {
-                if (!presetOptions.TryAdd(option.Id, option.AllValues[presetIndex]))
-                {
-                    logger.Warn($"プリセットオプションのID {option.Id} が重複");
-                }
-            }
-        }
-        return new SerializablePresetData
-        {
-            Version = Version,
-            PresetOptions = presetOptions,
-        };
-    }
-
-    /// <summary>シングルオプションデータを読み込み</summary>
-    private static void LoadSingleOptionsData(SerializableSingleOptionsData serializableData)
-    {
-        if (serializableData?.Version != Version)
-        {
-            logger.Info($"読み込まれたシングルオプションのバージョンが一致しないためデフォルト値で上書きします");
-            SaveSingleOptions();
-            return;
-        }
-
-        Dictionary<int, int> singleOptions = serializableData.SingleOptions ?? new();
-        foreach (var singleOption in singleOptions)
-        {
-            var id = singleOption.Key;
-            var value = singleOption.Value;
-            if (OptionItem.FastOptions.TryGetValue(id, out var optionItem))
-            {
-                optionItem.SetValue(value, doSave: false);
-            }
-        }
-    }
-
-    /// <summary>指定プリセットのデータを読み込み</summary>
-    private static void LoadPresetData(int presetIndex, SerializablePresetData serializableData)
-    {
-        if (serializableData?.Version != Version)
-        {
-            logger.Info($"Preset {presetIndex} のバージョンが一致しないためスキップします");
-            return;
-        }
-
-        Dictionary<int, int> presetOptions = serializableData.PresetOptions ?? new();
-        foreach (var presetOption in presetOptions)
-        {
-            var id = presetOption.Key;
-            var value = presetOption.Value;
-            if (OptionItem.FastOptions.TryGetValue(id, out var optionItem))
-            {
-                // 配列要素を直接設定
-                if (optionItem.AllValues.Length > presetIndex)
-                    optionItem.AllValues[presetIndex] = value;
-            }
-        }
-    }
-
-    /// <summary>シングルオプションをjsonファイルに保存</summary>
-    private static void SaveSingleOptions()
-    {
-        // 接続済みで，ホストじゃなければ保存しない
-        if (AmongUsClient.Instance != null && !AmongUsClient.Instance.AmHost)
-        {
-            return;
-        }
-        WriteSingleOptions();
-    }
-    private static void WriteSingleOptions()
+    /// <summary>読めなかったファイルを上書きする前に残しておく</summary>
+    private static void Backup()
     {
         try
         {
-            var jsonString = JsonSerializer.Serialize(GenerateSingleOptionsData(), new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(OptionSaverFileInfo.FullName, jsonString);
+            SaveFileInfo.Refresh();
+            if (SaveFileInfo.Exists) File.Copy(SaveFileInfo.FullName, SaveFileInfo.FullName + ".bak", true);
         }
         catch (Exception ex)
         {
-            logger.Warn($"シングルオプションの保存に失敗しました: {ex.Message}");
+            logger.Warn($"設定のファイルを .bak に残せませんでした: {ex.Message}");
         }
     }
 
-    /// <summary>指定プリセットをjsonファイルに保存</summary>
-    private static void SavePreset(int presetIndex)
+    /// <summary>今すぐ書く。書きかけで落ちても前のファイルが残るよう、別のファイルに書いてから置き換える。書けたら true。</summary>
+    private static bool WriteNow()
     {
-        // 接続済みで，ホストじゃなければ保存しない
-        if (AmongUsClient.Instance != null && !AmongUsClient.Instance.AmHost)
-        {
-            return;
-        }
-        WritePreset(presetIndex);
-    }
-    private static void WritePreset(int presetIndex)
-    {
+        // 接続済みで、ホストでなければ保存しない
+        if (AmongUsClient.Instance != null && !AmongUsClient.Instance.AmHost) return true;
         try
         {
-            var presetFilePath = GetPresetFilePath(presetIndex);
-            var jsonString = JsonSerializer.Serialize(GeneratePresetData(presetIndex), new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(presetFilePath, jsonString);
+            Initialize();
+            var json = JsonSerializer.Serialize(Generate(), JsonOptions);
+            var path = SaveFileInfo.FullName;
+            var temp = path + ".tmp";
+            File.WriteAllText(temp, json);
+            if (File.Exists(path)) File.Replace(temp, path, null);
+            else File.Move(temp, path);
+            return true;
         }
         catch (Exception ex)
         {
-            logger.Warn($"Preset {presetIndex} の保存に失敗しました: {ex.Message}");
+            logger.Warn($"設定の保存に失敗しました: {ex.Message}");
+            return false;
         }
     }
 
-    /// <summary>全プリセットをjsonファイルに保存</summary>
-    private static void SaveAllPresets()
-    {
-        for (int i = 0; i < OptionItem.NumPresets; i++)
-        {
-            SavePreset(i);
-        }
-    }
-
-    /// <summary>現在のオプションをjsonファイルに保存 (すぐ書く)</summary>
+    /// <summary>現在の設定をすぐ書く</summary>
     public static void Save()
     {
-        SaveSingleOptions();
-        SaveAllPresets();
-        dirtySingle = false;
-        dirtyPresets = 0;
+        dirty = true;
+        Flush();
     }
 
     // ---- まとめて保存 ----
-    // 値を 1 つ変えるたびに全部のファイルを書き直すと、プリセットの切り替えのような一括の変更で
-    // 何千回も書くことになる。変わった印だけ付けて、最後の変更から少し待ってから変わったファイルだけを書く。
+    // 値を 1 つ変えるたびに書くと、プリセットの切り替えのような一括の変更で何千回も書くことになる。
+    // 変わった印だけ付けて、最後の変更から少し待ってから 1 回だけ書く。
     private const float SaveDelaySeconds = 1f;
-    private static bool dirtySingle;
-    private static int dirtyPresets; // プリセットの番号ごとのビット
+    // 書けなかった時 (他のアプリがファイルを掴んでいるなど) は、印を残して少し後にもう一度書く
+    private const float RetryDelaySeconds = 5f;
+    private static bool dirty;
     private static float saveAt = -1f;
 
-    /// <summary>保存を予約する。preset は変わったプリセットの番号 (シングルオプションなら null)。</summary>
-    public static void RequestSave(int? preset)
+    /// <summary>保存を予約する</summary>
+    public static void RequestSave()
     {
-        // 接続済みで，ホストじゃなければ保存しない
+        // 接続済みで、ホストでなければ保存しない
         if (AmongUsClient.Instance != null && !AmongUsClient.Instance.AmHost) return;
-        if (preset is int index) dirtyPresets |= 1 << index;
-        else dirtySingle = true;
+        dirty = true;
         saveAt = UnityEngine.Time.realtimeSinceStartup + SaveDelaySeconds;
     }
 
@@ -224,120 +166,25 @@ public static class OptionSaver
         Flush();
     }
 
-    /// <summary>予約されている保存を今すぐ書く。</summary>
+    /// <summary>予約されている保存を今すぐ書く</summary>
     public static void Flush()
     {
         saveAt = -1f;
-        if (dirtySingle)
+        if (!dirty) return;
+        dirty = false;
+        if (!WriteNow())
         {
-            dirtySingle = false;
-            WriteSingleOptions();
+            dirty = true;
+            saveAt = UnityEngine.Time.realtimeSinceStartup + RetryDelaySeconds;
         }
-        for (int i = 0; dirtyPresets != 0 && i < OptionItem.NumPresets; i++)
-        {
-            int bit = 1 << i;
-            if ((dirtyPresets & bit) == 0) continue;
-            dirtyPresets &= ~bit;
-            WritePreset(i);
-        }
-        dirtyPresets = 0;
     }
 
-    /// <summary>シングルオプションをjsonファイルから読み込み</summary>
-    private static void LoadSingleOptions()
+    public class SaveData
     {
-        if (!OptionSaverFileInfo.Exists)
-        {
-            logger.Info("シングルオプションデータが存在しないためデフォルト値を保存");
-            SaveSingleOptions();
-            return;
-        }
-
-        try
-        {
-            var jsonString = File.ReadAllText(OptionSaverFileInfo.FullName);
-            if (jsonString.Length <= 0)
-            {
-                logger.Info("シングルオプションデータが空のためデフォルト値を保存");
-                SaveSingleOptions();
-                return;
-            }
-
-            LoadSingleOptionsData(JsonSerializer.Deserialize<SerializableSingleOptionsData>(jsonString));
-        }
-        catch (Exception ex)
-        {
-            logger.Warn($"シングルオプションの読み込みに失敗しました。デフォルト値で上書きします: {ex.Message}");
-            SaveSingleOptions();
-        }
+        public int Version { get; set; }
+        /// <summary>シングルオプションの値 (キー → 値)</summary>
+        public Dictionary<string, int> Single { get; set; }
+        /// <summary>プリセットごとの値 (キー → 値)</summary>
+        public Dictionary<string, int>[] Presets { get; set; }
     }
-
-    /// <summary>指定プリセットをjsonファイルから読み込み</summary>
-    private static void LoadPreset(int presetIndex)
-    {
-        var presetFilePath = GetPresetFilePath(presetIndex);
-        if (!File.Exists(presetFilePath))
-        {
-            logger.Info($"Preset {presetIndex} が存在しないため作成します");
-            SavePreset(presetIndex);
-            return;
-        }
-
-        try
-        {
-            var jsonString = File.ReadAllText(presetFilePath);
-            if (jsonString.Length <= 0)
-            {
-                logger.Info($"Preset {presetIndex} が空のためデフォルト値を保存");
-                SavePreset(presetIndex);
-                return;
-            }
-
-            LoadPresetData(presetIndex, JsonSerializer.Deserialize<SerializablePresetData>(jsonString));
-        }
-        catch (Exception ex)
-        {
-            logger.Warn($"Preset {presetIndex} の読み込みに失敗しました: {ex.Message}");
-            SavePreset(presetIndex);
-        }
-    }
-
-    /// <summary>全プリセットをjsonファイルから読み込み</summary>
-    private static void LoadAllPresets()
-    {
-        for (int i = 0; i < OptionItem.NumPresets; i++)
-        {
-            LoadPreset(i);
-        }
-    }
-
-    /// <summary>すべてのオプションをjsonファイルから読み込み</summary>
-    public static void Load()
-    {
-        LoadSingleOptions();
-        LoadAllPresets();
-    }
-
-    /// <summary>プリセットファイルパスを取得</summary>
-    private static string GetPresetFilePath(int presetIndex)
-    {
-        return Path.Combine(PresetsDirectoryInfo.FullName, $"Preset_{presetIndex}.json");
-    }
-
-    /// <summary>シングルオプションのみjsonに適した形式</summary>
-    public class SerializableSingleOptionsData
-    {
-        public int Version { get; init; }
-        public Dictionary<int, int> SingleOptions { get; init; }
-    }
-
-    /// <summary>プリセットオプションのみjsonに適した形式</summary>
-    public class SerializablePresetData
-    {
-        public int Version { get; init; }
-        public Dictionary<int, int> PresetOptions { get; init; }
-    }
-
-    /// <summary>オプションの形式に互換性のない変更(プリセット数変更など)を加えるときはここの数字を上げる</summary>
-    public static readonly int Version = 0;
 }

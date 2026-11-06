@@ -124,7 +124,7 @@ namespace TownOfHostL
             //TOHオプションをデフォルトに設定
             if (GetKeysDown(KeyCode.Delete, KeyCode.LeftControl))
             {
-                OptionItem.AllOptions.ToArray().Where(x => x.Id > 0).Do(x => x.SetValue(x.DefaultValue));
+                OptionItem.AllOptions.ToArray().Where(x => x is not PresetOptionItem).Do(x => x.SetValue(x.DefaultValue));
             }
             //自分自身の死体をレポート
             if (GetKeysDown(KeyCode.Return, KeyCode.M, KeyCode.RightShift) && GameStates.IsInTask)
