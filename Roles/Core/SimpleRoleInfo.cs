@@ -32,6 +32,13 @@ public class SimpleRoleInfo
     private Func<bool> canMakeMadmate;
     public bool CanMakeMadmate => canMakeMadmate?.Invoke() == true;
     public RoleAssignInfo AssignInfo { get; }
+    /// <summary>
+    /// イントロで、この役職が属す組として見せる役職 (ジャッカルの組・妖狐の組など)。
+    /// 既定のイントロではその役職の名前と色の帯と「Team役職名」の文、ChangeIntro では第三陣営の文を「Team役職名」にする。null なら陣営の既定の表示
+    /// </summary>
+    public CustomRoles? IntroTeam { get; private set; }
+    /// <summary>既定のイントロで、インポスターの人数の文を出す (インポスター側に見えないデシンクのキル役など)</summary>
+    public bool IntroShowsImpostorCount { get; private set; }
 
     private SimpleRoleInfo(
         Type classType,
@@ -108,13 +115,15 @@ public class SimpleRoleInfo
         Func<bool> canMakeMadmate = null,
         CountTypes? countType = null,
         RoleAssignInfo assignInfo = null,
-        RoleFlags flags = RoleFlags.None
+        RoleFlags flags = RoleFlags.None,
+        CustomRoles? introTeam = null,
+        bool introShowsImpostorCount = false
     )
     {
         countType ??= customRoleType == CustomRoleTypes.Impostor ? CountTypes.Impostor : CountTypes.Crew;
         assignInfo ??= new RoleAssignInfo(roleName, customRoleType);
 
-        return
+        SimpleRoleInfo info =
             new(
                 classType,
                 createInstance,
@@ -133,6 +142,9 @@ public class SimpleRoleInfo
                 assignInfo,
                 flags
             );
+        info.IntroTeam = introTeam;
+        info.IntroShowsImpostorCount = introShowsImpostorCount;
+        return info;
     }
     public static SimpleRoleInfo CreateForVanilla(
         Type classType,

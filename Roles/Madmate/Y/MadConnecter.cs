@@ -21,7 +21,8 @@ public sealed class MadConnecter : RoleBase, IKiller, IKillFlashSeeable
             SetupOptionItem,
             "マッドコネクター",
             isDesyncImpostor: true,
-            flags: RoleFlags.DontSelectLoyalty | RoleFlags.DirectKill
+            flags: RoleFlags.DontSelectLoyalty | RoleFlags.DirectKill,
+            introShowsImpostorCount: true
         );
     public MadConnecter(PlayerControl player)
     : base(

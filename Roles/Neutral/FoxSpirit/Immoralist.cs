@@ -29,7 +29,8 @@ public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateH
                 IsInitiallyAssignableCallBack = ()
                     => (MapNames)Main.NormalOptions.MapId is not MapNames.Polus and not MapNames.Fungle
                         && CustomRoles.FoxSpirit.IsEnable()
-            }
+            },
+            introTeam: CustomRoles.FoxSpirit
         );
     public Immoralist(PlayerControl player)
     : base(

@@ -182,35 +182,23 @@ class BeginCrewmatePatch
                     break;
             }
 
-            switch (role)
+            var roleInfo = role.GetRoleInfo();
+            // 組で動く役職は、組の役職の名前と色の帯にする
+            if (roleInfo?.IntroTeam is CustomRoles team)
             {
-                case CustomRoles.Jackal:
-                case CustomRoles.JClient:
-                    __instance.TeamTitle.text = Utils.GetRoleName(CustomRoles.Jackal);
-                    __instance.TeamTitle.color = Utils.GetRoleColor(CustomRoles.Jackal);
-                    __instance.ImpostorText.gameObject.SetActive(true);
-                    __instance.ImpostorText.text = GetString("TeamJackal");
-                    __instance.BackgroundBar.material.color = Utils.GetRoleColor(CustomRoles.Jackal);
-                    break;
-
-                case CustomRoles.FoxSpirit:
-                case CustomRoles.Immoralist:
-                    __instance.TeamTitle.text = Utils.GetRoleName(CustomRoles.FoxSpirit);
-                    __instance.TeamTitle.color = Utils.GetRoleColor(CustomRoles.FoxSpirit);
-                    __instance.ImpostorText.gameObject.SetActive(true);
-                    __instance.ImpostorText.text = GetString("TeamFoxSpirit");
-                    __instance.BackgroundBar.material.color = Utils.GetRoleColor(CustomRoles.FoxSpirit);
-                    break;
-
-                case CustomRoles.MadSheriff:
-                case CustomRoles.MadConnecter:
-                case CustomRoles.jO:
-                    __instance.ImpostorText.gameObject.SetActive(true);
-                    __instance.ImpostorText.text = numImpostors == 1
-                        ? DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NumImpostorsS)
-                        : string.Format(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NumImpostorsP), numImpostors);
-                    __instance.ImpostorText.text = __instance.ImpostorText.text.Replace("[FF1919FF]", "<color=#FF1919FF>").Replace("[]", "</color>");
-                    break;
+                __instance.TeamTitle.text = Utils.GetRoleName(team);
+                __instance.TeamTitle.color = Utils.GetRoleColor(team);
+                __instance.ImpostorText.gameObject.SetActive(true);
+                __instance.ImpostorText.text = GetString($"Team{team}");
+                __instance.BackgroundBar.material.color = Utils.GetRoleColor(team);
+            }
+            if (roleInfo?.IntroShowsImpostorCount == true)
+            {
+                __instance.ImpostorText.gameObject.SetActive(true);
+                __instance.ImpostorText.text = numImpostors == 1
+                    ? DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NumImpostorsS)
+                    : string.Format(DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.NumImpostorsP), numImpostors);
+                __instance.ImpostorText.text = __instance.ImpostorText.text.Replace("[FF1919FF]", "<color=#FF1919FF>").Replace("[]", "</color>");
             }
         }
         else
@@ -221,14 +209,9 @@ class BeginCrewmatePatch
                     __instance.TeamTitle.text = Utils.GetRoleName(role);
                     __instance.TeamTitle.color = Utils.GetRoleColor(role);
                     __instance.ImpostorText.gameObject.SetActive(true);
-                    __instance.ImpostorText.text = role switch
-                    {
-                        CustomRoles.Egoist => GetString("TeamEgoist"),
-                        CustomRoles.Jackal => GetString("TeamJackal"),
-                        CustomRoles.JSidekick => GetString("TeamJackal"),
-                        CustomRoles.JClient => GetString("TeamJackal"),
-                        _ => GetString("NeutralInfo"),
-                    };
+                    __instance.ImpostorText.text = role.GetRoleInfo()?.IntroTeam is CustomRoles team
+                        ? GetString($"Team{team}")
+                        : GetString("NeutralInfo");
                     __instance.BackgroundBar.material.color = Utils.GetRoleColor(role);
                     break;
 
@@ -380,7 +363,7 @@ class BeginImpostorPatch
     public static void Postfix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
     {
         var role = PlayerControl.LocalPlayer.GetCustomRole();
-        if (role.GetCustomRoleTypes() != CustomRoleTypes.Impostor && role != CustomRoles.StrayWolf)
+        if (role.GetCustomRoleTypes() != CustomRoleTypes.Impostor && !role.IsLoneImpostor())
         {
             BeginCrewmatePatch.Postfix(__instance, ref yourTeam);
         }

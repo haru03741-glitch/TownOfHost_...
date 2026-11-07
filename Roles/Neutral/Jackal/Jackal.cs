@@ -29,7 +29,8 @@ namespace TownOfHostL.Roles.Neutral
                 {
                     AssignCountRule = new(1, 1, 1)
                 },
-                flags: RoleFlags.FixedCount | RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn | RoleFlags.NeutralKiller| RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn
+                flags: RoleFlags.FixedCount | RoleFlags.DontSelectLoyalty | RoleFlags.AddAddOn | RoleFlags.NeutralKiller,
+                introTeam: CustomRoles.Jackal
             );
         public Jackal(PlayerControl player)
         : base(
