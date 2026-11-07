@@ -1120,6 +1120,26 @@ public static class Utils
         Logger.Info($"[MessagesToSend.Add] sendTo: {sendTo}", "SendMessage");
         Main.MessagesToSend.Add(($"<align={"left"}><size=90%>{text}</size></align>", sendTo, $"<align={"left"}>{title}</align>", false));
     }*/
+    // 宛先ごとの送信待ちの上限。超えた分は送らない (返事の連打で、同じ宛先への送信が長く続かないようにする)。
+    // 宛先ごとに数えるので、試合の開始に全員へ役職の説明を送る時のように宛先が多くても削られない
+    private const int MaxQueuedMessagesPerTarget = 20;
+    private static void EnqueueMessage((string text, byte sendTo, string title, bool custom) message)
+    {
+        int queued = 0;
+        foreach (var x in Main.MessagesToSend)
+        {
+            if (x.Item2 != message.sendTo) continue;
+            // 同じ宛先への同じ文が送信待ちにあれば、重ねて送らない
+            if (x.Item1 == message.text) return;
+            queued++;
+        }
+        if (queued >= MaxQueuedMessagesPerTarget)
+        {
+            Logger.Warn($"宛先 {message.sendTo} への送信待ちが {MaxQueuedMessagesPerTarget} 件あるので送りません", "SendMessage");
+            return;
+        }
+        Main.MessagesToSend.Add(message);
+    }
     public static void SendMessageAutoSplit(string text, bool showTitle, string title = "", byte sendTo = byte.MaxValue, string formatTag = "<size=70%><line-height=1.6pic>")
     {
         if (!AmongUsClient.Instance.AmHost) return;
@@ -1147,7 +1167,7 @@ public static class Utils
         if (fullText.Length <= MAX_LENGTH && (fullText.Split("\n")?.Length ?? 0) <= MAX_LINES
             && Encoding.UTF8.GetByteCount(fullText) <= MAX_LINE_BYTES)
         {
-            Main.MessagesToSend.Add((fullText, sendTo, "", true));
+            EnqueueMessage((fullText, sendTo, "", true));
             return;
         }
 
@@ -1209,7 +1229,7 @@ public static class Utils
 
                 if (HasVisibleText(sendText))
                 {
-                    Main.MessagesToSend.Add((RemoveFirstNewLine(sendText), sendTo, "", true));
+                    EnqueueMessage((RemoveFirstNewLine(sendText), sendTo, "", true));
                     showedTitle = true;
                     firstSending = false;
                 }
@@ -1234,7 +1254,7 @@ public static class Utils
 
             if (HasVisibleText(finalRaw))
             {
-                Main.MessagesToSend.Add((RemoveFirstNewLine(finalText), sendTo, "", true));
+                EnqueueMessage((RemoveFirstNewLine(finalText), sendTo, "", true));
             }
         }
     }

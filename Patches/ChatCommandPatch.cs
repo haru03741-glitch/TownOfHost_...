@@ -418,6 +418,17 @@ namespace TownOfHostL
             if (!AmongUsClient.Instance.AmHost) return;
             Utils.SendMessageAutoSplit(message, true, sendTo: player.PlayerId);
         }
+        // 客 1 人あたり、返事は ReplyInterval 秒に 1 回まで。連打の返事が溜まると、同じ宛先への送信が続いて公式サーバーに切られる恐れがある
+        private const float ReplyInterval = 2f;
+        private static readonly Dictionary<byte, float> lastReplyAt = new();
+        private static bool TryTakeReplySlot(PlayerControl player)
+        {
+            if (player == null || player.AmOwner) return true;
+            float now = UnityEngine.Time.realtimeSinceStartup;
+            if (lastReplyAt.TryGetValue(player.PlayerId, out var last) && now - last < ReplyInterval) return false;
+            lastReplyAt[player.PlayerId] = now;
+            return true;
+        }
         public static void OnReceiveChat(PlayerControl player, string text)
         {
             if (player != null)
@@ -428,8 +439,17 @@ namespace TownOfHostL
 
             if (!AmongUsClient.Instance.AmHost) return;
 
+            bool isNimrodMeeting = Nimrod.IsExecutionMeeting() || MadNimrod.IsExecutionMeeting();
+            // 返事をしない発言はここで終わる
+            if (!isNimrodMeeting && !text.StartsWith("/")) return;
+            if (!TryTakeReplySlot(player))
+            {
+                Logger.Info($"{player?.Data?.PlayerName} の発言は前の返事から {ReplyInterval} 秒以内なので返事をしません", "OnReceiveChat");
+                return;
+            }
+
             // ニムロッド会議中
-            if (Nimrod.IsExecutionMeeting() || MadNimrod.IsExecutionMeeting())
+            if (isNimrodMeeting)
             {
                 if (text.Length > 0)
                 {
