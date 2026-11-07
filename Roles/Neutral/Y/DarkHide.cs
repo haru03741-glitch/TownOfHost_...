@@ -28,7 +28,7 @@ namespace TownOfHostL.Roles.Neutral
                 {
                     AssignCountRule = new(1, 1, 1)
                 },
-            flags: RoleFlags.FixedCount
+            flags: RoleFlags.FixedCount | RoleFlags.NeutralKiller
             );
         public DarkHide(PlayerControl player)
         : base(

@@ -66,6 +66,8 @@ static class CustomRolesHelper
     public static bool IsFirstWriteAddOn(this CustomRoles role) => role.Def().Has(RoleFlags.FirstWriteAddOn);
     public static bool IsDirectKillRole(this CustomRoles role) => role.Def().Has(RoleFlags.DirectKill);
     public static bool IsLoneImpostor(this CustomRoles role) => role.Def().Has(RoleFlags.LoneImpostor);
+    public static bool IsNeutralKiller(this CustomRoles role) => role.Def().Has(RoleFlags.NeutralKiller);
+    public static bool IsCrewKiller(this CustomRoles role) => role.Def().Has(RoleFlags.CrewKiller);
 
     //CC
     public static bool IsCCRole(this CustomRoles role) => role.Def().Has(RoleFlags.CCLeader | RoleFlags.CCColorCat | RoleFlags.CCNoCat);

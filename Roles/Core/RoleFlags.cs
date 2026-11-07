@@ -37,4 +37,8 @@ public enum RoleFlags : uint
     CCNoCat = 1 << 14,
     /// <summary>インポスター陣営に数えるが、他のインポスターの仲間にならない (互いに役職が見えず、キルもできる)</summary>
     LoneImpostor = 1 << 15,
+    /// <summary>キルできる第三陣営 (占い・スニッチ・弁護士などが「キルする人」として扱う)</summary>
+    NeutralKiller = 1 << 16,
+    /// <summary>キルできるクルー (シェリフ系)</summary>
+    CrewKiller = 1 << 17,
 }

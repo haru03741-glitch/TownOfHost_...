@@ -600,21 +600,9 @@ static class ExtendedPlayerControl
         return rangePlayers;
     }
     public static bool IsNeutralKiller(this PlayerControl player)
-    {
-        return
-            player.GetCustomRole() is
-            CustomRoles.Egoist or
-            CustomRoles.Jackal or
-            CustomRoles.DarkHide;
-    }
+        => player.GetCustomRole().IsNeutralKiller();
     public static bool IsCrewKiller(this PlayerControl player)
-    {
-        return
-            player.GetCustomRole() is
-            CustomRoles.Sheriff or
-            CustomRoles.SillySheriff or
-            CustomRoles.Hunter;
-    }
+        => player.GetCustomRole().IsCrewKiller();
     public static bool KnowDeathReason(this PlayerControl seer, PlayerControl seen)
     {
         // targetが生きてたらfalse
