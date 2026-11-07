@@ -26,7 +26,7 @@ class CheckProtectPatch
     {
         if (!AmongUsClient.Instance.AmHost) return false;
         Logger.Info("CheckProtect発生: " + __instance.GetNameWithRole() + "=>" + target.GetNameWithRole(), "CheckProtect");
-        if (__instance.IsCrewKiller()
+        if (__instance.IsCountedCrewKiller()
             || __instance.Is(CustomRoles.MadSheriff))
         {
             if (__instance.Data.IsDead)

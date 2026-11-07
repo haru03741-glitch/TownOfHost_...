@@ -104,7 +104,7 @@ public static class NameParts
         => seer.Data.IsDead
             || seer.GetCustomRole().IsImpostor()
             || PlayerState.GetByPlayerId(seer.PlayerId).TargetColorData.Count > 0
-            || seer.IsNeutralKiller()
+            || seer.IsCountedNeutralKiller()
             || seer.GetRoleClass()?.NeedsSeenNames == true
             || seer.Is(CustomRoles.Lovers)
             || VentEnterTask.HaveTask(seer)

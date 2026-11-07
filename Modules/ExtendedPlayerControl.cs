@@ -603,6 +603,10 @@ static class ExtendedPlayerControl
         => player.GetCustomRole().IsNeutralKiller();
     public static bool IsCrewKiller(this PlayerControl player)
         => player.GetCustomRole().IsCrewKiller();
+    public static bool IsCountedNeutralKiller(this PlayerControl player)
+        => player.GetCustomRole().IsCountedNeutralKiller();
+    public static bool IsCountedCrewKiller(this PlayerControl player)
+        => player.GetCustomRole().IsCountedCrewKiller();
     public static bool KnowDeathReason(this PlayerControl seer, PlayerControl seen)
     {
         // targetが生きてたらfalse

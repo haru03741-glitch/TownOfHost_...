@@ -25,7 +25,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
             "#f8cd46",
             isDesyncImpostor: true,
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            flags: RoleFlags.CrewKiller
+            flags: RoleFlags.CrewKiller | RoleFlags.CountedAsKiller
         );
     public Sheriff(PlayerControl player)
     : base(

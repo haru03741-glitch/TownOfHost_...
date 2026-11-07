@@ -25,7 +25,7 @@ public sealed class SillySheriff : RoleBase, IKiller, ISchrodingerCatOwner
             "#f8cd46",
             true,
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            flags: RoleFlags.CrewKiller
+            flags: RoleFlags.CrewKiller | RoleFlags.CountedAsKiller
         );
     public SillySheriff(PlayerControl player)
     : base(

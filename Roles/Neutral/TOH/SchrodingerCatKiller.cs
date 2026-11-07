@@ -23,7 +23,8 @@ public sealed class SchrodingerCatKiller : RoleBase, IKiller, IAdditionalWinner,
             (int)Options.offsetId.NeuTOH + 390,
             SetupOptionItem,
             "シュレディンガーの猫",
-            "#696969"
+            "#696969",
+            flags: RoleFlags.NeutralKiller
         );
     public SchrodingerCatKiller(PlayerControl player)
     : base(

@@ -560,7 +560,7 @@ class SelectRolesPatch
                 foreach (var seer in Main.AllPlayerControls)
                 {
                     if (seer == pc) continue;
-                    if (pc.GetCustomRole().IsImpostor() || pc.IsNeutralKiller())
+                    if (pc.GetCustomRole().IsImpostor() || pc.IsCountedNeutralKiller())
                         NameColorManager.Add(seer.PlayerId, pc.PlayerId);
                 }
             }

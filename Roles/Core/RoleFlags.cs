@@ -38,10 +38,18 @@ public enum RoleFlags : ulong
     CCNoCat = 1UL << 14,
     /// <summary>インポスター陣営に数えるが、他のインポスターの仲間にならない (互いに役職が見えず、キルもできる)</summary>
     LoneImpostor = 1UL << 15,
-    /// <summary>キルできる第三陣営 (占い・スニッチ・弁護士などが「キルする人」として扱う)</summary>
+    /// <summary>
+    /// キルできる第三陣営 (キルボタンを別の効果に使うだけの役職は含めない)。
+    /// 他の役職の能力が「キル役」として扱う集合は CountedAsKiller で、こちらとは別
+    /// </summary>
     NeutralKiller = 1UL << 16,
-    /// <summary>キルできるクルー (シェリフ系)</summary>
+    /// <summary>キルできるクルー (シェリフ系)。能力が「キル役」として扱う集合は CountedAsKiller</summary>
     CrewKiller = 1UL << 17,
+    /// <summary>
+    /// 他の役職の能力 (占い・霊媒の「キル役だけ」・スニッチ・弁護士・エクスキューショナー・ダークハイド・ラブカッター) と、
+    /// シェリフ系のイントロ・守護の禁止が「キル役」として扱う役職。キルできる役職すべてではなく、遊びの調整で決めた集合
+    /// </summary>
+    CountedAsKiller = 1UL << 26,
 
     // ここから下は役職にも属性にも付けられる性質。判定は Core.PlayerTraits から引く
     /// <summary>追放された人がインポスターかどうかを、自分の名前の所で知る</summary>

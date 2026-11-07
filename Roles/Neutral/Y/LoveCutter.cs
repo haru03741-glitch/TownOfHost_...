@@ -76,7 +76,7 @@ public sealed class LoveCutter : RoleBase
         if (!KnowKiller || !IsTaskFinished || !Player.IsAlive()) return true;
 
         foreach (var killer in Main.AllAlivePlayerControls
-            .Where(TownOfHostL.Core.PlayerTraits.IsKiller))
+            .Where(TownOfHostL.Core.PlayerTraits.IsCountedKiller))
         {
             NameColorManager.Add(Player.PlayerId, killer.PlayerId);
         }

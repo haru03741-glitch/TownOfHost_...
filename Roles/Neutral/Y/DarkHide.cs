@@ -28,7 +28,7 @@ namespace TownOfHostL.Roles.Neutral
                 {
                     AssignCountRule = new(1, 1, 1)
                 },
-            flags: RoleFlags.FixedCount | RoleFlags.NeutralKiller
+            flags: RoleFlags.FixedCount | RoleFlags.NeutralKiller | RoleFlags.CountedAsKiller
             );
         public DarkHide(PlayerControl player)
         : base(
@@ -75,7 +75,7 @@ namespace TownOfHostL.Roles.Neutral
 
                 var targetRole = target.GetCustomRole();
                 if (!IsWinKill) IsWinKill = targetRole.IsImpostor();
-                if (CanCountNeutralKiller && target.IsNeutralKiller()) IsWinKill = true;
+                if (CanCountNeutralKiller && target.IsCountedNeutralKiller()) IsWinKill = true;
 
                 foreach (var pc in Main.AllPlayerControls)
                 {

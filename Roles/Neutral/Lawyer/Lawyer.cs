@@ -97,7 +97,7 @@ public sealed class Lawyer : RoleBase
         foreach (var target in Main.AllPlayerControls)
         {
             if (Player == target) continue;
-            if ((target.Is(CustomRoleTypes.Impostor) || target.IsNeutralKiller()) &&
+            if ((target.Is(CustomRoleTypes.Impostor) || target.IsCountedNeutralKiller()) &&
                 (includeLovers || !target.Is(CustomRoles.Lovers))
             ) targetList.Add(target);
         }

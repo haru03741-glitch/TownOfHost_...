@@ -23,7 +23,8 @@ public sealed class JSidekick : RoleBase, IKiller, ISchrodingerCatOwner
             "#00b4eb",
             true,
             countType: CountTypes.Jackal,
-            introTeam: CustomRoles.Jackal
+            introTeam: CustomRoles.Jackal,
+            flags: RoleFlags.NeutralKiller
         );
     public JSidekick(PlayerControl player)
     : base(
