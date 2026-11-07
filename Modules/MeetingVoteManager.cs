@@ -186,6 +186,8 @@ public class MeetingVoteManager
         }
         if (exiled != null)
         {
+            // 暗転対策で追放者を伏せて送った時も、本当の追放者で属性の処理を通す
+            Revealer.OnExiled(exiled.Object, showOnExileScreen: !AntiBlackout.OverrideExiledPlayer);
             MeetingHudPatch.CheckForDeathOnExile(CustomDeathReason.Vote, exiled.PlayerId);
         }
         Destroy();
