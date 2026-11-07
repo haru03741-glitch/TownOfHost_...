@@ -163,7 +163,7 @@ public sealed class FortuneTeller : RoleBase
         if (!ForecastResult.ContainsKey(target.PlayerId)) return false;
         if (ConfirmCamp) return false;
         if (KillerOnly &&
-            !TownOfHostL.Core.PlayerTraits.IsKiller(target)) return false;
+            !TownOfHostL.Core.PlayerTraits.IsKillerForDivination(target)) return false;
         return true;
     }
 
