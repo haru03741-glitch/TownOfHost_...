@@ -35,11 +35,17 @@ public class Snitch : RoleBase
         //他視点用のMarkメソッド登録
         CustomRoleManager.MarkOthers.Add(GetMarkOthers);
     }
-    public override void OnDestroy()
+    // 共有の一覧は試合の開始で空にし、破棄では自分の分だけ外す (他のスニッチの露見まで消さない)
+    [TownOfHostL.Attributes.GameModuleInitializer]
+    public static void Init()
     {
         TargetList.Clear();
         TargetColorlist.Clear();
         ExposedList.Clear();
+    }
+    public override void OnDestroy()
+    {
+        ExposedList.Remove(Player.PlayerId);
     }
 
     private static OptionItem OptionEnableTargetArrow;

@@ -52,28 +52,12 @@ public static class Revealer
         string exiledRole = Utils.GetRoleName(pc.GetCustomRole());
         string exiledName = pc.GetRealName(true);
 
-        if (pc == PlayerControl.LocalPlayer)
-        {
-            if (Main.nickName != "")
-            {
-                exiledName = Main.nickName;
-            }
-            Main.nickName = string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName);
-        }
-        else
-        {
-            pc.RpcSetName(string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName));
-        }
-        
-        if (pc == PlayerControl.LocalPlayer)
-        {
-            // Main.nickName は試合をまたいで残るので、戻す前に試合が閉じても戻す
-            _ = new LateTask(() => Main.nickName = exiledName, 8f, "SetName", outlivesSession: true);
-        }
-        else
-        {
-            _ = new LateTask(() => pc.RpcSetName(exiledName), 8f, "SetName");
-        }
+        if (pc == PlayerControl.LocalPlayer && Main.nickName != "") exiledName = Main.nickName;
+
+        // 追放の画面に出す名前。見る人ごとの名前の覚え書きは書き換えないので、戻すまで NotifyRoles には上書きされない
+        pc.RpcSetName(string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName));
+        // 戻す時は覚え書きを捨てて NotifyRoles に組み直させる (素の名前を全員へ送ると、見る人ごとの名前が消える)
+        _ = new LateTask(() => ChatCommands.ForgetNotifiedNames(pc), 8f, "SetName");
     }
 
     public static void OverrideDisplayRoleNameAsSeen(PlayerControl seen, bool isMeeting, ref bool enabled, ref string roleText)

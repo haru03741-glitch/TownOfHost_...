@@ -106,10 +106,6 @@ public class Main : BasePlugin
     public static bool isChatCommand = false;
     public static Dictionary<byte, float> AllPlayerKillCooldown = new();
     public static HashSet<string> KillFlashAfterDead = new();
-    /// <summary>
-    /// 基本的に速度の代入は禁止.スピードは増減で対応してください.
-    /// </summary>
-    public static Dictionary<byte, float> AllPlayerSpeed = new();
     public const float MinSpeed = 0.0001f;
     public static int AliveImpostorCount;
     public static int SKMadmateNowCount;
@@ -159,6 +155,7 @@ public class Main : BasePlugin
 
         Logger = BepInEx.Logging.Logger.CreateLogSource("TOH_L");
         TownOfHostL.Logger.Enable();
+        TownOfHostL.Modules.ConsoleQuickEdit.Disable();
         TownOfHostL.Logger.Disable("NotifyRoles");
         TownOfHostL.Logger.Disable("SendRPC");
         TownOfHostL.Logger.Disable("ReceiveRPC");

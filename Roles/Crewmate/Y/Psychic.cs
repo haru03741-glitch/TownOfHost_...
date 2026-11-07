@@ -34,8 +34,6 @@ public sealed class Psychic : RoleBase
     {
         Cooldown = OptionCooldown.GetFloat();
         TaskTrigger = OptionTaskTrigger.GetInt();
-
-        VentSelect.Init();
     }
     private static OptionItem OptionCooldown;
     public static OptionItem MaxCheckRole;
@@ -203,6 +201,8 @@ public sealed class Psychic : RoleBase
         public static Dictionary<byte, bool> SelectFix = new();
         public static Dictionary<byte, float> TergetFixTimer = new();
         public static Dictionary<byte, List<byte>> CheckRolePlayer = new();
+        // 試合の開始でだけ空にする (Psychic を作るたびに空にすると、試合中に増えた Psychic が他の Psychic の確認済み一覧を消す)
+        [TownOfHostL.Attributes.GameModuleInitializer]
         public static void Init()
         {
             SelectPlayer = new();

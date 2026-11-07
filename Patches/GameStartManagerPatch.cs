@@ -27,11 +27,12 @@ namespace TownOfHostL
         {
             public static void Postfix(GameStartManager __instance)
             {
+                if (__instance == null) return;
+                __instance.MinPlayers = 1;
+                // フリープレイではロビー用の表示が無い
+                if (__instance.GameRoomNameCode == null) return;
                 try
                 {
-                    if (__instance == null) return;
-
-                    __instance.MinPlayers = 1;
 
                     __instance.GameRoomNameCode.text = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                     // Reset lobby countdown timer
@@ -90,7 +91,8 @@ namespace TownOfHostL
             {
                 try
                 {
-                    if (__instance == null) return;
+                    // フリープレイではロビー用の表示が無い (毎フレーム例外を出さない)
+                    if (__instance == null || __instance.GameRoomNameCode == null) return;
 
                     // Lobby code
                     if (DataManager.Settings.Gameplay.StreamerMode)

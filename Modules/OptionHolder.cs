@@ -60,7 +60,7 @@ public static class Options
 
     public static readonly string[] gameModes =
     {
-         "Standard",/* "HideAndSeek","CatchCat", "OneNight",*/
+         "Standard", "HideAndSeek", /*"CatchCat", "OneNight",*/
     };
 
     // MapActive
@@ -305,9 +305,6 @@ public static class Options
     public static OptionItem CheaterAutoBan;
     public static OptionItem CheatLobbyKill;
 
-    // 8人以上のパケット問題
-    public static OptionItem FixSpawnPacketSize;
-
     // ModGameMode
     public static bool IsHASMode => CurrentGameMode == CustomGameMode.HideAndSeek;
     public static bool IsCCMode => CurrentGameMode == CustomGameMode.CatchCat;
@@ -389,12 +386,6 @@ public static class Options
     public static void Load()
     {
 
-        //9人以上部屋で落ちる現象の対策
-        FixSpawnPacketSize = StringOptionItem.Create(3, "FixSpawnPacketSize", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, true)
-            .SetColor(new Color32(255, 91, 112, 255))
-            .SetGameMode(CustomGameMode.All)
-            .SetHidden(true);//封印
-
         // プリセット
         _ = PresetOptionItem.Create(0, TabGroup.ModMainSettings)
             .SetColor(new Color32(204, 204, 0, 255))
@@ -404,8 +395,7 @@ public static class Options
         // ゲームモード
         GameMode = StringOptionItem.Create(1, "GameMode", gameModes, 0, TabGroup.ModMainSettings, false)
             .SetColor(new Color32(204, 204, 0, 255))
-            .SetGameMode(CustomGameMode.All)
-            .SetHidden(true);//封印
+            .SetGameMode(CustomGameMode.All);
 
         HideGameSettings = StringOptionItem.Create((int)offsetId.FeatSpecial + 300, "HideGameSettings", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, true)
             .SetColor(Color.gray);
@@ -496,22 +486,20 @@ public static class Options
             .SetColor(Palette.LightBlue);
         RoleAssignManager.SetupOptionItem();
 
-        // HideAndSeek //封印
-        /********************************************************************************/
-        //SetupRoleOptions((int)offsetId.GModeHaS + 1000, TabGroup.ModMainSettings, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
-        //SetupRoleOptions((int)offsetId.GModeHaS + 1100, TabGroup.ModMainSettings, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
+        // HideAndSeek
+        SetupRoleOptions((int)offsetId.GModeHaS + 1000, TabGroup.ModMainSettings, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
+        SetupRoleOptions((int)offsetId.GModeHaS + 1100, TabGroup.ModMainSettings, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
 
-        //AllowCloseDoors = StringOptionItem.Create((int)offsetId.GModeHaS + 5000, "AllowCloseDoors", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
-        //    .SetHeader(true)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        //KillDelay = FloatOptionItem.Create((int)offsetId.GModeHaS + 5001, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.ModMainSettings, false)
-        //    .SetValueFormat(OptionFormat.Seconds)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        //IgnoreVent = StringOptionItem.Create((int)offsetId.GModeHaS + 5002, "IgnoreVent", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
-        //    .SetGameMode(CustomGameMode.HideAndSeek);
-        /********************************************************************************/
+        AllowCloseDoors = StringOptionItem.Create((int)offsetId.GModeHaS + 5000, "AllowCloseDoors", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
+            .SetHeader(true)
+            .SetGameMode(CustomGameMode.HideAndSeek);
+        KillDelay = FloatOptionItem.Create((int)offsetId.GModeHaS + 5001, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.ModMainSettings, false)
+            .SetValueFormat(OptionFormat.Seconds)
+            .SetGameMode(CustomGameMode.HideAndSeek);
+        IgnoreVent = StringOptionItem.Create((int)offsetId.GModeHaS + 5002, "IgnoreVent", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
+            .SetGameMode(CustomGameMode.HideAndSeek);
 
-        // CC //封印
+        // CC: 今の試合開始の流れ (StandardIntroHelper) に載っておらず、客にイントロが届かず暗転するので選べないままにする
         //CatchCat.Option.SetupCustomOption();
 
         TextOptionItem.Create((int)offsetId.FeatMap, "Head.Map", TabGroup.ModMainSettings).SetColor(Palette.Orange).SetGameMode(CustomGameMode.All);
@@ -700,8 +688,7 @@ public static class Options
         // コミュサボカモフラージュ
         CommsCamouflage = StringOptionItem.Create((int)offsetId.FeatSabotage + 300, "CommsCamouflage", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
             .SetColor(Color.magenta)
-            .SetGameMode(CustomGameMode.All)
-            .SetHidden(true);//封印
+            .SetGameMode(CustomGameMode.All);
 
         TextOptionItem.Create((int)offsetId.FeatMeeting, "Head.Meeting", TabGroup.ModMainSettings).SetColor(Color.cyan).SetGameMode(CustomGameMode.All);
         // 会議収集理由表示
@@ -841,8 +828,7 @@ public static class Options
         // シンクロカラーモード
         SyncColorModeSelect = StringOptionItem.Create((int)offsetId.GModeAdd + 100, "SyncColorMode", SelectSyncColorMode, 0, TabGroup.ModMainSettings, false)
             .SetColor(Color.yellow)
-            .SetGameMode(CustomGameMode.Standard)
-            .SetHidden(true); //封印
+            .SetGameMode(CustomGameMode.Standard);
         SCM_NothingMeetingNameColor = StringOptionItem.Create((int)offsetId.GModeAdd + 110, "SCM_NothingMeetingNameColor", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false).SetParent(SyncColorModeSelect)
             .SetGameMode(CustomGameMode.Standard);
         SCM_RestoredDeadPlayer = StringOptionItem.Create((int)offsetId.GModeAdd + 111, "SCM_RestoredDeadPlayer", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false).SetParent(SyncColorModeSelect)
@@ -851,7 +837,7 @@ public static class Options
         // 通常モードでかくれんぼ用
         StandardHAS = StringOptionItem.Create((int)offsetId.GModeAdd + 200, "StandardHAS", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
             .SetColor(Color.yellow)
-            .SetGameMode(CustomGameMode.Standard).SetHidden(true);//封印
+            .SetGameMode(CustomGameMode.Standard);
         StandardHASWaitingTime = FloatOptionItem.Create((int)offsetId.GModeAdd + 201, "StandardHASWaitingTime", new(0f, 180f, 2.5f), 10f, TabGroup.ModMainSettings, false).SetParent(StandardHAS)
             .SetValueFormat(OptionFormat.Seconds).SetGameMode(CustomGameMode.Standard);
 

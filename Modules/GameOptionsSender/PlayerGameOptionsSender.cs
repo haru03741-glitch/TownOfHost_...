@@ -154,10 +154,7 @@ namespace TownOfHostL.Modules
                 AURoleOptions.KillCooldown = Mathf.Max(0f, killCooldown);
             }
 
-            if (Main.AllPlayerSpeed.TryGetValue(player.PlayerId, out var speed))
-            {
-                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 3f);
-            }
+            AURoleOptions.PlayerSpeedMod = Mathf.Clamp(PlayerSpeed.Get(player.PlayerId), Main.MinSpeed, 3f);
 
             state.taskState.hasTasks = Utils.HasTasks(player.Data, false);
             if (!Options.GhostCantSeeOtherVotes.GetBool() && player.Data.IsDead)

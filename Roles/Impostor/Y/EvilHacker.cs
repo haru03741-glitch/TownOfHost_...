@@ -76,7 +76,7 @@ public sealed class EvilHacker : RoleBase, IImpostor
         LastPosition = Player.GetTruePosition();
 
         // プレイヤーの足止め
-        Main.AllPlayerSpeed[Player.PlayerId] = Main.MinSpeed;
+        TownOfHostL.Modules.PlayerSpeed.Freeze(Player.PlayerId, "EvilHacker");
         Player.MarkDirtySettings();
         Logger.Info($"{Player.GetNameWithRole()} : プレイヤーの足止め", "EvilHacker");
 
@@ -90,12 +90,12 @@ public sealed class EvilHacker : RoleBase, IImpostor
 
                 _ = new LateTask(() =>
                     {
-                        Player.SnapToTeleport(LastPosition);//元の位置へ。
+                        Player.SnapToTeleport(LastPosition, force: true);//元の位置へ。
                         SendRPC(Player.PlayerId);
                         Utils.NotifyRoles();
 
                         // ターゲットの足止め解除
-                        Main.AllPlayerSpeed[Player.PlayerId] = Main.RealOptionsData.GetFloat(FloatOptionNames.PlayerSpeedMod);
+                        TownOfHostL.Modules.PlayerSpeed.Remove(Player.PlayerId, "EvilHacker");
                         Player.MarkDirtySettings();
                         Logger.Info($"{Player.GetNameWithRole()} : プレイヤーの足止め解除", "EvilHacker");
                         LastPosition = default;

@@ -227,6 +227,17 @@ namespace TownOfHostL
             sender.SetName(SendName);
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(sender, text);
             sender.SetName(name);
+            ForgetNotifiedNames(sender);
+        }
+
+        // 発言用に名前を直接送って素の名前へ戻した後に呼ぶ。見る人ごとの名前の記録が送る前の装飾のまま残ると、
+        // 次に同じ装飾を作った時に「送り済み」と見なされ、素の名前のまま戻らない。記録を捨てて送り直させる
+        internal static void ForgetNotifiedNames(PlayerControl player)
+        {
+            if (player == null || !AmongUsClient.Instance.AmHost || Main.LastNotifyNames == null) return;
+            foreach (var seer in Main.AllPlayerControls)
+                Main.LastNotifyNames[(player.PlayerId, seer.PlayerId)] = null;
+            if (GameStates.IsInGame) Utils.NotifyRoles();
         }
 
 #if DEBUG
@@ -494,6 +505,7 @@ namespace TownOfHostL
                 writer.EndMessage();
                 writer.SendMessage();
             }
+            ChatCommands.ForgetNotifiedNames(player);
             __instance.timeSinceLastMessage = 0f;
         }
         public static void SendCustomChat(string SendName, PlayerControl sender = null, byte sendTo = byte.MaxValue)
@@ -532,6 +544,7 @@ namespace TownOfHostL
                     .EndMessage()
                     .SendMessage();
             }
+            ChatCommands.ForgetNotifiedNames(sender);
         }
         private static void AddChatAsAlive(PlayerControl player, string msg)
         {

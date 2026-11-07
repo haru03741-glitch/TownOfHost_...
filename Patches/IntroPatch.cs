@@ -398,6 +398,7 @@ class IntroCutsceneDestroyPatch
         if (!GameStates.IsInGame) return;
 
         Main.introDestroyed = true;
+        if (AmongUsClient.Instance.AmHost) Modules.Net.OutfitSync.FlushPending();
         var mapId = Main.NormalOptions.MapId;
 
         if (AmongUsClient.Instance.AmHost)
