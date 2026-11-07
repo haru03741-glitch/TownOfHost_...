@@ -166,11 +166,12 @@ public static class RoleText
             }
         }
         // 現在の役職
-        var NowRole = MainRoles.Last();
+        var roleClass = CustomRoleManager.GetByPlayerId(playerId);
+        var NowRole = roleClass?.DisplayedRole ?? MainRoles.Last();
         (Color color, string text) = (Utils.GetRoleColor(NowRole), Utils.GetRoleName(NowRole));
 
         // 役職による役職表示名オーバーライド
-        CustomRoleManager.GetByPlayerId(playerId)?.OverrideShowMainRoleText(ref color, ref text);
+        roleClass?.ApplyShownMainRole(ref color, ref text);
 
         // 現在の役職を表示
         sb.Append(disableColor ? text : Utils.ColorString(color, text));

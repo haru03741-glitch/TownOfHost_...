@@ -29,13 +29,17 @@ class Penguin : RoleBase, IImpostor
         AbductTimerLimit = OptionAbductTimerLimit.GetFloat();
         MeetingKill = OptionMeetingKill.GetBool();
         KilledAbductVictim = OptionKilledAbductVictim.GetBool();
-
+        // 何人いても同じ static の判定なので、1 つだけ登録される
+        CustomRoleManager.KillBlockersOthers.Add(IsAbductedKiller);
     }
     public override void OnDestroy()
     {
         PenguinList?.Remove(this);
         AbductVictim = null;
+        if (PenguinList == null || PenguinList.Count == 0)
+            CustomRoleManager.KillBlockersOthers.Remove(IsAbductedKiller);
     }
+    private static bool IsAbductedKiller(PlayerControl killer) => !CanKilledByTarget(killer);
 
     static OptionItem OptionAbductTimerLimit;
     static OptionItem OptionMeetingKill;

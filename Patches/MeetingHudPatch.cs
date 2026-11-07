@@ -111,7 +111,7 @@ public static class MeetingHudPatch
             GameStates.AlreadyDied |= !Utils.IsAllAlive;
             Main.AllPlayerControls.Do(x => ReportDeadBodyPatch.WaitReport[x.PlayerId].Clear());
             ChainShifterAddon.OnStartMeeting();
-            foreach (var tm in Main.AllAlivePlayerControls.Where(p => p.Is(CustomRoles.TaskManager) || p.Is(CustomRoles.Management)))
+            foreach (var tm in Main.AllAlivePlayerControls.Where(TownOfHostL.Core.PlayerTraits.RefreshesNameOnMeetingStart))
                 Utils.NotifyRoles(true, tm);
             TargetDeadArrow.OnStartMeeting();
 
@@ -303,7 +303,7 @@ public static class MeetingHudPatch
 
                     (Color c, string t) = (pva.NameText.color, "");
                     //trueRoleNameでColor上書きあればそれになる
-                    target.GetRoleClass()?.OverrideShowMainRoleText(ref c, ref t);//colorのみ
+                    target.GetRoleClass()?.ApplyShownMainRole(ref c, ref t);//colorのみ
                     pva.NameText.color = c;
                 }
                 else
@@ -480,8 +480,8 @@ public static class MeetingHudPatch
                 if (candidate.Is(CustomRoleTypes.Impostor) && !Options.RevengeImpostorByImpostor.GetBool()) continue; //インポスター
                 if (candidate.Is(CustomRoleTypes.Madmate) && !Options.RevengeMadByImpostor.GetBool()) continue; //マッドメイト
             }
-            // 背徳者は妖狐を道連れしない
-            if (exiledplayer.Is(CustomRoles.Immoralist) && candidate.Is(CustomRoles.FoxSpirit)) continue;
+            // 役職ごとの除外 (背徳者は妖狐を道連れしない など)
+            if (!(exiledplayer.GetRoleClass()?.CanRevengeOn(candidate) ?? true)) continue;
 
             // 第三陣営を道連れするか（設定）
             if (candidate.Is(CustomRoleTypes.Neutral) && !Options.RevengeNeutral.GetBool()) continue;

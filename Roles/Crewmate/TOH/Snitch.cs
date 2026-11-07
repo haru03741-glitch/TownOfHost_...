@@ -96,7 +96,7 @@ public class Snitch : RoleBase
     private static bool IsSnitchTarget(PlayerControl target)
     {
         return target.Is(CustomRoleTypes.Impostor)
-            || (CanFindNeutralKiller && target.IsNeutralKiller());
+            || (CanFindNeutralKiller && target.IsCountedNeutralKiller());
     }
     /// <summary>
     /// スニッチが会議中ではキラーを視認できない判定
@@ -108,7 +108,7 @@ public class Snitch : RoleBase
     public static bool IsCannotConfirmKillRoles(PlayerControl seer, PlayerControl target)
     {
         return CannotConfirmKillRoles && seer.Is(CustomRoles.Snitch)
-                && (target.Is(CustomRoleTypes.Impostor) || target.IsNeutralKiller());
+                && (target.Is(CustomRoleTypes.Impostor) || target.IsCountedNeutralKiller());
     }
 
     /// <summary>

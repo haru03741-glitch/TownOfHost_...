@@ -65,11 +65,11 @@ public static class AntiBlackout
         var customRole = pc.GetCustomRole();
         var countType = PlayerState.GetByPlayerId(pc.PlayerId).CountType;
         //var countType = customRole.GetRoleInfo().CountType;
-        Logger.Info($"RecognizeType {pc?.name}, {countType}, {customRole}({customRole.GetRoleInfo().CountType})", "AntiBlackout");
+        Logger.Info($"RecognizeType {pc?.name}, {countType}, {customRole}({customRole.GetRoleInfo()?.CountType})", "AntiBlackout");
         return type switch
         {
-            RecognizeType.Impostor => countType == CountTypes.Impostor && customRole != CustomRoles.StrayWolf,
-            RecognizeType.StrayWolf => countType == CountTypes.Impostor && customRole == CustomRoles.StrayWolf,
+            RecognizeType.Impostor => countType == CountTypes.Impostor && !customRole.IsLoneImpostor(),
+            RecognizeType.StrayWolf => countType == CountTypes.Impostor && customRole.IsLoneImpostor(),
             RecognizeType.Jackal => countType == CountTypes.Jackal,
             RecognizeType.Pirate => countType == CountTypes.Pirate,
             _ => false,

@@ -350,7 +350,7 @@ public static class Utils
         if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
         {
             if (p.IsDead) hasTasks = false;
-            if (States.GetNowMainRole() is CustomRoles.HASFox or CustomRoles.HASTroll) hasTasks = false;
+            if (States.GetNowMainRole().HasRoleFlag(RoleFlags.NoTasks)) hasTasks = false;
         }
         else if (Options.IsCCMode)
         {
@@ -359,12 +359,12 @@ public static class Utils
         else
         {
             // 死んでいて，死人のタスク免除が有効なら確定でfalse
-            if (p.IsDead && Options.GhostIgnoreTasks.GetBool() && !p.Object.Is(CustomRoles.Gang))
+            if (p.IsDead && Options.GhostIgnoreTasks.GetBool() && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
             {
                 return false;
             }
             // 死んでいて，妖狐がいるかつ無効化設定ならfalse
-            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !p.Object.Is(CustomRoles.Gang))
+            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
             {
                 return false;
             }
@@ -389,26 +389,12 @@ public static class Utils
                         break;
                 }
             }
-            switch (role)
-            {
-                case CustomRoles.GM:
-                case CustomRoles.SKMadmate:
-                    hasTasks = false;
-                    break;
-                default:
-                    if (role.IsImpostor()) hasTasks = false;
-                    break;
-            }
+            // クラスを持たない役職 (GM など) は表の印で、インポスターは陣営で、タスクを持たない
+            if (role.HasRoleFlag(RoleFlags.NoTasks) || role.IsImpostor()) hasTasks = false;
             //タスクを勝利用にカウントしない
             foreach (var subRole in States.SubRoles)
-                switch (subRole)
-                {
-                    case CustomRoles.Lovers:
-                    case CustomRoles.Archenemy:
-                    case CustomRoles.ChainShifterAddon:
-                        hasTasks &= !ForRecompute;
-                        break;
-                }
+                if (subRole.HasRoleFlag(RoleFlags.TasksNotCountedForWin))
+                    hasTasks &= !ForRecompute;
         }
         return hasTasks;
     }
@@ -419,7 +405,7 @@ public static class Utils
         //seer側による変更
         bool enabled = seer == seen
                     || (Main.VisibleTasksCount && !seer.IsAlive() && !Options.GhostCantSeeOtherTasks.GetBool())
-                    || (seen.Is(CustomRoles.Workaholic) && Workaholic.Seen && Workaholic.TaskSeen);
+                    || (seen.GetRoleClass()?.ShowsTaskProgressToAll ?? false);
         string text = GetProgressText(seen.PlayerId, comms);
 
         seer.GetRoleClass()?.OverrideProgressTextAsSeer(seen, ref enabled, ref text);
@@ -499,19 +485,13 @@ public static class Utils
         string formatTag = "<size=70%><line-height=1.6pic>";
 
         var sb = new StringBuilder();
-        var myRole = player.GetCustomRole();
-        var roleInfoLong = player.GetRoleInfo(true);
-        if (myRole == CustomRoles.Potentialist)
-        {
-            myRole = CustomRoles.Crewmate;
-            roleInfoLong = GetString("PotentialistInfo");
-        }
+        // 他の役職として見せる役職は、名前・色・設定の一覧をその役職で出す。
+        // 長い説明は正体を書いているので、短い説明を出す
+        var displayedRole = player.GetRoleClass()?.DisplayedRole;
+        var myRole = displayedRole ?? player.GetCustomRole();
+        var roleInfoLong = player.GetRoleInfo(displayedRole == null);
 
-        var roleName = myRole.ToString();
-        if (myRole == CustomRoles.Bakery && Bakery.IsNeutral(player))
-        {
-            roleName = "NBakery";
-        }
+        var roleName = player.GetRoleClass()?.GetRoleKey(true) ?? myRole.ToString();
 
         string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
         string RoleInfoTitle = $"{ColorString(GetRoleColor(myRole), RoleInfoTitleString)}";
@@ -1478,9 +1458,9 @@ public static class Utils
             string SelfDeathReason = TownOfHostL.Core.NameParts.DeathReason(seer, seer);
 
             StringBuilder SelfName = new();
+            bool keepsOwnNameInSyncColor = seer.GetRoleClass()?.KeepsOwnNameInSyncColorMeeting ?? false;
             if (!(Options.IsSyncColorMode && isForMeeting && seer.IsAlive())
-                || seer.Is(CustomRoles.Rainbow)
-                || seer.Is(CustomRoles.Workaholic))
+                || keepsOwnNameInSyncColor)
             {
                 SelfName.Append(SelfRoleName).Append("\r\n");
             }
@@ -1489,10 +1469,10 @@ public static class Utils
 
             string t = "";
             //trueRoleNameでColor上書きあればそれにする
-            seer.GetRoleClass()?.OverrideShowMainRoleText(ref SelfNameColor, ref t);//colorのみ
+            seer.GetRoleClass()?.ApplyShownMainRole(ref SelfNameColor, ref t);//colorのみ
 
             bool selfNameOriginal = true;
-            if (seer.Is(CustomRoles.SeeingOff) || seer.Is(CustomRoles.Sending) || seer.Is(CustomRoles.MadDilemma))
+            if (TownOfHostL.Core.PlayerTraits.LearnsExiledTeam(seer))
             {
                 string str = Sending.RealNameChange();
                 if (str != string.Empty)
@@ -1503,8 +1483,7 @@ public static class Utils
             }
             if (Options.IsSyncColorMode && isForMeeting && seer.IsAlive() &&
                 !seer.Is(CustomRoleTypes.Impostor) &&
-                !seer.Is(CustomRoles.Rainbow) &&
-                !seer.Is(CustomRoles.Workaholic))
+                !keepsOwnNameInSyncColor)
             {
                 SelfName.Append($"{ColorString(Color.white, SeerRealName)}{SelfDeathReason}{SelfMark}");
             }

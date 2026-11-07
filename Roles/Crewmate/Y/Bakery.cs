@@ -23,6 +23,7 @@ public sealed class Bakery : RoleBase
             "パン屋",
             "#b58428"
         );
+    public override string GetRoleKey(bool infoLong) => IsNeutral(Player) ? "NBakery" : null;
     public Bakery(PlayerControl player)
     : base(
         RoleInfo,

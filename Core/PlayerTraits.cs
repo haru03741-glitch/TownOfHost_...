@@ -28,4 +28,31 @@ public static class PlayerTraits
         => pc.Is(CustomRoles.SKMadmate) ||
            // マッド属性化時に削除
            (role is SchrodingerCat schrodingerCat && schrodingerCat.AmMadmate);
+
+    /// <summary>追放された人がインポスターかどうかを、自分の名前の所で知る</summary>
+    public static bool LearnsExiledTeam(PlayerControl pc) => Has(pc, RoleFlags.LearnsExiledTeam);
+    /// <summary>死体を通報できない (target の死体が ReportableByAll なら通報できる)</summary>
+    public static bool CannotReport(PlayerControl reporter, PlayerControl target)
+        => Has(reporter, RoleFlags.CannotReport) && !Has(target, RoleFlags.ReportableByAll);
+    /// <summary>死んでもタスクが免除されない</summary>
+    public static bool KeepsTasksWhenDead(PlayerControl pc) => Has(pc, RoleFlags.KeepsTasksWhenDead);
+    /// <summary>会議の始めに、自分の名前を送り直す</summary>
+    public static bool RefreshesNameOnMeetingStart(PlayerControl pc) => Has(pc, RoleFlags.RefreshesNameOnMeetingStart);
+
+    /// <summary>他の役職の能力が「キル役」として扱う人 (インポスター・CountedAsKiller の第三陣営とクルー)</summary>
+    public static bool IsCountedKiller(PlayerControl pc)
+        => pc.GetCustomRole().IsImpostor() || pc.IsCountedNeutralKiller() || pc.IsCountedCrewKiller();
+    /// <summary>占い・霊媒の「キル役だけ」の設定で、キル役として数える (マッドシェリフ・グラージシェリフを含む)</summary>
+    public static bool IsKillerForDivination(PlayerControl pc)
+        => IsCountedKiller(pc) || pc.Is(CustomRoles.MadSheriff) || pc.Is(CustomRoles.GrudgeSheriff);
+
+    /// <summary>役職か、付いている属性のどれかがその印を持つ</summary>
+    private static bool Has(PlayerControl pc, RoleFlags flag)
+    {
+        if (pc == null) return false;
+        if (pc.GetCustomRole().HasRoleFlag(flag)) return true;
+        foreach (var subRole in pc.GetCustomSubRoles())
+            if (subRole.HasRoleFlag(flag)) return true;
+        return false;
+    }
 }

@@ -19,7 +19,9 @@ public sealed class Rabbit : RoleBase
             (int)Options.offsetId.CrewY + 1600,
             SetupOptionItem,
             "ラビット",
-            "#88d2ff"
+            "#88d2ff",
+            // タスクを終えた後の配り直しは、ラビットの数にする
+            taskCount: pc => IsFinish(pc) ? TaskData : null
         );
     public Rabbit(PlayerControl player)
     : base(

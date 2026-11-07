@@ -14,7 +14,8 @@ public static class NonReport
         "#883fd1",
         "Nr",
         setupOptions: SetupCustomOption,
-        onAdd: Add);
+        onAdd: Add,
+        flags: RoleFlags.CannotReport);
 
     private static readonly int Id = (int)offsetId.AddonDebuff + 300;
     private static List<byte> playerIdList = new();

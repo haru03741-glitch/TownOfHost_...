@@ -14,7 +14,8 @@ public static class AddBait
         "#00f7ff",
         "Ｂ",
         setupOptions: SetupCustomOption,
-        onAdd: Add);
+        onAdd: Add,
+        flags: RoleFlags.ReportableByAll);
 
     private static readonly int Id = (int)offsetId.AddonBuff + 1100;
     private static List<byte> playerIdList = new();
