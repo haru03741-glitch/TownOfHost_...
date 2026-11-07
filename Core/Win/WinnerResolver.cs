@@ -46,8 +46,9 @@ public static class WinnerResolver
             AddBaseTeamWinners(ctx.Original);
 
         foreach (var pc in Main.AllPlayerControls) AddAdditionalWinners(pc);
-        foreach (var pc in Main.AllPlayerControls)
-            if (pc.GetRoleClass() is IAdditionalWinGranter granter) granter.GrantAdditionalWins();
+        // 抜けた人の役職も拾うので、部屋にいる人ではなく役職の一覧から回す
+        foreach (var role in CustomRoleManager.AllActiveRoles.Values)
+            if (role is IAdditionalWinGranter granter) granter.GrantAdditionalWins();
 
         foreach (var pc in Main.AllPlayerControls)
             if (pc.GetRoleClass() is ILateWinner lateWinner) lateWinner.CheckLateWin();
