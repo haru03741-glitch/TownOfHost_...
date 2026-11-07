@@ -39,6 +39,13 @@ public class SimpleRoleInfo
     public CustomRoles? IntroTeam { get; private set; }
     /// <summary>既定のイントロで、インポスターの人数の文を出す (インポスター側に見えないデシンクのキル役など)</summary>
     public bool IntroShowsImpostorCount { get; private set; }
+    /// <summary>
+    /// 配るタスクの数を役職が決める。呼ぶ時点の数は、設定の上書きと属性 (Workhorse) を通した後の物。null を返すとそのまま。
+    /// タスクを配る時は役職クラスがまだ無いことがあるので、クラスでなく登録で持つ
+    /// </summary>
+    public Func<PlayerControl, (bool hasCommonTasks, int numLong, int numShort)?> TaskCount { get; private set; }
+    /// <summary>短いタスクを掃除 (VentCleaning) だけにし、共通タスクを配らない</summary>
+    public bool OnlyVentCleaningTask { get; private set; }
 
     private SimpleRoleInfo(
         Type classType,
@@ -117,7 +124,9 @@ public class SimpleRoleInfo
         RoleAssignInfo assignInfo = null,
         RoleFlags flags = RoleFlags.None,
         CustomRoles? introTeam = null,
-        bool introShowsImpostorCount = false
+        bool introShowsImpostorCount = false,
+        Func<PlayerControl, (bool hasCommonTasks, int numLong, int numShort)?> taskCount = null,
+        bool onlyVentCleaningTask = false
     )
     {
         countType ??= customRoleType == CustomRoleTypes.Impostor ? CountTypes.Impostor : CountTypes.Crew;
@@ -144,6 +153,8 @@ public class SimpleRoleInfo
             );
         info.IntroTeam = introTeam;
         info.IntroShowsImpostorCount = introShowsImpostorCount;
+        info.TaskCount = taskCount;
+        info.OnlyVentCleaningTask = onlyVentCleaningTask;
         return info;
     }
     public static SimpleRoleInfo CreateForVanilla(

@@ -27,7 +27,10 @@ public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
                 IsInitiallyAssignableCallBack = () => (MapNames)Main.NormalOptions.MapId is not MapNames.Polus and not MapNames.Fungle
             },
             flags: RoleFlags.FixedCount | RoleFlags.CannotReport,
-            introTeam: CustomRoles.FoxSpirit
+            introTeam: CustomRoles.FoxSpirit,
+            // ワークホースになった後は、ワークホースの数のまま
+            taskCount: pc => pc.Is(CustomRoles.Workhorse) ? null : TaskData,
+            onlyVentCleaningTask: true
         );
     public FoxSpirit(PlayerControl player)
     : base(
