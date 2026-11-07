@@ -129,7 +129,7 @@ class BeginCrewmatePatch
 {
     public static void Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> teamToDisplay)
     {
-        if (PlayerControl.LocalPlayer.Is(CustomRoleTypes.Neutral) || PlayerControl.LocalPlayer.Is(CustomRoles.StrayWolf)
+        if (PlayerControl.LocalPlayer.Is(CustomRoleTypes.Neutral) || PlayerControl.LocalPlayer.GetCustomRole().IsLoneImpostor()
             || PlayerControl.LocalPlayer.GetCustomRole().IsCCLeaderRoles())
         {
             var soloTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
@@ -242,16 +242,14 @@ class BeginCrewmatePatch
 
         switch (role)
         {
-            case CustomRoles.StrayWolf:
+            case var r when r.IsLoneImpostor():
                 __instance.TeamTitle.text = GetString("Impostor");
                 __instance.TeamTitle.color = Palette.ImpostorRed;
                 __instance.ImpostorText.gameObject.SetActive(false);
                 __instance.BackgroundBar.material.color = Palette.ImpostorRed;
                 break;
 
-            case CustomRoles.Sheriff:
-            case CustomRoles.Hunter:
-            case CustomRoles.SillySheriff:
+            case var r when r.IsCrewKiller():
                 __instance.BackgroundBar.material.color = Palette.CrewmateBlue;
                 __instance.ImpostorText.gameObject.SetActive(true);
                 __instance.ImpostorText.text = numImpostors == 1
@@ -353,9 +351,7 @@ class BeginImpostorPatch
 {
     public static bool Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
     {
-        if (PlayerControl.LocalPlayer.Is(CustomRoles.Sheriff)
-            || PlayerControl.LocalPlayer.Is(CustomRoles.Hunter)
-            || PlayerControl.LocalPlayer.Is(CustomRoles.SillySheriff)
+        if (PlayerControl.LocalPlayer.IsCrewKiller()
             || PlayerControl.LocalPlayer.Is(CustomRoles.jO))
         {
             yourTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
@@ -370,7 +366,7 @@ class BeginImpostorPatch
         }
 
         var localRole = PlayerControl.LocalPlayer.GetCustomRole();
-        if (localRole.GetCustomRoleTypes() == CustomRoleTypes.Impostor || localRole == CustomRoles.StrayWolf)
+        if (localRole.GetCustomRoleTypes() == CustomRoleTypes.Impostor || localRole.IsLoneImpostor())
         {
             BeginCrewmatePatch.Prefix(__instance, ref yourTeam);
             return true;
