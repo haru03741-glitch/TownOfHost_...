@@ -88,6 +88,7 @@ class ChangeRoleSettings
             Logger.Info($"RealOptionsData.NumShortTasks: {Main.RealOptionsData.GetInt(Int32OptionNames.NumShortTasks)}", "ChangeRoleSettings");
 
             Main.introDestroyed = false;
+            Main.IntroEndTime = DateTime.MinValue;
             Main.IsSetRoleFinished = false;
 
             HudManagerCoShowIntroPatch.Cancel = true;

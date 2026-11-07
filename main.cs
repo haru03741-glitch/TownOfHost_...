@@ -113,7 +113,9 @@ public class Main : BasePlugin
     public static Dictionary<byte, byte> ShapeshiftTarget = new();
     public static bool VisibleTasksCount;
     public static string nickName = "";
-    public static bool introDestroyed = false;  
+    public static bool introDestroyed = false;
+    // イントロが終わった時刻。キル履歴を試合の経過時間で出すのに使う
+    public static DateTime IntroEndTime = DateTime.MinValue;  
     public static bool SetRoleOverride = true;   
     public static bool IsroleAssigned
         => !SetRoleOverride || SelectRolesPatch.roleAssigned;

@@ -1774,6 +1774,8 @@ public static class Utils
         pos += DestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID == SupportedLangs.English ? 8f : 4.5f;
         builder.AppendFormat("<pos={0}em>", pos);
         builder.Append(RoleText.GetRoleNameText(id, true));
+        int kills = PlayerState.GetByPlayerId(id)?.GetKillCount(ExcludeSelfKill: true) ?? 0;
+        if (kills > 0) builder.Append(' ').Append(ColorString(Palette.ImpostorRed, string.Format(GetString("SummaryKillCount"), kills)));
         builder.Append("</pos>");
         return builder.ToString();
     }

@@ -1519,6 +1519,7 @@ PanAlive25,\nBread was served by the bakery.\nㅤ,\nパン屋は{0}に向けて�
 "Roles","Roles","役職","职业","職業","Роли","Classes"
 "Settings","Settings","設定","设定","設定","Настройки","Configurações"
 "Addons","Add-Ons","属性","附加效果","屬性","Атрибут","Atributos"
+"SummaryKillCount","Kills: {0}","キル: {0}","击杀: {0}","擊殺: {0}","Убийств: {0}","Abates: {0}","Abates: {0}"
 "LastResult","Match Results","試合結果","游戏结果","上一局的遊戲結果","Результат матча","Resultados da Partida"
 "KillLog","Kill Log","キル履歴","击杀日志","擊殺紀錄","История убийств",""
 "Maximum","Max","最大数","最多人数","最大數量","Максимум","Máximo"
