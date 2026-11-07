@@ -259,6 +259,7 @@ public static class CustomRoleManager
         SuffixOthers.Clear();
         NameColorOthers.Clear();
         KillBlockersOthers.Clear();
+        TaskExemptionsOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
@@ -366,6 +367,10 @@ public static class CustomRoleManager
     /// ゴッドファーザーのロック・ペンギンの拉致など、その試合の役職が登録する
     /// </summary>
     public static HashSet<Func<PlayerControl, bool>> KillBlockersOthers = new();
+    /// <summary>
+    /// 役職に関わらず、その人のタスクを免除するか (true で免除)。死後のタスク免除の設定など、その試合の役職が登録する
+    /// </summary>
+    public static HashSet<Func<NetworkedPlayerInfo, bool>> TaskExemptionsOthers = new();
     public static string ApplyNameColorOthers(PlayerControl seer, PlayerControl seen, string colorCode)
     {
         foreach (var overrideColor in NameColorOthers)
@@ -383,6 +388,7 @@ public static class CustomRoleManager
         SuffixOthers.Clear();
         NameColorOthers.Clear();
         KillBlockersOthers.Clear();
+        TaskExemptionsOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();

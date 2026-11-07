@@ -56,6 +56,8 @@ static class CustomRolesHelper
     public static bool IsNewRole(this CustomRoles role) => role.Def().Has(RoleFlags.NewRole);
     public static bool IsPairRole(this CustomRoles role) => role.Def().Has(RoleFlags.Pair);
     public static bool IsFixedCountRole(this CustomRoles role) => role.Def().Has(RoleFlags.Pair | RoleFlags.FixedCount);
+    /// <summary>試合に加わらない観戦者 (GM)</summary>
+    public static bool IsSpectator(this CustomRoles role) => role.Def().Has(RoleFlags.Spectator);
     public static bool IsDontShowOptionRole(this CustomRoles role) => role.Def().Has(RoleFlags.DontShowOption);
     public static bool IsDontSelectLoyaltyRole(this CustomRoles role) => role.Def().Has(RoleFlags.DontSelectLoyalty);
     public static bool IsAddAddOn(this CustomRoles role) => role.IsMadmate() || role.Def().Has(RoleFlags.AddAddOn);

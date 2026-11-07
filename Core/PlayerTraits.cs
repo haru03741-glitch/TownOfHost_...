@@ -39,6 +39,12 @@ public static class PlayerTraits
     /// <summary>会議の始めに、自分の名前を送り直す</summary>
     public static bool RefreshesNameOnMeetingStart(PlayerControl pc) => Has(pc, RoleFlags.RefreshesNameOnMeetingStart);
 
+    /// <summary>元の陣営 (クルー・インポスター) が勝った時に、一緒に勝者に入る</summary>
+    public static bool WinsWithBaseTeam(PlayerControl pc)
+        => !Has(pc, RoleFlags.NoTeamWin) && (pc.GetRoleClass()?.WinsWithBaseTeam ?? true);
+    /// <summary>どの勝ち方でも勝者にならない</summary>
+    public static bool NeverWins(PlayerControl pc) => Has(pc, RoleFlags.NeverWins);
+
     /// <summary>他の役職の能力が「キル役」として扱う人 (インポスター・CountedAsKiller の第三陣営とクルー)</summary>
     public static bool IsCountedKiller(PlayerControl pc)
         => pc.GetCustomRole().IsImpostor() || pc.IsCountedNeutralKiller() || pc.IsCountedCrewKiller();

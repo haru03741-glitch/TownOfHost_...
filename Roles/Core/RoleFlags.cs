@@ -68,4 +68,14 @@ public enum RoleFlags : ulong
     TasksNotCountedForWin = 1UL << 24,
     /// <summary>タスクを持たない (役職クラスを持たない役職用。クラスを持つ役職は RoleBase の HasTasks で決める)</summary>
     NoTasks = 1UL << 25,
+    /// <summary>元の陣営 (クルー・インポスター) の勝利に入らない</summary>
+    NoTeamWin = 1UL << 27,
+    /// <summary>どの勝ち方でも勝者にならない</summary>
+    NeverWins = 1UL << 28,
+    /// <summary>試合に加わらない観戦者。人数に数えず・勝たず・湧かず、役職と死が全員に見え、他人の役職とキルの光が見える</summary>
+    Spectator = 1UL << 29,
+    /// <summary>人数の勝敗のどの陣営にも数えない (役職クラスを持たない役職用。クラスを持つ役職は CountType で決める)</summary>
+    NotCounted = 1UL << 30,
+    /// <summary>会議の名前の CO 可否の表示に、役職ごとの設定を作らない</summary>
+    NoComingOutOption = 1UL << 31,
 }

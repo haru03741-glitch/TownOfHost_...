@@ -20,7 +20,7 @@ public static class RoleText
         seen ??= seer;
         //デフォルト値
         bool enabled = seer == seen
-            || seen.Is(CustomRoles.GM)
+            || seen.GetCustomRole().IsSpectator()
             || (Main.VisibleTasksCount && !seer.IsAlive() && !Options.GhostCantSeeOtherRoles.GetBool());
         //オーバーライドによる表示ではサブロールは見えないようにする/上記場合のみ表示
         var roleText = GetRoleNameText(seen.PlayerId, showSubRole: enabled);
@@ -49,7 +49,7 @@ public static class RoleText
         if (Options.DisplayTeamMark.GetBool())
         {
             enabled = seer == seen // 自分自身はtrue
-                || seen.Is(CustomRoles.GM) // GMはtrue
+                || seen.GetCustomRole().IsSpectator() // 観戦者はtrue
                 || (Main.VisibleTasksCount && !seer.IsAlive() && !Options.GhostCantSeeOtherRoles.GetBool()); // 幽霊で役職見れるとき
         }
 

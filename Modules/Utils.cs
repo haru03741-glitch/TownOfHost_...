@@ -198,7 +198,7 @@ public static class Utils
     {
         PlayerControl killer = info.AppearanceKiller, target = info.AttemptTarget;
         // 霊界キルフラッシュ
-        if (seer.Is(CustomRoles.GM)) return true;
+        if (seer.GetCustomRole().IsSpectator()) return true;
         if (CheckKillFlashAfterDead(seer) && seer != target) return true;
         // ターゲット(属性)
         foreach (var subRole in PlayerState.GetByPlayerId(target.PlayerId).SubRoles)
@@ -363,15 +363,9 @@ public static class Utils
             {
                 return false;
             }
-            // 死んでいて，妖狐がいるかつ無効化設定ならfalse
-            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
-            {
-                return false;
-            }
-            if (LoyalDoggy.IgnoreTask(p))
-            {
-                return false;
-            }
+            // その試合の役職が登録した免除 (妖狐の死後タスクの免除・忠犬の主人の死後など)
+            foreach (var isExempt in CustomRoleManager.TaskExemptionsOthers)
+                if (isExempt(p)) return false;
             var role = States.GetNowMainRole();
             var roleClass = CustomRoleManager.GetByPlayerId(p.PlayerId);
             if (roleClass != null)
@@ -502,7 +496,7 @@ public static class Utils
 
         SendMessageAutoSplitAndClearSB(PlayerId, sb, RoleInfoTitle, formatTag);
 
-        if (!myRole.IsDontShowOptionRole() && myRole != CustomRoles.GM)
+        if (!myRole.IsDontShowOptionRole())
         {
             formatTag = "<size=65%><line-height=1.5pic>";
             ShowChildrenSettings(Options.CustomRoleSpawnChances[myRole], ref sb);
@@ -585,7 +579,7 @@ public static class Utils
 
         SendMessageAutoSplitAndClearSB(PlayerId, sb, "", formatTag);
 
-        if (!role.IsDontShowOptionRole() && role != CustomRoles.GM)
+        if (!role.IsDontShowOptionRole())
         {
             formatTag = "<size=65%><line-height=1.5pic>";
             ShowChildrenSettings(Options.CustomRoleSpawnChances[role], ref sb);

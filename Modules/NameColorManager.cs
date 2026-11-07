@@ -1,7 +1,6 @@
 using Hazel;
 
 using TownOfHostL.Roles.Core;
-using TownOfHostL.Roles.Crewmate;
 using TownOfHostL.Roles.Impostor;
 using TownOfHostL.Roles.Neutral;
 
@@ -12,7 +11,7 @@ namespace TownOfHostL
         public static string ApplyNameColorData(this string name, PlayerControl seer, PlayerControl target, bool isMeeting)
         {
             if (!AmongUsClient.Instance.IsGameStarted) return name;
-            if (isMeeting && Snitch.IsCannotConfirmKillRoles(seer,target)) return name;
+            if (isMeeting && (seer.GetRoleClass()?.HidesNameColorInMeeting(target) ?? false)) return name;
             if (Options.IsSyncColorMode && isMeeting) return name;
 
             if (!TryGetData(seer, target, out var colorCode))
@@ -36,7 +35,7 @@ namespace TownOfHostL
         private static bool KnowTargetRoleColor(PlayerControl seer, PlayerControl target, bool isMeeting)
         {
             return seer == target
-                || target.Is(CustomRoles.GM)
+                || target.GetCustomRole().IsSpectator()
                 || (seer.Is(CustomRoleTypes.Impostor) && target.Is(CustomRoleTypes.Impostor) && !seer.GetCustomRole().IsLoneImpostor() && !target.GetCustomRole().IsLoneImpostor())
                 || (target.GetRoleClass()?.ShowsRoleColorToAll(isMeeting) ?? false)
                 || (seer.GetRoleClass()?.KnowsRoleColorOf(target, isMeeting) ?? false);

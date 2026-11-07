@@ -199,7 +199,7 @@ namespace TownOfHostL
             if (winners.Count != 0)
                 foreach (var pc in winners)
                 {
-                    if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw && pc.Is(CustomRoles.GM)) continue;
+                    if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw && pc.GetCustomRole().IsSpectator()) continue;
                     if (CustomWinnerHolder.WinnerIds.Contains(pc.PlayerId) && winnerList.Contains(pc.PlayerId)) continue;
                     if (CustomWinnerHolder.CantWinPlayerIds.Contains(pc.PlayerId)) continue;
 

@@ -27,7 +27,7 @@ namespace TownOfHostL
                         Logger.Warn("プレイヤーがnullです", "RandomSpawn");
                         return;
                     }
-                    if (player.Is(CustomRoles.GM)) return; //GMは対象外に
+                    if (player.GetCustomRole().IsSpectator()) return; //観戦者は対象外に
                     if (FirstTP[player.PlayerId])
                     {
                         FirstTP[player.PlayerId] = false;

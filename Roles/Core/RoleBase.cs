@@ -263,6 +263,8 @@ public abstract class RoleBase : IDisposable
     public virtual bool CanRevengeOn(PlayerControl candidate) => true;
     /// <summary>この役職の人に、target の役職の色が見えるか</summary>
     public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
+    /// <summary>この役職の人には、会議で target の名前を色なしで見せる (他の色の決まりより先に効く)</summary>
+    public virtual bool HidesNameColorInMeeting(PlayerControl target) => false;
     /// <summary>この役職の人の役職の色が、全員に見えるか</summary>
     public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
     /// <summary>キノコカオスの間も、キルできる相手の名前が見える (インポスターは役職によらず見える)</summary>
@@ -295,6 +297,9 @@ public abstract class RoleBase : IDisposable
     /// false の役職は、死んでいる・インポスターなどの他の条件に当たらない限り、他人の名前を送り直さない。
     /// </summary>
     public virtual bool NeedsSeenNames => false;
+
+    /// <summary>元の陣営 (クルー・インポスター) の勝利に入るか。印の NoTeamWin と違い、試合中に変わってよい</summary>
+    public virtual bool WinsWithBaseTeam => true;
 
     // 名前は下記の構成で表示される
     // [Role][Progress]

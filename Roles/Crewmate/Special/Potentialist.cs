@@ -21,7 +21,7 @@ public sealed class Potentialist : RoleBase
             null,
             "ポテンシャリスト",
             "#ffff00",
-            flags: RoleFlags.DontShowOption
+            flags: RoleFlags.DontShowOption | RoleFlags.NoComingOutOption
         );
     public Potentialist(PlayerControl player)
     : base(

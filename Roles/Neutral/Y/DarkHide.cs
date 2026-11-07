@@ -4,12 +4,13 @@ using Hazel;
 using InnerNet;
 
 using static TownOfHostL.Options;
+using TownOfHostL.Core.Win;
 using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Core.Interfaces;
 
 namespace TownOfHostL.Roles.Neutral
 {
-    public sealed class DarkHide : RoleBase, IKiller, ISchrodingerCatOwner
+    public sealed class DarkHide : RoleBase, IKiller, ISchrodingerCatOwner, ISoloWinner
     {
         public static readonly SimpleRoleInfo RoleInfo =
             SimpleRoleInfo.Create(
@@ -56,6 +57,18 @@ namespace TownOfHostL.Roles.Neutral
         public static bool CanCountNeutralKiller;
 
         public bool IsWinKill = false;
+
+        public SoloWinTier SoloWinTier => SoloWinTier.Steal;
+        /// <summary>インポスターの勝ち (妨害を除く) と、インポスターを倒した後のクルーの勝ち (タスクを除く) を横取りする</summary>
+        public bool CheckSoloWin(WinnerResolver.Context ctx, out CustomWinner winner)
+        {
+            winner = CustomWinner.DarkHide;
+            var original = ctx.Original;
+            return Player.IsAlive()
+                && ((original == CustomWinner.Impostor && ctx.Reason != GameOverReason.ImpostorsBySabotage)
+                    || original == CustomWinner.DarkHide
+                    || (original == CustomWinner.Crewmate && ctx.Reason != GameOverReason.CrewmatesByTask && IsWinKill));
+        }
 
         public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.DarkHide;
 
