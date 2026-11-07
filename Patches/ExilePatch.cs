@@ -72,7 +72,8 @@ namespace TownOfHostL
                     if (!AntiBlackout.OverrideExiledPlayer && info?.IsDesyncImpostor == true)
                         exiled.Object?.ResetPlayerCam(1f);
 
-                    exiled.IsDead = true;
+                    // 暗転対策で生きたクルーに見せている追放者は、客の締めの判定が済むまで死を送らない
+                    if (!AntiBlackout.DeferDeathIfFilled(exiled.PlayerId)) exiled.IsDead = true;
                     if (role != CustomRoles.AntiComplete || PlayerState.GetByPlayerId(exiled.PlayerId).DeathReason == CustomDeathReason.etc)
                         PlayerState.GetByPlayerId(exiled.PlayerId).DeathReason = CustomDeathReason.Vote;
 
