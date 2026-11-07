@@ -61,9 +61,10 @@ namespace TownOfHostL
             //カモフラージュ強制解除
             Main.AllPlayerControls.Do(pc =>
             {
-                Camouflage.RpcSetSkin(false, pc, ForceRevert: true, RevertToDefault: true);
+                Camouflage.RpcSetSkin(false, pc, ForceRevert: true);
                 SkinChangeMode.RpcSetSkin(pc, pc);
             });
+            Modules.Net.OutfitSync.SendAllNow();
 
             WinnerResolver.Resolve(reason);
             ShipStatus.Instance.enabled = false;

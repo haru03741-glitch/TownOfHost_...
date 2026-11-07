@@ -231,6 +231,15 @@ namespace TownOfHostL
             sender.SetName(name);
         }
 
+        // 全員へ同じ名前を一時的に見せた後、見る人ごとの名前へ戻す。記録を捨てて NotifyRoles に全員分を組み直させる
+        internal static void ForgetNotifiedNames(PlayerControl player)
+        {
+            if (player == null || !AmongUsClient.Instance.AmHost || Main.LastNotifyNames == null) return;
+            foreach (var seer in Main.AllPlayerControls)
+                Main.LastNotifyNames[(player.PlayerId, seer.PlayerId)] = null;
+            if (GameStates.IsInGame) Utils.NotifyRoles();
+        }
+
 #if DEBUG
         internal static void SelectRolesCommand(string[] args)
         {

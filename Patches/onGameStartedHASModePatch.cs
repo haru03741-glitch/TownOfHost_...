@@ -27,6 +27,9 @@ class SelectRolesHASModePatch
         //MODの役職割り当て
         RpcSetRoleReplacer.Release(); //保存していたSetRoleRpcを一気に書く
 
+        // GetRoleTypePlayers が本編の役職から既定の役職 (Impostor / Crewmate) を入れるので、色分けはその後に行う。
+        // 狐と荒らしの色は、この後の割り当ての中で塗り直す
+        var roleTypePlayers = SelectRolesPatch.GetRoleTypePlayers();
         SetColorPatch.IsAntiGlitchDisabled = true;
         foreach (var pc in Main.AllPlayerControls)
         {
@@ -36,7 +39,6 @@ class SelectRolesHASModePatch
                 pc.RpcSetColor(1);
         }
 
-        var roleTypePlayers = SelectRolesPatch.GetRoleTypePlayers();
         //役職設定処理
         if (roleTypePlayers.TryGetValue(RoleTypes.Crewmate, out var list))
         {

@@ -219,7 +219,7 @@ class MurderPlayerPatch
                     target.RpcShapeshift(target, false);
                 }
             }
-            Camouflage.RpcSetSkin(Camouflage.IsCamouflage, target, ForceRevert: true, RevertToDefault: true);
+            Camouflage.RpcSetSkin(Camouflage.IsCamouflage, target, ForceRevert: true);
             if (Options.IsSyncColorMode && Options.SCM_RestoredDeadPlayer.GetBool())
             {
                 SkinChangeMode.RpcSetSkin(target, target);
@@ -633,7 +633,7 @@ class ReportDeadBodyPatch
             // 変身解除処理
             if (Main.CheckShapeshift.ContainsKey(pc.PlayerId))
             {
-                Camouflage.RpcSetSkin(Camouflage.IsCamouflage, pc, RevertToDefault: true);
+                Camouflage.RpcSetSkin(Camouflage.IsCamouflage, pc);
             }
         }
 
