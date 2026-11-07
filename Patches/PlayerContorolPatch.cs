@@ -380,8 +380,14 @@ class ShapeshiftPatch
 
         if (!shapeshifting) Camouflage.RpcSetSkin(Camouflage.IsCamouflage, __instance);
 
-        //変身解除のタイミングがずれて名前が直せなかった時のために強制書き換え
-        if (!shapeshifting)
+        // 本編の変身は名前を変身先の名前に、解除は本名に戻すので、見る人ごとの名前 (役職表示や通信妨害中の隠した名前) を配り直す。
+        // 変身はすぐに送る (送り直しの元になる LastNotifyNames を変身先の名前にしておく)。
+        // 解除はタイミングがずれて名前が直せないことがあるので、少し待ってから送る
+        if (shapeshifting)
+        {
+            Utils.NotifyRoles(NoCache: true);
+        }
+        else
         {
             _ = new LateTask(() =>
             {

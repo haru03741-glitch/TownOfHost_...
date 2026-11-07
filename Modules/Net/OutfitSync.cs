@@ -9,6 +9,7 @@ namespace TownOfHostL.Modules.Net;
 // 帽子などの RPC は本来その本人だけが送るもので、ホストが他人の分を送る形にはしない。
 // 代わりに、ホストが持ち主の PlayerInfo を serialize して送り、続けて本人を対象にした Shapeshift (変身の解除と同じ形) を
 // 送って、受け手に既定の外見を着せ直させる。Shapeshift はふだんからホストが送るもの。
+// その人に変身している人がいれば、同じ束で変身も送り直す (変身の見た目は変身した時の外見の写しで、着せ替えても変わらないため)。
 // 名前には触らない。名前は SetName の経路で配る。
 // Data と Shapeshift は 1 人ずつ 1 つの GameData に収める (SendGuard が 1000 バイトを超えた束を分けると順序が保証されないため)。
 // 謝辞: PlayerInfo の serialize と本人への Shapeshift で外見を配る方式は Endless Host Roles (Gurge44, GPL-3.0) が
@@ -94,10 +95,50 @@ public static class OutfitSync
         }
         pending.Remove(target.PlayerId);
         bool refresh = !IsShifted(target);
-        WriteAndSend(target, target.Data, refresh);
-        // 変身解除を受けたクライアントは名前を PlayerInfo の名前に戻すので、見る人ごとに配った名前 (役職表示や隠した名前) を送り直す
+        // target に変身している人の見た目は、変身した時の target の外見の写しなので、target を着替えさせても変わらない。
+        // 同じ束で変身を送り直して、受け手に新しい外見を写させる
+        var copiers = refresh ? ShiftedInto(target) : null;
+        WriteAndSend(target, target.Data, refresh, copiers);
+        // 変身解除・変身を受けたクライアントは名前を外見の名前に戻すので、見る人ごとに配った名前 (役職表示や隠した名前) を送り直す
         if (refresh) ResendNames(target);
+        if (copiers != null)
+        {
+            foreach (var copier in copiers)
+            {
+                CopyShiftedOutfit(copier, target);
+                ResendNames(copier);
+            }
+        }
         return true;
+    }
+
+    static List<PlayerControl> ShiftedInto(PlayerControl target)
+    {
+        List<PlayerControl> list = null;
+        foreach (var (id, shifted) in Main.CheckShapeshift)
+        {
+            if (!shifted || id == target.PlayerId) continue;
+            if (!Main.ShapeshiftTarget.TryGetValue(id, out var to) || to != target.PlayerId) continue;
+            var pc = Utils.GetPlayerById(id);
+            if (pc == null || pc.Data == null || pc.Data.Disconnected || pc.Data.IsDead) continue;
+            // 本編が変身を解いた後も CheckShapeshift が残る経路があり得るので、ホストの画面で変身中の人だけにする
+            if (pc.CurrentOutfitType != PlayerOutfitType.Shapeshifted) continue;
+            (list ??= new()).Add(pc);
+        }
+        return list;
+    }
+
+    // ホストの画面でも、変身中の見た目を target の今の外見に合わせる。PlayerOutfit を共有させないよう、中身を写す
+    static void CopyShiftedOutfit(PlayerControl copier, PlayerControl target)
+    {
+        var from = target.Data?.DefaultOutfit;
+        if (from == null || copier.Data == null || !copier.Data.Outfits.TryGetValue(PlayerOutfitType.Shapeshifted, out var shifted) || shifted == null) return;
+        shifted.ColorId = from.ColorId;
+        shifted.HatId = from.HatId;
+        shifted.SkinId = from.SkinId;
+        shifted.VisorId = from.VisorId;
+        shifted.PetId = from.PetId;
+        if (copier.CurrentOutfitType == PlayerOutfitType.Shapeshifted) copier.RawSetOutfit(shifted, PlayerOutfitType.Shapeshifted);
     }
 
     static void ResendNames(PlayerControl target)
@@ -124,7 +165,7 @@ public static class OutfitSync
         => pc.CurrentOutfitType == PlayerOutfitType.Shapeshifted
             || (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var s) && s);
 
-    static void WriteAndSend(PlayerControl target, NetworkedPlayerInfo data, bool refresh)
+    static void WriteAndSend(PlayerControl target, NetworkedPlayerInfo data, bool refresh, List<PlayerControl> copiers)
     {
         var writer = MessageWriter.Get(SendOption.Reliable);
         GameDataSerializePatch.SerializeMessageCount++;
@@ -146,6 +187,18 @@ public static class OutfitSync
                 writer.WriteNetObject(target);
                 writer.Write(false);
                 writer.EndMessage();
+            }
+            if (copiers != null)
+            {
+                foreach (var copier in copiers)
+                {
+                    writer.StartMessage(2);
+                    writer.WritePacked(copier.NetId);
+                    writer.Write((byte)RpcCalls.Shapeshift);
+                    writer.WriteNetObject(target);
+                    writer.Write(false);
+                    writer.EndMessage();
+                }
             }
 
             writer.EndMessage();
