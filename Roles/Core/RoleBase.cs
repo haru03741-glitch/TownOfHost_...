@@ -296,6 +296,9 @@ public abstract class RoleBase : IDisposable
     /// </summary>
     public virtual bool NeedsSeenNames => false;
 
+    /// <summary>元の陣営 (クルー・インポスター) の勝利に入るか。印の NoTeamWin と違い、試合中に変わってよい</summary>
+    public virtual bool WinsWithBaseTeam => true;
+
     // 名前は下記の構成で表示される
     // [Role][Progress]
     // [Name][Mark]

@@ -1,18 +1,18 @@
 using System;
-using System.Linq;
 
-using TownOfHostL.Roles.AddOns.Common;
+using TownOfHostL.Roles.AddOns;
 using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Core.Interfaces;
-using TownOfHostL.Roles.Crewmate;
 using TownOfHostL.Roles.Neutral;
 
 namespace TownOfHostL.Core.Win;
 
 /// <summary>
 /// 試合の終わりが決まった後に、誰が勝つかを決める。
-/// 段の順: 基本の勝者 → 単独勝利の上書き → 勝者が空なら詰め直し → 追加勝利 → 弁護士 → 確定敗北。
+/// 段の順: 基本の勝者 → 単独勝利の上書き → 勝者が空なら詰め直し → 追加勝利 → 後から決める勝ち方 → 確定敗北。
 /// 全滅 (None) と廃村 (Draw) では基本の勝者より後の段を飛ばす。
+/// 役職の勝ち方は役職のクラス (ISoloWinner・IAdditionalWinner・IAdditionalWinGranter・ILateWinner・WinsWithBaseTeam)、
+/// 属性の勝ち方は AddOnInfo.Win と印 (NoTeamWin・NeverWins) で宣言し、ここでは役職の名前を並べない。
 /// </summary>
 public static class WinnerResolver
 {
@@ -30,22 +30,7 @@ public static class WinnerResolver
         }
     }
 
-    /// <summary>単独勝利の上書き。並びの後ろほど強い (後の物が前の勝者をリセットする)。</summary>
-    private static readonly Action<Context>[] SoloOverrides =
-    [
-        FoxSpiritOverride,
-        GodOverride,
-        LoversOverride,
-        DarkHideOrNeutralBakeryOverride,
-    ];
-
-    /// <summary>追加勝利。各人に対して、この並びで調べる。</summary>
-    private static readonly Action<PlayerControl>[] AdditionalWinners =
-    [
-        LoversAdditionalWinner,
-        RoleAdditionalWinner,
-        ArchenemyAdditionalWinner,
-    ];
+    private static readonly SoloWinTier[] SoloWinTiers = (SoloWinTier[])Enum.GetValues(typeof(SoloWinTier));
 
     public static void Resolve(GameOverReason reason)
     {
@@ -54,26 +39,24 @@ public static class WinnerResolver
         AddBaseTeamWinners(ctx.Original);
         if (ctx.Original is CustomWinner.Draw or CustomWinner.None) return;
 
-        foreach (var apply in SoloOverrides) apply(ctx);
+        foreach (var tier in SoloWinTiers) ApplySoloWins(ctx, tier);
 
         // 上書きが無く、勝者のチームはそのままで、誰も入っていない時だけ詰め直す
         if (!ctx.Overridden && CustomWinnerHolder.WinnerTeam == ctx.Original && CustomWinnerHolder.WinnerIds.Count == 0)
             AddBaseTeamWinners(ctx.Original);
 
+        foreach (var pc in Main.AllPlayerControls) AddAdditionalWinners(pc);
         foreach (var pc in Main.AllPlayerControls)
-            foreach (var check in AdditionalWinners) check(pc);
+            if (pc.GetRoleClass() is IAdditionalWinGranter granter) granter.GrantAdditionalWins();
 
-        //弁護士且つ追跡者
-        Lawyer.EndGameCheck();
+        foreach (var pc in Main.AllPlayerControls)
+            if (pc.GetRoleClass() is ILateWinner lateWinner) lateWinner.CheckLateWin();
 
-        //確定敗北陣営
         foreach (var pc in Main.AllPlayerControls)
         {
-            if (pc.Is(CustomRoles.ChainShifterAddon))
-            {
-                CustomWinnerHolder.WinnerIds.Remove(pc.PlayerId);
-                CustomWinnerHolder.CantWinPlayerIds.Add(pc.PlayerId);
-            }
+            if (!PlayerTraits.NeverWins(pc)) continue;
+            CustomWinnerHolder.WinnerIds.Remove(pc.PlayerId);
+            CustomWinnerHolder.CantWinPlayerIds.Add(pc.PlayerId);
         }
     }
 
@@ -86,8 +69,7 @@ public static class WinnerResolver
                 // 切断した人も入れる
                 foreach (var pc in PlayerControl.AllPlayerControls)
                 {
-                    if (pc.Is(CustomRoleTypes.Crewmate) && !pc.Is(CustomRoles.Lovers)
-                        && !(pc.Is(CustomRoles.Bakery) && Bakery.IsNeutral(pc)) && !pc.Is(CustomRoles.Archenemy))
+                    if (pc.Is(CustomRoleTypes.Crewmate) && PlayerTraits.WinsWithBaseTeam(pc))
                         CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
                 }
                 break;
@@ -96,103 +78,65 @@ public static class WinnerResolver
                 if (Egoist.CheckWin()) break;
                 foreach (var pc in Main.AllPlayerControls)
                 {
-                    if ((pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate))
-                        && !pc.Is(CustomRoles.Lovers) && !pc.Is(CustomRoles.Archenemy) && !pc.Is(CustomRoles.MadJester))
+                    if ((pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate)) && PlayerTraits.WinsWithBaseTeam(pc))
                         CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
                 }
                 break;
         }
     }
 
-    private static void SetSoloWinner(Context ctx, CustomWinner winner, CustomRoles role)
+    /// <summary>1 つの段の単独勝利。最初に当たった人が勝者をリセットし、2 人目からは勝者に足す (チームは後の人の物になる)。</summary>
+    private static void ApplySoloWins(Context ctx, SoloWinTier tier)
     {
-        CustomWinnerHolder.ResetAndSetWinner(winner);
-        ctx.Overridden = true;
-        foreach (var pc in Main.AllPlayerControls)
-            if (pc.Is(role) && pc.IsAlive()) CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-    }
-
-    private static void FoxSpiritOverride(Context ctx)
-    {
-        if (FoxSpirit.CheckWin() && !ctx.Reason.Equals(GameOverReason.ImpostorsBySabotage))
-            SetSoloWinner(ctx, CustomWinner.FoxSpirit, CustomRoles.FoxSpirit);
-    }
-
-    private static void GodOverride(Context ctx)
-    {
-        if (God.CheckWin())
-            SetSoloWinner(ctx, CustomWinner.God, CustomRoles.God);
-    }
-
-    private static void LoversOverride(Context ctx)
-    {
-        if (Lovers.playersList.Count > 0 && Lovers.playersList.ToArray().All(p => p.IsAlive())
-            && !ctx.Reason.Equals(GameOverReason.CrewmatesByTask) && !LoversWinAdditionally)
-            SetSoloWinner(ctx, CustomWinner.Lovers, CustomRoles.Lovers);
-    }
-
-    private static bool LoversWinAdditionally => Lovers.LoversAddWin.GetBool() || PlatonicLover.AddWin;
-
-    /// <summary>DarkHide と闇パン屋は、最初に当たった人だけが勝者をリセットし、2 人目からは勝者に足す。</summary>
-    private static void DarkHideOrNeutralBakeryOverride(Context ctx)
-    {
-        var original = ctx.Original;
-        var bySabotage = ctx.Reason.Equals(GameOverReason.ImpostorsBySabotage);
-        var byTask = ctx.Reason.Equals(GameOverReason.CrewmatesByTask);
         var triggered = false;
-        foreach (var pc in PlayerControl.AllPlayerControls)
+        foreach (var pc in Main.AllPlayerControls)
         {
-            CustomWinner winner;
-            if (pc.Is(CustomRoles.DarkHide) && !pc.Data.IsDead
-                && ((original == CustomWinner.Impostor && !bySabotage) || original == CustomWinner.DarkHide
-                    || (original == CustomWinner.Crewmate && !byTask && ((DarkHide)pc.GetRoleClass()).IsWinKill)))
-                winner = CustomWinner.DarkHide;
-            else if (pc.Is(CustomRoles.Bakery) && Bakery.IsNeutral(pc) && pc.IsAlive()
-                && ((original == CustomWinner.Impostor && !bySabotage) || original == CustomWinner.NBakery
-                    || (original == CustomWinner.Crewmate && !byTask)))
-                winner = CustomWinner.NBakery;
-            else continue;
+            if (pc.GetRoleClass() is ISoloWinner soloWinner && soloWinner.SoloWinTier == tier
+                && soloWinner.CheckSoloWin(ctx, out var winner))
+                AddSoloWinner(ctx, pc, winner, ref triggered);
 
-            if (!triggered)
+            foreach (var subRole in pc.GetCustomSubRoles())
             {
-                CustomWinnerHolder.ResetAndSetWinner(winner);
-                ctx.Overridden = true;
-                triggered = true;
+                var win = AddOnList.Get(subRole)?.Win;
+                if (win?.CheckSoloWin != null && win.SoloWinTier == tier && win.CheckSoloWin(ctx, pc))
+                    AddSoloWinner(ctx, pc, win.SoloWinner, ref triggered);
             }
-            else
+        }
+    }
+
+    private static void AddSoloWinner(Context ctx, PlayerControl pc, CustomWinner winner, ref bool triggered)
+    {
+        if (!triggered)
+        {
+            CustomWinnerHolder.ResetAndSetWinner(winner);
+            ctx.Overridden = true;
+            triggered = true;
+        }
+        else
+        {
+            CustomWinnerHolder.WinnerTeam = winner;
+        }
+        CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
+    }
+
+    private static void AddAdditionalWinners(PlayerControl pc)
+    {
+        foreach (var subRole in pc.GetCustomSubRoles())
+        {
+            var win = AddOnList.Get(subRole)?.Win;
+            if (win?.CheckAdditionalWin == null || !win.CheckAdditionalWin(pc)) continue;
+            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
+            CustomWinnerHolder.AdditionalWinnerRoles.Add(subRole);
+        }
+
+        if (pc.GetRoleClass() is IAdditionalWinner additionalWinner)
+        {
+            var winnerRole = pc.GetCustomRole();
+            if (additionalWinner.CheckWin(ref winnerRole))
             {
-                CustomWinnerHolder.WinnerTeam = winner;
+                CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
+                CustomWinnerHolder.AdditionalWinnerRoles.Add(winnerRole);
             }
-            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-        }
-    }
-
-    private static void LoversAdditionalWinner(PlayerControl pc)
-    {
-        if (pc.Is(CustomRoles.Lovers) && pc.IsAlive() && LoversWinAdditionally)
-        {
-            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-            CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.Lovers);
-        }
-    }
-
-    private static void RoleAdditionalWinner(PlayerControl pc)
-    {
-        if (pc.GetRoleClass() is not IAdditionalWinner additionalWinner) return;
-        var winnerRole = pc.GetCustomRole();
-        if (additionalWinner.CheckWin(ref winnerRole))
-        {
-            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-            CustomWinnerHolder.AdditionalWinnerRoles.Add(winnerRole);
-        }
-    }
-
-    private static void ArchenemyAdditionalWinner(PlayerControl pc)
-    {
-        if (Duelist.ArchenemyCheckWin(pc))
-        {
-            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-            CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.Archenemy);
         }
     }
 }

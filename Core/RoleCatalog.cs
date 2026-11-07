@@ -50,7 +50,7 @@ public static class RoleCatalog
         (CustomRoles.Tracker, Crew, null, RoleFlags.Vanilla),
         (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption | RoleFlags.FakeTasksLabel | RoleFlags.NoTasks),
 
-        (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn | RoleFlags.TasksNotCountedForWin),
+        (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn | RoleFlags.TasksNotCountedForWin | RoleFlags.NoTeamWin),
 
         // HideAndSeek
         (CustomRoles.HASFox, CustomRoleTypes.Neutral, "#e478ff", RoleFlags.NoTasks),

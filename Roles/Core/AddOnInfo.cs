@@ -34,6 +34,8 @@ public sealed class AddOnInfo
     public readonly Action<byte> OnAdd;
     /// <summary>持ち主に送る設定を書き換える</summary>
     public readonly Action<IGameOptions> ApplyGameOptions;
+    /// <summary>勝ち方。持たない属性は null</summary>
+    public readonly AddOnWin Win;
 
     public AddOnInfo(
         CustomRoles role,
@@ -43,7 +45,8 @@ public sealed class AddOnInfo
         Action setupOptions = null,
         Action<byte> onAdd = null,
         Action<IGameOptions> applyGameOptions = null,
-        RoleFlags flags = RoleFlags.None)
+        RoleFlags flags = RoleFlags.None,
+        AddOnWin win = null)
     {
         Role = role;
         Group = group;
@@ -52,6 +55,7 @@ public sealed class AddOnInfo
         SetupOptions = setupOptions;
         OnAdd = onAdd;
         ApplyGameOptions = applyGameOptions;
+        Win = win;
         Flags = flags | group switch
         {
             AddOnGroup.Buff => RoleFlags.BuffAddOn,

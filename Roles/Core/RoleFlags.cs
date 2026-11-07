@@ -68,4 +68,8 @@ public enum RoleFlags : ulong
     TasksNotCountedForWin = 1UL << 24,
     /// <summary>タスクを持たない (役職クラスを持たない役職用。クラスを持つ役職は RoleBase の HasTasks で決める)</summary>
     NoTasks = 1UL << 25,
+    /// <summary>元の陣営 (クルー・インポスター) の勝利に入らない</summary>
+    NoTeamWin = 1UL << 27,
+    /// <summary>どの勝ち方でも勝者にならない</summary>
+    NeverWins = 1UL << 28,
 }

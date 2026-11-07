@@ -1,12 +1,13 @@
 using System.Linq;
 using AmongUs.GameOptions;
 
+using TownOfHostL.Core.Win;
 using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Core.Interfaces;
 
 namespace TownOfHostL.Roles.Neutral;
 
-public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
+public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook, ISoloWinner
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -62,10 +63,13 @@ public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
         OptionIgnoreGhostTask = BooleanOptionItem.Create(RoleInfo, 12, OptionName.FoxSpiritIgnoreGhostTask, true, false);
     }
     public static (bool, int, int) TaskData => (false, 0, OptionTaskCount.GetInt());
-    public static bool CheckWin()
+    public SoloWinTier SoloWinTier => SoloWinTier.Tasks;
+    /// <summary>妖狐の誰かがタスクを終えて生きていれば、生きている妖狐が全員勝つ。妨害の勝ちは横取りしない</summary>
+    public bool CheckSoloWin(WinnerResolver.Context ctx, out CustomWinner winner)
     {
-        return Main.AllAlivePlayerControls.ToArray()
-                .Any(p => p.Is(CustomRoles.FoxSpirit) && p.GetPlayerTaskState().IsTaskFinished);
+        winner = CustomWinner.FoxSpirit;
+        return Player.IsAlive() && ctx.Reason != GameOverReason.ImpostorsBySabotage
+            && Main.AllAlivePlayerControls.Any(p => p.Is(CustomRoles.FoxSpirit) && p.GetPlayerTaskState().IsTaskFinished);
     }
 
     public override bool OnCheckMurderAsTarget(MurderInfo info)
