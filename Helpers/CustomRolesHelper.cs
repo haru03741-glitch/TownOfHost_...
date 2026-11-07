@@ -68,6 +68,8 @@ static class CustomRolesHelper
     public static bool IsLoneImpostor(this CustomRoles role) => role.Def().Has(RoleFlags.LoneImpostor);
     public static bool IsNeutralKiller(this CustomRoles role) => role.Def().Has(RoleFlags.NeutralKiller);
     public static bool IsCrewKiller(this CustomRoles role) => role.Def().Has(RoleFlags.CrewKiller);
+    /// <summary>印のどれかを持つか (Enum.HasFlag と取り違えないよう名前を分けている)</summary>
+    public static bool HasRoleFlag(this CustomRoles role, RoleFlags flags) => role.Def().Has(flags);
 
     //CC
     public static bool IsCCRole(this CustomRoles role) => role.Def().Has(RoleFlags.CCLeader | RoleFlags.CCColorCat | RoleFlags.CCNoCat);

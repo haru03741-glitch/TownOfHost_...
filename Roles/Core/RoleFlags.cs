@@ -41,4 +41,14 @@ public enum RoleFlags : uint
     NeutralKiller = 1 << 16,
     /// <summary>キルできるクルー (シェリフ系)</summary>
     CrewKiller = 1 << 17,
+
+    // ここから下は役職にも属性にも付けられる性質。判定は Core.PlayerTraits から引く
+    /// <summary>追放された人がインポスターかどうかを、自分の名前の所で知る</summary>
+    LearnsExiledTeam = 1 << 18,
+    /// <summary>死体を通報できない (ReportableByAll の死体は除く)</summary>
+    CannotReport = 1 << 19,
+    /// <summary>通報できない人でも、この人の死体は通報できる</summary>
+    ReportableByAll = 1 << 20,
+    /// <summary>死んでもタスクが免除されない</summary>
+    KeepsTasksWhenDead = 1 << 21,
 }

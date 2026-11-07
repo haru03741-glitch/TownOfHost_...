@@ -28,4 +28,22 @@ public static class PlayerTraits
         => pc.Is(CustomRoles.SKMadmate) ||
            // マッド属性化時に削除
            (role is SchrodingerCat schrodingerCat && schrodingerCat.AmMadmate);
+
+    /// <summary>追放された人がインポスターかどうかを、自分の名前の所で知る</summary>
+    public static bool LearnsExiledTeam(PlayerControl pc) => Has(pc, RoleFlags.LearnsExiledTeam);
+    /// <summary>死体を通報できない (target の死体が ReportableByAll なら通報できる)</summary>
+    public static bool CannotReport(PlayerControl reporter, PlayerControl target)
+        => Has(reporter, RoleFlags.CannotReport) && !Has(target, RoleFlags.ReportableByAll);
+    /// <summary>死んでもタスクが免除されない</summary>
+    public static bool KeepsTasksWhenDead(PlayerControl pc) => Has(pc, RoleFlags.KeepsTasksWhenDead);
+
+    /// <summary>役職か、付いている属性のどれかがその印を持つ</summary>
+    private static bool Has(PlayerControl pc, RoleFlags flag)
+    {
+        if (pc == null) return false;
+        if (pc.GetCustomRole().HasRoleFlag(flag)) return true;
+        foreach (var subRole in pc.GetCustomSubRoles())
+            if (subRole.HasRoleFlag(flag)) return true;
+        return false;
+    }
 }

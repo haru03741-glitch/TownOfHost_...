@@ -209,7 +209,7 @@ namespace TownOfHostL
                     {
                         if (target.AmOwner && AmongUsClient.Instance.IsGameStarted)
                         {
-                            if (target.Is(CustomRoles.SeeingOff) || target.Is(CustomRoles.Sending) || target.Is(CustomRoles.MadDilemma))
+                            if (TownOfHostL.Core.PlayerTraits.LearnsExiledTeam(target))
                             {
                                 string str = Sending.RealNameChange();
                                 if (!string.IsNullOrEmpty(str))

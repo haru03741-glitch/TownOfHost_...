@@ -555,8 +555,7 @@ class ReportDeadBodyPatch
             Logger.Info("DisableButton InMushroomMixup", "ReportDeadBody");
             return false;
         }
-        if ((reporter.Object.Is(CustomRoles.NonReport) || reporter.Object.Is(CustomRoles.FoxSpirit)) &&
-            target != null && !target.Object.Is(CustomRoles.Bait) && !target.Object.Is(CustomRoles.AddBait))
+        if (target != null && TownOfHostL.Core.PlayerTraits.CannotReport(reporter.Object, target.Object))
         {
             DontReportMarkList.Add(reporter.PlayerId);
             Utils.NotifyRoles(SpecifySeer: reporter.Object);

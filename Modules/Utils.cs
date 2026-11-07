@@ -359,12 +359,12 @@ public static class Utils
         else
         {
             // 死んでいて，死人のタスク免除が有効なら確定でfalse
-            if (p.IsDead && Options.GhostIgnoreTasks.GetBool() && !p.Object.Is(CustomRoles.Gang))
+            if (p.IsDead && Options.GhostIgnoreTasks.GetBool() && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
             {
                 return false;
             }
             // 死んでいて，妖狐がいるかつ無効化設定ならfalse
-            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !p.Object.Is(CustomRoles.Gang))
+            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
             {
                 return false;
             }
@@ -1492,7 +1492,7 @@ public static class Utils
             seer.GetRoleClass()?.OverrideShowMainRoleText(ref SelfNameColor, ref t);//colorのみ
 
             bool selfNameOriginal = true;
-            if (seer.Is(CustomRoles.SeeingOff) || seer.Is(CustomRoles.Sending) || seer.Is(CustomRoles.MadDilemma))
+            if (TownOfHostL.Core.PlayerTraits.LearnsExiledTeam(seer))
             {
                 string str = Sending.RealNameChange();
                 if (str != string.Empty)

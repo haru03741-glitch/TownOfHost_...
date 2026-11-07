@@ -202,7 +202,7 @@ public static class CustomRoleManager
 
         //ホストの死後タスク免除
         if (attemptTarget == PlayerControl.LocalPlayer && Options.HostGhostIgnoreTasks.GetBool()
-            && !attemptTarget.Is(CustomRoles.Gang) && Utils.HasTasks(attemptTarget.Data))
+            && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(attemptTarget) && Utils.HasTasks(attemptTarget.Data))
         {
             var taskState = PlayerControl.LocalPlayer.GetPlayerTaskState();
             taskState.CompletedTasksCount = taskState.AllTasksCount;

@@ -26,7 +26,7 @@ public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook
                 AssignCountRule = new(1, 1, 1),
                 IsInitiallyAssignableCallBack = () => (MapNames)Main.NormalOptions.MapId is not MapNames.Polus and not MapNames.Fungle
             },
-            flags: RoleFlags.FixedCount
+            flags: RoleFlags.FixedCount | RoleFlags.CannotReport
         );
     public FoxSpirit(PlayerControl player)
     : base(
