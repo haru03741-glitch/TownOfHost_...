@@ -196,27 +196,9 @@ public static class CustomRoleManager
             targetState.DeathReason = CustomDeathReason.Kill;
         }
 
+        // ホストの死後のタスク免除は SetDead の中で行う (キル以外の死に方でも効かせるため)
         targetState.SetDead();
         attemptTarget.SetRealKiller(attemptKiller, true);
-
-        //ホストの死後タスク免除
-        if (attemptTarget == PlayerControl.LocalPlayer && Options.HostGhostIgnoreTasks.GetBool()
-            && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(attemptTarget) && Utils.HasTasks(attemptTarget.Data))
-        {
-            var taskState = PlayerControl.LocalPlayer.GetPlayerTaskState();
-            taskState.CompletedTasksCount = taskState.AllTasksCount;
-            Logger.Info($"{PlayerControl.LocalPlayer.GetNameWithRole()}: TaskCounts = {taskState.CompletedTasksCount}/{taskState.AllTasksCount}", "OnMurderPlayer/HostGhostIgnoreTasks");
-
-            foreach (var task in PlayerControl.LocalPlayer.Data.Tasks)
-            {
-                if (!task.Complete)
-                {
-                    task.Complete = true;
-                    GameData.Instance.CompletedTasks++;
-                }
-            }
-            Logger.Info($"{PlayerControl.LocalPlayer.GetNameWithRole()}.Dead TotalTaskCounts = {GameData.Instance.CompletedTasks}/{GameData.Instance.TotalTasks}", "OnMurderPlayer/HostGhostIgnoreTasks");
-        }
 
         Utils.CountAlivePlayers(true);
 
