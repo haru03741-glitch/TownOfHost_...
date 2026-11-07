@@ -15,7 +15,9 @@ public static class AddBait
         "Ｂ",
         setupOptions: SetupCustomOption,
         onAdd: Add,
-        flags: RoleFlags.ReportableByAll);
+        flags: RoleFlags.ReportableByAll,
+        chatCommand: "ベイティング",
+        assignAtRandom: true);
 
     private static readonly int Id = (int)offsetId.AddonBuff + 1100;
     private static List<byte> playerIdList = new();

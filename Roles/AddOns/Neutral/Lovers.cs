@@ -18,7 +18,8 @@ public static class Lovers
         setupOptions: SetupCustomOption,
         onAdd: Add,
         flags: RoleFlags.FirstWriteAddOn | RoleFlags.Pair | RoleFlags.TasksNotCountedForWin | RoleFlags.NoTeamWin,
-        win: new(SoloWinTier.Pair, CustomWinner.Lovers, CheckSoloWin, CheckAdditionalWin));
+        win: new(SoloWinTier.Pair, CustomWinner.Lovers, CheckSoloWin, CheckAdditionalWin),
+        chatCommand: "ラバーズ");
 
     private static Color RoleColor => Utils.GetRoleColor(CustomRoles.Lovers);
     private static readonly int Id = (int)offsetId.AddonNeu + 0;
