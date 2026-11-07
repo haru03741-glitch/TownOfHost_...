@@ -1561,6 +1561,11 @@ public static class Utils
 
                     //RealNameを取得 なければ現在の名前をRealNamesに書き込む
                     string TargetPlayerName = isForMeeting ? target.GetRealName(true): Main.AllPlayerNames[target.PlayerId];
+                    // 変身中の人は本編が変身先の名前を出している。本名を送ると正体が見えるので、変身先の名前にする
+                    if (!isForMeeting && Main.CheckShapeshift.TryGetValue(target.PlayerId, out var targetShifted) && targetShifted
+                        && Main.ShapeshiftTarget.TryGetValue(target.PlayerId, out var shiftTo) && shiftTo != target.PlayerId
+                        && Main.AllPlayerNames.TryGetValue(shiftTo, out var shiftName))
+                        TargetPlayerName = shiftName;
 
                     //ターゲットのプレイヤー名の色を書き換えます。
                     TargetPlayerName = TargetPlayerName.ApplyNameColorData(seer, target, isForMeeting);

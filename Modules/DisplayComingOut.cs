@@ -98,8 +98,6 @@ class DisplayComingOut
             or CustomRoles.Judge
             or CustomRoles.Potentialist
 
-            or CustomRoles.EvilHacker // 一旦封印
-
             or CustomRoles.GM
             or CustomRoles.GuardianAngel;
     }
