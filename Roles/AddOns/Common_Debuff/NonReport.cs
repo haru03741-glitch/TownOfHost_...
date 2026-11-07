@@ -15,7 +15,9 @@ public static class NonReport
         "Nr",
         setupOptions: SetupCustomOption,
         onAdd: Add,
-        flags: RoleFlags.CannotReport);
+        flags: RoleFlags.CannotReport,
+        chatCommand: "ノンレポート",
+        assignAtRandom: true);
 
     private static readonly int Id = (int)offsetId.AddonDebuff + 300;
     private static List<byte> playerIdList = new();

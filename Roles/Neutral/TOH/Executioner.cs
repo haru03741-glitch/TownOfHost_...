@@ -37,7 +37,6 @@ public sealed class Executioner : RoleBase, IAdditionalWinner
 
         TargetExiled = false;
     }
-    public static byte WinnerID;
 
     private static OptionItem OptionCanTargetImpostor;
     private static OptionItem OptionCanTargetNeutralKiller;

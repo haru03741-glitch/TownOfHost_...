@@ -47,7 +47,6 @@ namespace TownOfHostL.Roles.Neutral
             canCreateSidekick = OptionCanCreateSidekick.GetBool();
 
             canSidekickCount = canCreateSidekick ? 1 : 0;
-            sidekickTarget = new();
         }
 
         private static OptionItem OptionKillCooldown;
@@ -69,7 +68,7 @@ namespace TownOfHostL.Roles.Neutral
         private static bool canCreateSidekick;
 
         private int canSidekickCount;
-        private static List<byte> sidekickTarget = new();
+        private readonly List<byte> sidekickTarget = new();
         public static CustomRoles[] AdditionalRoles => canCreateSidekick ? [CustomRoles.JSidekick] : [];
 
         public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Jackal;

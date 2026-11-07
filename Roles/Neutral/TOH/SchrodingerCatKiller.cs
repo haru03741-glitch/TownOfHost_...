@@ -4,6 +4,7 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using Hazel;
 
+using TownOfHostL.Attributes;
 using TownOfHostL.Modules;
 using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Core.Interfaces;
@@ -31,9 +32,14 @@ public sealed class SchrodingerCatKiller : RoleBase, IKiller, IAdditionalWinner,
         RoleInfo,
         player
     )
+    { }
+
+    // 猫が途中でこの役職になるたびに作られるので、まだ切り替わっていない他の猫の予定を消さないよう試合の始めにだけ空にする
+    [GameModuleInitializer]
+    public static void Init()
     {
-        planedCats = new();
-        changeCheckList = new();
+        planedCats.Clear();
+        changeCheckList.Clear();
     }
 
     private static Dictionary<byte, (PlayerControl cat, PlayerControl owner, CustomRoles ownerRole,

@@ -14,7 +14,9 @@ public static class Revealer
         "#e478ff",
         "Rv",
         setupOptions: SetupCustomOption,
-        onAdd: Add);
+        onAdd: Add,
+        chatCommand: "リヴェラー",
+        assignAtRandom: true);
 
     private static readonly int Id = (int)offsetId.AddonBuff + 1300;
     private static List<byte> playerIdList = new();

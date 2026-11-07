@@ -519,15 +519,9 @@ class SelectRolesPatch
         }
         if (!CustomRoles.PlatonicLover.IsEnable() && CustomRoles.Lovers.IsEnable())
             AssignCustomSubRolesFromList(CustomRoles.Lovers, allPlayersbySub, 2);
-        foreach (var role in new CustomRoles[] {
-            CustomRoles.AddWatch, CustomRoles.Sunglasses, CustomRoles.AddLight,
-            CustomRoles.AddSeer, CustomRoles.Autopsy, CustomRoles.VIP,
-            CustomRoles.Clumsy, CustomRoles.Revenger, CustomRoles.Management,
-            CustomRoles.InfoPoor, CustomRoles.Sending, CustomRoles.TieBreaker,
-            CustomRoles.NonReport, CustomRoles.PlusVote, CustomRoles.Guarding,
-            CustomRoles.AddBait, CustomRoles.Refusing, CustomRoles.Revealer })
+        foreach (var info in TownOfHostL.Roles.AddOns.AddOnList.All)
         {
-            AssignCustomSubRolesDuplicatable(role, allPlayersbySub);
+            if (info.AssignAtRandom) AssignCustomSubRolesDuplicatable(info.Role, allPlayersbySub);
         }
 
         foreach (var pair in PlayerState.AllPlayerStates)

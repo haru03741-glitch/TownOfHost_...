@@ -18,7 +18,9 @@ public static class Sending
         "Sd",
         setupOptions: SetupCustomOption,
         onAdd: Add,
-        flags: RoleFlags.LearnsExiledTeam);
+        flags: RoleFlags.LearnsExiledTeam,
+        chatCommand: "センディング",
+        assignAtRandom: true);
 
     private static Color RoleColor => Utils.GetRoleColor(CustomRoles.Sending);
     private static readonly int Id = (int)offsetId.AddonBuff + 700;
