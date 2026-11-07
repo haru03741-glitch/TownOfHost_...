@@ -113,7 +113,7 @@ public static class CustomRoleManager
         {
             //MurderPlayer用にinfoを保存
             CheckMurderInfos[appearanceKiller.PlayerId] = info;
-            bool killerIsViper = appearanceKiller.Is(CustomRoles.Viper) || appearanceKiller.Is(CustomRoles.NormalViper);
+            bool killerIsViper = appearanceKiller.Is(RoleTypes.Viper);
             if (killerIsViper)
             {
                 var capKiller = appearanceKiller;

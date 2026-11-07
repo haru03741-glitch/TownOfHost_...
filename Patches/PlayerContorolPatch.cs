@@ -68,7 +68,7 @@ class CheckMurderPatch
     private static void RevealVisualRoleBeforeMurder(PlayerControl killer, PlayerControl target)
     {
 
-        bool killerIsViper = killer.Is(CustomRoles.Viper) || killer.Is(CustomRoles.NormalViper);
+        bool killerIsViper = killer.Is(RoleTypes.Viper);
         if (killerIsViper)
         {
             foreach (var seer in Main.AllPlayerControls)
@@ -91,7 +91,7 @@ class CheckMurderPatch
             }, 2f, "RevertViperVisualReveal");
         }
 
-        bool targetIsNoisemaker = target.Is(CustomRoles.Noisemaker) || target.Is(CustomRoles.NormalNoisemaker);
+        bool targetIsNoisemaker = target.Is(RoleTypes.Noisemaker);
         if (targetIsNoisemaker)
         {
             foreach (var seer in Main.AllPlayerControls)
@@ -238,7 +238,7 @@ class MurderPlayerPatch
             AntiBlackout.SetRoleChange(__instance);
         }, 0.5f, "PostMurderSetRoleChange");
         var killer = __instance;
-        bool killerIsViper = killer.Is(CustomRoles.Viper) || killer.Is(CustomRoles.NormalViper);
+        bool killerIsViper = killer.Is(RoleTypes.Viper);
         if (killerIsViper)
         {
             foreach (var seer in Main.AllPlayerControls)
