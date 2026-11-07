@@ -242,7 +242,7 @@ class BeginCrewmatePatch
                 __instance.ImpostorText.text = __instance.ImpostorText.text.Replace("[FF1919FF]", "<color=#FF1919FF>").Replace("[]", "</color>");
                 break;
 
-            case CustomRoles.GM:
+            case var r when r.IsSpectator():
                 __instance.TeamTitle.text = Utils.GetRoleName(role);
                 __instance.TeamTitle.color = Utils.GetRoleColor(role);
                 __instance.BackgroundBar.material.color = Utils.GetRoleColor(role);
@@ -396,7 +396,7 @@ class IntroCutsceneDestroyPatch
                 }
             }
 
-            if (PlayerControl.LocalPlayer.Is(CustomRoles.GM))
+            if (PlayerControl.LocalPlayer.GetCustomRole().IsSpectator())
             {
                 PlayerControl.LocalPlayer.RpcExile();
                 PlayerState.GetByPlayerId(PlayerControl.LocalPlayer.PlayerId).SetDead();

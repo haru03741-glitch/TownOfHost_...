@@ -110,7 +110,7 @@ class EndGamePatch
             Main.winnerList = new();
             foreach (var pc in winner)
             {
-                if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw && pc.Is(CustomRoles.GM)) continue;
+                if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw && pc.GetCustomRole().IsSpectator()) continue;
 
                 EndGameResult.CachedWinners.Add(new CachedPlayerData(pc.Data));
                 Main.winnerList.Add(pc.PlayerId);
@@ -198,11 +198,11 @@ class SetEverythingUpPatch
                     __instance.BackgroundBar.material.color = Utils.GetRoleColor(winnerRole);
                 }
             }
-            if (AmongUsClient.Instance.AmHost && PlayerState.GetByPlayerId(0).GetNowMainRole() == CustomRoles.GM)
+            if (AmongUsClient.Instance.AmHost && PlayerState.GetByPlayerId(0).GetNowMainRole() is var hostRole && hostRole.IsSpectator())
             {
                 __instance.WinText.text = "Game Over";
-                __instance.WinText.color = Utils.GetRoleColor(CustomRoles.GM);
-                __instance.BackgroundBar.material.color = Utils.GetRoleColor(CustomRoles.GM);
+                __instance.WinText.color = Utils.GetRoleColor(hostRole);
+                __instance.BackgroundBar.material.color = Utils.GetRoleColor(hostRole);
             }
             switch (CustomWinnerHolder.WinnerTeam)
             {

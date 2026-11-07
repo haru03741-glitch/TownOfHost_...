@@ -72,4 +72,8 @@ public enum RoleFlags : ulong
     NoTeamWin = 1UL << 27,
     /// <summary>どの勝ち方でも勝者にならない</summary>
     NeverWins = 1UL << 28,
+    /// <summary>試合に加わらない観戦者。人数に数えず・勝たず・湧かず、役職と死が全員に見え、他人の役職とキルの光が見える</summary>
+    Spectator = 1UL << 29,
+    /// <summary>人数の勝敗のどの陣営にも数えない (役職クラスを持たない役職用。クラスを持つ役職は CountType で決める)</summary>
+    NotCounted = 1UL << 30,
 }

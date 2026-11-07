@@ -198,7 +198,7 @@ public static class Utils
     {
         PlayerControl killer = info.AppearanceKiller, target = info.AttemptTarget;
         // 霊界キルフラッシュ
-        if (seer.Is(CustomRoles.GM)) return true;
+        if (seer.GetCustomRole().IsSpectator()) return true;
         if (CheckKillFlashAfterDead(seer) && seer != target) return true;
         // ターゲット(属性)
         foreach (var subRole in PlayerState.GetByPlayerId(target.PlayerId).SubRoles)
@@ -502,7 +502,7 @@ public static class Utils
 
         SendMessageAutoSplitAndClearSB(PlayerId, sb, RoleInfoTitle, formatTag);
 
-        if (!myRole.IsDontShowOptionRole() && myRole != CustomRoles.GM)
+        if (!myRole.IsDontShowOptionRole())
         {
             formatTag = "<size=65%><line-height=1.5pic>";
             ShowChildrenSettings(Options.CustomRoleSpawnChances[myRole], ref sb);
@@ -585,7 +585,7 @@ public static class Utils
 
         SendMessageAutoSplitAndClearSB(PlayerId, sb, "", formatTag);
 
-        if (!role.IsDontShowOptionRole() && role != CustomRoles.GM)
+        if (!role.IsDontShowOptionRole())
         {
             formatTag = "<size=65%><line-height=1.5pic>";
             ShowChildrenSettings(Options.CustomRoleSpawnChances[role], ref sb);

@@ -515,7 +515,7 @@ class SelectRolesPatch
         List<PlayerControl> allPlayersbySub = new();
         foreach (var pc in Main.AllPlayerControls)
         {
-            if (!pc.Is(CustomRoles.GM)) allPlayersbySub.Add(pc);
+            if (!pc.GetCustomRole().IsSpectator()) allPlayersbySub.Add(pc);
         }
         if (!CustomRoles.PlatonicLover.IsEnable() && CustomRoles.Lovers.IsEnable())
             AssignCustomSubRolesFromList(CustomRoles.Lovers, allPlayersbySub, 2);
@@ -567,7 +567,7 @@ class SelectRolesPatch
             foreach (var seer in Main.AllPlayerControls)
             {
                 if (seer == pc) continue;
-                if (pc.Is(CustomRoles.GM)
+                if (pc.GetCustomRole().IsSpectator()
                     || (pc.Is(CustomRoles.Workaholic) && Workaholic.Seen)
                     || pc.Is(CustomRoles.Rainbow))
                     NameColorManager.Add(seer.PlayerId, pc.PlayerId, pc.GetRoleColorCode());

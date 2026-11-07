@@ -284,7 +284,7 @@ namespace TownOfHostL
                 Utils.SendMessageAutoSplit(string.Format(GetString("Message.SelectRolesNoRole"), roleArg), true);
                 return;
             }
-            if (role.IsAddOn() || role is CustomRoles.GM)
+            if (role.IsAddOn() || role.IsSpectator())
             {
                 Utils.SendMessageAutoSplit(string.Format(GetString("Message.SelectRolesNotMainRole"), Utils.GetRoleName(role)), true);
                 return;

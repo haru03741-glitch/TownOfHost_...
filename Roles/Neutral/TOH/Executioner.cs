@@ -84,7 +84,7 @@ public sealed class Executioner : RoleBase, IAdditionalWinner
             if (playerId == target.PlayerId) continue;
             else if (!CanTargetImpostor && target.Is(CustomRoleTypes.Impostor)) continue;
             else if (!CanTargetNeutralKiller && target.IsCountedNeutralKiller()) continue;
-            if (target.Is(CustomRoles.GM)) continue;
+            if (target.GetCustomRole().IsSpectator()) continue;
 
             targetList.Add(target);
         }
