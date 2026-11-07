@@ -39,6 +39,13 @@ public static class PlayerTraits
     /// <summary>会議の始めに、自分の名前を送り直す</summary>
     public static bool RefreshesNameOnMeetingStart(PlayerControl pc) => Has(pc, RoleFlags.RefreshesNameOnMeetingStart);
 
+    /// <summary>キルできる人 (インポスター・キルできる第三陣営・シェリフ系)</summary>
+    public static bool IsKiller(PlayerControl pc)
+        => pc.GetCustomRole().IsImpostor() || pc.IsNeutralKiller() || pc.IsCrewKiller();
+    /// <summary>占い・霊媒の「キル役だけ」の設定で、キル役として数える (マッドシェリフ・グラッジシェリフを含む)</summary>
+    public static bool IsKillerForDivination(PlayerControl pc)
+        => IsKiller(pc) || pc.Is(CustomRoles.MadSheriff) || pc.Is(CustomRoles.GrudgeSheriff);
+
     /// <summary>役職か、付いている属性のどれかがその印を持つ</summary>
     private static bool Has(PlayerControl pc, RoleFlags flag)
     {

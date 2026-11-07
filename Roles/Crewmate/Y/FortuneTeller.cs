@@ -149,26 +149,13 @@ public sealed class FortuneTeller : RoleBase
         if (!isMeeting) return;
         if (!ForecastResult.ContainsKey(seen.PlayerId)) return;
         if (KillerOnly &&
-            !(seen.GetCustomRole().IsImpostor() || seen.IsNeutralKiller() || seen.IsCrewKiller()
-            || seen.Is(CustomRoles.MadSheriff) || seen.Is(CustomRoles.GrudgeSheriff))) return;
+            !TownOfHostL.Core.PlayerTraits.IsKillerForDivination(seen)) return;
 
         enabled = true;
 
         if (!ConfirmCamp) return;   //役職表示
 
-        //陣営表示
-        if (seen.GetCustomRole().IsImpostor() || seen.GetCustomRole().IsMadmate())
-        {
-            roleText = GetString("TeamImpostor").Color(Palette.ImpostorRed);
-        }
-        else if (seen.GetCustomRole().IsNeutral())
-        {
-            roleText = GetString("Neutral").Color(Palette.Orange);
-        }
-        else
-        {
-            roleText = GetString("TeamCrewmate").Color(Palette.CrewmateBlue);
-        }
+        roleText = TownOfHostL.Core.NameParts.TeamText(seen);   //陣営表示
     }
     public override bool KnowsRoleColorOf(PlayerControl target, bool isMeeting)
     {
@@ -176,7 +163,7 @@ public sealed class FortuneTeller : RoleBase
         if (!ForecastResult.ContainsKey(target.PlayerId)) return false;
         if (ConfirmCamp) return false;
         if (KillerOnly &&
-            !(target.GetCustomRole().IsImpostor() || target.IsNeutralKiller() || target.IsCrewKiller())) return false;
+            !TownOfHostL.Core.PlayerTraits.IsKiller(target)) return false;
         return true;
     }
 

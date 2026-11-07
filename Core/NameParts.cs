@@ -109,4 +109,15 @@ public static class NameParts
             || seer.Is(CustomRoles.Lovers)
             || VentEnterTask.HaveTask(seer)
             || Duelist.CheckNotify(seer);
+
+    /// <summary>役職の代わりに見せる陣営の名前 (占い・霊媒の「陣営だけ分かる」設定)。マッドはインポスター陣営に数える</summary>
+    public static string TeamText(PlayerControl seen)
+    {
+        var role = seen.GetCustomRole();
+        if (role.IsImpostor() || role.IsMadmate())
+            return Translator.GetString("TeamImpostor").Color(Palette.ImpostorRed);
+        if (role.IsNeutral())
+            return Translator.GetString("Neutral").Color(Palette.Orange);
+        return Translator.GetString("TeamCrewmate").Color(Palette.CrewmateBlue);
+    }
 }
