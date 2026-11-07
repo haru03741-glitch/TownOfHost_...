@@ -27,6 +27,8 @@ using TownOfHostL.Roles.Neutral;
 using UnityEngine;
 using static TownOfHostL.Translator;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 public static class Utils
@@ -347,12 +349,12 @@ public static class Utils
         if (p.Role.IsImpostor)
             hasTasks = false;
         //タスクはCustomRoleを元に判定する
-        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+        if (ModeCatalog.IsHideAndSeekWithOwnRoles)
         {
             if (p.IsDead) hasTasks = false;
             if (States.GetNowMainRole().HasRoleFlag(RoleFlags.NoTasks)) hasTasks = false;
         }
-        else if (Options.IsCCMode)
+        else if (ModeCatalog.IsCatchCat)
         {
             if (States.GetNowMainRole().IsCCLeaderRoles()) hasTasks = false;
         }
@@ -403,7 +405,7 @@ public static class Utils
         string text = GetProgressText(seen.PlayerId, comms);
 
         seer.GetRoleClass()?.OverrideProgressTextAsSeer(seen, ref enabled, ref text);
-        if (Options.IsCCMode && seer == seen)
+        if (ModeCatalog.IsCatchCat && seer == seen)
         {
             text += CatchCat.Common.GetMark(seer);
         }
@@ -596,14 +598,14 @@ public static class Utils
     {
         string formatTag = "<size=65%><line-height=1.5pic>";
 
-        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+        if (ModeCatalog.IsHideAndSeekWithOwnRoles)
         {
             SendMessageAutoSplit(GetString("CurrentActiveSettingsHelp") + ":", true, sendTo: PlayerId);
             SendMessageAutoSplit(GetString("HideAndSeekInfo"), true, sendTo: PlayerId);
             if (CustomRoles.HASFox.IsEnable()) { SendMessageAutoSplit(GetRoleName(CustomRoles.HASFox) + GetString("HASFoxInfoLong"), true, sendTo: PlayerId); }
             if (CustomRoles.HASTroll.IsEnable()) { SendMessageAutoSplit(GetRoleName(CustomRoles.HASTroll) + GetString("HASTrollInfoLong"), true, sendTo: PlayerId); }
         }
-        else if (Options.IsCCMode)
+        else if (ModeCatalog.IsCatchCat)
         {
             CatchCat.Infomation.ShowSettingHelp(PlayerId);
         }
@@ -627,7 +629,7 @@ public static class Utils
             {
                 SendMessageAutoSplit($"{formatTag}{GetString("RandomMapsModeInfo")}", false, "", PlayerId, formatTag);
             }
-            if (Options.IsStandardHAS)
+            if (ModeCatalog.IsHideAndSeekWithStandardRoles)
             {
                 SendMessageAutoSplit($"{formatTag}{GetString("StandardHASInfo")}", false, "", PlayerId, formatTag);
             }
@@ -733,7 +735,7 @@ public static class Utils
             return;
         }
         var sb = new StringBuilder();
-        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+        if (ModeCatalog.IsHideAndSeekWithOwnRoles)
         {
             sb.Append(GetString("Roles")).Append(':');
             if (CustomRoles.HASFox.IsEnable()) sb.AppendFormat("\n{0}:{1}", GetRoleName(CustomRoles.HASFox), CustomRoles.HASFox.GetCount());
@@ -743,7 +745,7 @@ public static class Utils
             sb.Append(GetString("HideAndSeek"));
             SendMessageAutoSplitAndClearSB(PlayerId, sb, title, formatTag);
         }
-        else if (Options.IsCCMode)
+        else if (ModeCatalog.IsCatchCat)
         {
             CatchCat.Infomation.ShowSetting(sb);
             SendMessageAutoSplitAndClearSB(PlayerId, sb, title, formatTag);
@@ -814,7 +816,7 @@ public static class Utils
             }
 
             formatTag = "<size=65%><line-height=1.5pic>";
-            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
+            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && x.IsShown()))
             {
                 // 常時表示しないオプション
                 if (Options.NotShowOption(opt.Name)) continue;
@@ -870,7 +872,7 @@ public static class Utils
             sb.Clear().Append(text.RemoveHtmlTags());
         }
         sb.Append($"━━━━━━━━━━━━【{GetString("Settings")}】━━━━━━━━━━━━");
-        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && !x.IsHiddenOn(Options.CurrentGameMode)))
+        foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.IsFeatureOption && x.IsShown()))
         {
             if (!Options.NotShowOption(opt.Name))
                 sb.Append($"\n【{opt.GetName(true)}】\n");
@@ -900,11 +902,11 @@ public static class Utils
             sb.AppendFormat("{0}{1} ：{2}</size>\n</line-height>", formatTag, $"<color={GetRoleColorCode(CustomRoles.GM)}>{GetRoleName(CustomRoles.GM)}</color>", Options.EnableGM.GetString());
         }
         // TOHY独自のMODゲームモードがあるため各モードに分けてに書き換え
-        if (Options.CurrentGameMode != CustomGameMode.Standard)
+        if (!ModeCatalog.Current.UsesStandardRoles)
         {
             CustomRoles[] targetRoles = Array.Empty<CustomRoles>();
-            if (Options.IsHASMode) targetRoles = CustomRolesHelper.AllHASRoles;
-            else if (Options.IsCCMode) targetRoles = CustomRolesHelper.AllCCRoles.Where(role => role.IsCCLeaderRoles()).ToArray();
+            if (ModeCatalog.IsHideAndSeekWithOwnRoles) targetRoles = CustomRolesHelper.AllHASRoles;
+            else if (ModeCatalog.IsCatchCat) targetRoles = CustomRolesHelper.AllCCRoles.Where(role => role.IsCCLeaderRoles()).ToArray();
             //else if (Options.IsONMode) targetRoles = CustomRolesHelper.AllONRoles;
 
             sb.Append(formatTag);
@@ -1308,7 +1310,7 @@ public static class Utils
         // 送った名前の覚え書きとも食い違うので、以後の NotifyRoles が送り直さなくなる。色モードの名前は試合開始時に全員分を送っている
         if (AmongUsClient.Instance.IsGameStarted) return;
 
-        if (Options.IsCCMode)
+        if (ModeCatalog.IsCatchCat)
             name = $"<color={Main.ModColor}>{GetString("CatchCat")}</color>\r\n" + name;
         //else if (Options.IsONMode)
         //    name = $"<color={GetRoleColorCode(CustomRoles.ONVillager)}>TOH_Y {GetString("OneNight")}</color>\r\n" + name;
@@ -1443,7 +1445,7 @@ public static class Utils
             //RealNameを取得 なければ現在の名前をRealNamesに書き込む
             string SeerRealName = seer.GetRealName(isForMeeting);
 
-            if (!isForMeeting && (Options.IsCCMode || (MeetingStates.FirstMeeting && Options.ChangeNameToRoleInfo.GetBool())))
+            if (!isForMeeting && (ModeCatalog.IsCatchCat || (MeetingStates.FirstMeeting && Options.ChangeNameToRoleInfo.GetBool())))
                 SeerRealName = seer.GetRoleInfo();
 
             //seerの役職名とSelfTaskTextとseerのプレイヤー名とSelfMarkを合成

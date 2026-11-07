@@ -11,6 +11,8 @@ using TownOfHostL.Roles.Impostor;
 using TownOfHostL.Roles.Neutral;
 using UnityEngine;
 using static TownOfHostL.Translator;
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 [HarmonyPatch]
@@ -206,11 +208,11 @@ public static class MeetingHudPatch
                 }
             }
 
-            if (AntiBlackout.OverrideExiledPlayer && !Options.IsCCMode)
+            if (AntiBlackout.OverrideExiledPlayer && !ModeCatalog.IsCatchCat)
             {
                 messageList.Add(GetString("Warning.OverrideExiledPlayer"));
             }
-            if (Options.IsCCMode)
+            if (ModeCatalog.IsCatchCat)
             {
                 CatchCat.Infomation.ShowMeeting();
             }

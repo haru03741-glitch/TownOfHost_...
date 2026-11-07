@@ -34,7 +34,7 @@ class GameDataSerializePatch
             return true;
         }
 
-        if (Options.CurrentGameMode != CustomGameMode.Standard
+        if (!Core.Modes.ModeCatalog.Current.UsesStandardRoles
             || !GameStates.IsMeeting
             || ExileController.Instance != null
             || AntiBlackout.IsCached)

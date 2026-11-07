@@ -16,6 +16,8 @@ using TownOfHostL.Roles.AddOns.Impostor;
 using static TownOfHostL.Translator;
 using AmongUs.Data;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 static class ExtendedPlayerControl
@@ -494,7 +496,7 @@ static class ExtendedPlayerControl
     public static void ResetKillCooldown(this PlayerControl player)
     {
         Main.AllPlayerKillCooldown[player.PlayerId] = (player.GetRoleClass() as IKiller)?.CalculateKillCooldown() ?? Options.DefaultKillCooldown; //キルクールをデフォルトキルクールに変更
-        if (Options.IsCCMode && player.GetCustomRole().IsCCLeaderRoles())
+        if (ModeCatalog.IsCatchCat && player.GetCustomRole().IsCCLeaderRoles())
             Main.AllPlayerKillCooldown[player.PlayerId] = CatchCat.LeaderPlayer.CalculateKillCooldown(player);
         if (player.PlayerId == LastImpostor.currentId)
             LastImpostor.SetKillCooldown(player);

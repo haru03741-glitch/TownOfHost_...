@@ -13,6 +13,8 @@ using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Neutral;
 using static TownOfHostL.Translator;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 
@@ -54,7 +56,7 @@ class ChangeRoleSettings
             Main.NormalOptions.roleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
             Main.NormalOptions.roleOptions.SetRoleRate(RoleTypes.Judge, 0, 0);
 
-            if (Options.IsCCMode) Main.NormalOptions.NumImpostors = 1;
+            if (ModeCatalog.IsCatchCat) Main.NormalOptions.NumImpostors = 1;
 
             Main.AllPlayerKillCooldown = new Dictionary<byte, float>();
 
@@ -99,7 +101,7 @@ class ChangeRoleSettings
             // 前の試合が途中で閉じて減らし損ねた分を残さない (残ると会議中の PlayerInfo の送信保留が効かない)
             GameDataSerializePatch.SerializeMessageCount = 0;
 
-            if (Options.CurrentGameMode == CustomGameMode.Standard)
+            if (ModeCatalog.Current.UsesStandardRoles)
             {
                 _ = new LateTask(() =>
                 {
@@ -214,13 +216,9 @@ class ChangeRoleSettings
             if (__instance.AmHost)
             {
                 RPC.SyncCustomSettingsRPC();
-                if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+                if (ModeCatalog.Current.IsHideAndSeek)
                 {
-                    Options.HideAndSeekKillDelayTimer = Options.KillDelay.GetFloat();
-                }
-                if (Options.IsStandardHAS)
-                {
-                    Options.HideAndSeekKillDelayTimer = Options.StandardHASWaitingTime.GetFloat();
+                    Options.HideAndSeekKillDelayTimer = ModeCatalog.Current.StartWaitTime;
                 }
             }
 
@@ -272,7 +270,12 @@ class SelectRolesPatch
     {
         if (!AmongUsClient.Instance.AmHost) return true;
 
-        if (Options.CurrentGameMode != CustomGameMode.Standard) return true;
+        var mode = ModeCatalog.Current;
+        if (!mode.UsesStandardRoles)
+        {
+            mode.SelectRoles();
+            return false;
+        }
 
 
         Dictionary<byte, CustomRpcSender> senders = new();
@@ -549,7 +552,7 @@ class SelectRolesPatch
             }
 
             // 通常モードでかくれんぼをする人用
-            if (Options.IsStandardHAS)
+            if (ModeCatalog.IsHideAndSeekWithStandardRoles)
             {
                 foreach (var seer in Main.AllPlayerControls)
                 {
@@ -588,7 +591,7 @@ class SelectRolesPatch
         SetColorPatch.IsAntiGlitchDisabled = false;
 
 
-        if (Options.CurrentGameMode == CustomGameMode.Standard)
+        if (ModeCatalog.Current.UsesStandardRoles)
             StandardIntroHelper.ShowIntroForVanilla();
     }
 
@@ -757,7 +760,7 @@ class SelectRolesPatch
             PlayerState.GetByPlayerId(player.PlayerId).SetMainRole(role, true);
             Logger.Info("役職設定:" + player?.Data?.PlayerName + " = " + role.ToString(), "AssignRoles");
 
-            if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+            if (ModeCatalog.IsHideAndSeekWithOwnRoles)
             {
                 if (player.Is(CustomRoles.HASTroll))
                     player.RpcSetColor(2);
@@ -859,7 +862,7 @@ public class RpcSetRoleReplacer
     public static void Release()
     {
 
-        if (Options.CurrentGameMode == CustomGameMode.Standard)
+        if (ModeCatalog.Current.UsesStandardRoles)
         {
             foreach (var pair in StoragedData)
                 pair.Item1.StartCoroutine(pair.Item1.CoSetRole(pair.Item2, false));

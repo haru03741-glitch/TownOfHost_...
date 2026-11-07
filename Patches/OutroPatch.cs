@@ -12,6 +12,8 @@ using TownOfHostL.Templates;
 using static TownOfHostL.Translator;
 using TownOfHostL.Roles.Neutral;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
@@ -73,7 +75,7 @@ class EndGamePatch
             if (CustomWinnerHolder.WinnerTeam != CustomWinner.Draw && CustomWinnerHolder.WinnerTeam != CustomWinner.None)
             {
                 //HideAndSeek専用
-                if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
+                if (ModeCatalog.IsHideAndSeekWithOwnRoles)
                 {
                     winner = new();
                     foreach (var pc in Main.AllPlayerControls)
@@ -242,7 +244,7 @@ class SetEverythingUpPatch
             }
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw and not CustomWinner.None)
             {
-                if (Options.IsCCMode)
+                if (ModeCatalog.IsCatchCat)
                 {
                     if (CustomWinnerHolder.WinnerTeam == CustomWinner.RedL)     WinnerText.text = $"<color={CustomWinnerColor}>{GetString("CCRedWin")}</color>";
                     if (CustomWinnerHolder.WinnerTeam == CustomWinner.BlueL)    WinnerText.text = $"<color={CustomWinnerColor}>{GetString("CCBlueWin")}</color>";

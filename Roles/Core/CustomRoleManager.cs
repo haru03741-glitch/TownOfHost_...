@@ -15,6 +15,8 @@ using TownOfHostL.Roles.Unit;
 using TownOfHostL.Roles.AddOns.Common;
 using TownOfHostL.Roles.AddOns;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL.Roles.Core;
 
 public static class CustomRoleManager
@@ -96,7 +98,7 @@ public static class CustomRoleManager
             }
         }
         // CC
-        if (Options.IsCCMode)
+        if (ModeCatalog.IsCatchCat)
         {
             CatchCat.LeaderPlayer.OnCheckMurder(info);
             CatchCat.CatPlayer.OnCheckMurder(info);

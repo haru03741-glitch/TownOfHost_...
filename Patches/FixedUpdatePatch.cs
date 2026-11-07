@@ -8,6 +8,8 @@ using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Impostor;
 using UnityEngine;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
@@ -217,7 +219,7 @@ namespace TownOfHostL
                                     RealName = str;
                                 }
                             }
-                            else if (Options.IsCCMode)
+                            else if (ModeCatalog.IsCatchCat)
                             {
                                 RealName = Utils.ColorString(seer.GetRoleColor(), seer.GetRoleInfo());
                             }

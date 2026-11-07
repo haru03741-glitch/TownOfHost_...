@@ -170,7 +170,7 @@ namespace TownOfHostL.Modules
             {
                 opt.SetInt(Int32OptionNames.EmergencyCooldown, 3600);
             }
-            if ((Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) && Options.HideAndSeekKillDelayTimer > 0)
+            if (Core.Modes.ModeCatalog.Current.IsHideAndSeek && Options.HideAndSeekKillDelayTimer > 0)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
                 if (player.Is(CountTypes.Impostor))
