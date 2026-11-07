@@ -206,6 +206,8 @@ public static class VanillaHideAndSeek
     private static void Suspend()
     {
         if (state != State.Live) return;
+        // 今は「常駐の物だけを残す」しか無い。本編のかくれんぼで動かすパッチを足す時は、ここで外す範囲を絞る
+        if (Modes.ModeCatalog.Vanilla.PatchScope != Modes.GamePatchScope.ResidentOnly) return;
         // ホストの名前に付けた mod の表示を外す (休んでいる間は付け直す処理が動かない)
         try
         {
@@ -240,6 +242,7 @@ public static class VanillaHideAndSeek
     {
         if (GameStartManager.InstanceExists)
             GameStartManagerPatch.EnsureLobbyUi(GameStartManager.Instance);
+
         if (!AmongUsClient.Instance || !AmongUsClient.Instance.AmHost) return;
         // 休んでいる間に入ってきた人は、参加の時の確認 (BAN・名前) を通っていない
         foreach (var client in AmongUsClient.Instance.allClients)

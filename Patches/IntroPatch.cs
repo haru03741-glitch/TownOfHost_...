@@ -7,6 +7,8 @@ using UnityEngine;
 using TownOfHostL.Roles.Core;
 using static TownOfHostL.Translator;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CoBegin))]
@@ -107,7 +109,7 @@ class CoBeginPatch
         foreach (var t in tmp) logger.Info(t);
         logger.Info("------------詳細設定------------");
         foreach (var o in OptionItem.AllOptions)
-            if (!o.IsHiddenOn(Options.CurrentGameMode) && (o.Parent == null ? !o.GetString().Equals("0%") : o.Parent.GetBool()))
+            if (o.IsShown() && (o.Parent == null ? !o.GetString().Equals("0%") : o.Parent.GetBool()))
                 logger.Info($"{(o.Parent == null ? o.Name.PadRightV2(40) : $"┗ {o.Name}".PadRightV2(41))}:{o.GetString().RemoveHtmlTags()}");
         logger.Info("-------------その他-------------");
         logger.Info($"プレイヤー数: {Main.AllPlayerControls.Count()}人");
@@ -250,7 +252,7 @@ class BeginCrewmatePatch
                 break;
         }
 
-        if (Options.IsCCMode)
+        if (ModeCatalog.IsCatchCat)
         {
             if (role.IsCCLeaderRoles())
             {

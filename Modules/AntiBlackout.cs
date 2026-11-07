@@ -11,6 +11,8 @@ using TownOfHostL.Roles.Neutral;
 using TownOfHostL.Roles.Core;
 using TownOfHostL.Roles.Unit;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 public static class AntiBlackout
@@ -22,7 +24,7 @@ public static class AntiBlackout
         => Options.NoGameEnd.GetBool()
         || Jackal.RoleInfo.IsEnable || StrayWolf.RoleInfo.IsEnable
         || Pirate.RoleInfo.IsEnable || JackOLantern.RoleInfo.IsEnable
-        || Options.IsCCMode;
+        || ModeCatalog.IsCatchCat;
 
     public static bool IsCached { get; private set; } = false;
     private static Dictionary<byte, (bool isDead, bool Disconnected)> isDeadCache = new();

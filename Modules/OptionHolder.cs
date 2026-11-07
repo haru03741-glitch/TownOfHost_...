@@ -17,7 +17,7 @@ using TownOfHostL.Roles.AddOns;
 
 namespace TownOfHostL;
 
-[Flags]
+/// <summary>値は GameMode の設定の選択肢の並びと揃える。どの設定にも付けない値は後ろに置く。</summary>
 public enum CustomGameMode
 {
     Standard,
@@ -25,6 +25,8 @@ public enum CustomGameMode
     CatchCat,
     //OneNight,
     HideMenu,
+    /// <summary>本編のかくれんぼ。設定では選ばず、ロビーの切り替え (/mode) で入る。</summary>
+    VanillaHideAndSeek,
     All = int.MaxValue
 }
 [HarmonyPatch]
@@ -103,6 +105,8 @@ public static class Options
     public static OptionItem KillFlashDuration;
 
     // HideAndSeek
+    /// <summary>0 = かくれんぼ専用の役職、1 = 通常モードの役職</summary>
+    public static OptionItem HideAndSeekRolePool;
     public static OptionItem AllowCloseDoors;
     public static OptionItem KillDelay;
     // public static OptionItem IgnoreCosmetics;
@@ -226,10 +230,6 @@ public static class Options
     public static OptionItem LadderDeath;
     public static OptionItem LadderDeathChance;
 
-    // 通常モードでかくれんぼ
-    public static bool IsStandardHAS => StandardHAS.GetValue() == 1 && CurrentGameMode == CustomGameMode.Standard;
-    public static OptionItem StandardHAS;
-    public static OptionItem StandardHASWaitingTime;
 
     // リアクターの時間制御
     public static OptionItem SabotageTimeControl_Polus;
@@ -306,8 +306,7 @@ public static class Options
     public static OptionItem CheatLobbyKill;
 
     // ModGameMode
-    public static bool IsHASMode => CurrentGameMode == CustomGameMode.HideAndSeek;
-    public static bool IsCCMode => CurrentGameMode == CustomGameMode.CatchCat;
+
     //public static bool IsONMode => CurrentGameMode == CustomGameMode.OneNight;
 
     // TOH_Y機能
@@ -487,6 +486,10 @@ public static class Options
         RoleAssignManager.SetupOptionItem();
 
         // HideAndSeek
+        HideAndSeekRolePool = StringOptionItem.Create((int)offsetId.GModeHaS + 5003, "HideAndSeekRolePool", new string[] { "HideAndSeekRolePool.Own", "HideAndSeekRolePool.Standard" }, 0, TabGroup.ModMainSettings, false)
+            .SetHeader(true)
+            .SetColor(Color.yellow)
+            .SetGameMode(CustomGameMode.HideAndSeek);
         SetupRoleOptions((int)offsetId.GModeHaS + 1000, TabGroup.ModMainSettings, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
         SetupRoleOptions((int)offsetId.GModeHaS + 1100, TabGroup.ModMainSettings, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
 
@@ -834,12 +837,6 @@ public static class Options
         SCM_RestoredDeadPlayer = StringOptionItem.Create((int)offsetId.GModeAdd + 111, "SCM_RestoredDeadPlayer", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false).SetParent(SyncColorModeSelect)
             .SetGameMode(CustomGameMode.Standard);
 
-        // 通常モードでかくれんぼ用
-        StandardHAS = StringOptionItem.Create((int)offsetId.GModeAdd + 200, "StandardHAS", new string[] { "ColoredOff", "ColoredOn" }, 0, TabGroup.ModMainSettings, false)
-            .SetColor(Color.yellow)
-            .SetGameMode(CustomGameMode.Standard);
-        StandardHASWaitingTime = FloatOptionItem.Create((int)offsetId.GModeAdd + 201, "StandardHASWaitingTime", new(0f, 180f, 2.5f), 10f, TabGroup.ModMainSettings, false).SetParent(StandardHAS)
-            .SetValueFormat(OptionFormat.Seconds).SetGameMode(CustomGameMode.Standard);
 
         // その他
         TextOptionItem.Create((int)offsetId.System, "Head.System", TabGroup.ModMainSettings).SetColor(Color.blue).SetGameMode(CustomGameMode.All);

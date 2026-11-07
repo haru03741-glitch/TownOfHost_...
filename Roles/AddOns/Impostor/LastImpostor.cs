@@ -62,7 +62,7 @@ namespace TownOfHostL.Roles.AddOns.Impostor
         {
             //ラストインポスターがすでにいれば処理不要
             if (currentId != byte.MaxValue) return;
-            if (CurrentGameMode == CustomGameMode.HideAndSeek
+            if (TownOfHostL.Core.Modes.ModeCatalog.IsHideAndSeekWithOwnRoles
                 || !CustomRoles.LastImpostor.IsPresent() || Main.AliveImpostorCount != 1)
                 return;
             foreach (var pc in Main.AllAlivePlayerControls)

@@ -10,6 +10,8 @@ using TMPro;
 using TownOfHostL.Templates;
 using TownOfHostL.Modules;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 [HarmonyPatch(typeof(HudManager))]
@@ -314,7 +316,7 @@ class HudManagerCoShowIntroPatch
     public static bool Prefix(HudManager __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
         if (AmongUsClient.Instance.AmHost
-            && Options.CurrentGameMode == CustomGameMode.Standard
+            && ModeCatalog.Current.UsesStandardRoles
             && Cancel)
         {
             Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");

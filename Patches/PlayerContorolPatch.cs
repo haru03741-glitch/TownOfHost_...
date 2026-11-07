@@ -17,6 +17,8 @@ using static TownOfHostL.Translator;
 using TownOfHostL.Roles.Impostor;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckProtect))]
@@ -155,7 +157,7 @@ class CheckMurderPatch
         TimeSinceLastKill[killer.PlayerId] = 0f;
 
         // HideAndSeek_キルボタンが使用可能か
-        if ((Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) && Options.HideAndSeekKillDelayTimer > 0)
+        if (ModeCatalog.Current.IsHideAndSeek && Options.HideAndSeekKillDelayTimer > 0)
         {
             Logger.Info("HideAndSeekの待機時間中だったため、キルをキャンセルしました。", "CheckMurder");
             return false;
@@ -547,9 +549,7 @@ class ReportDeadBodyPatch
         if (GameStates.IsMeeting) return false;
         Logger.Info($"{__instance.GetNameWithRole()} => {target?.Object?.GetNameWithRole() ?? "null"}", "ReportDeadBody");
         if (SpecialMeeting) return true;
-        if (Options.IsStandardHAS && target != null && __instance == target.Object) return true; //[StandardHAS] ボタンでなく、通報者と死体が同じなら許可
-        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) return false;
-        if (Options.IsCCMode && CatchCat.Option.IgnoreReport.GetBool() && target != null) return false;
+        if (!ModeCatalog.Current.AllowsReport(__instance, target)) return false;
         if (target == null && Options.DisableButtonInMushroomMixup.GetBool() && MushroomMixupUpdateSystemPatch.InSabotage)
         {
             Logger.Info("DisableButton InMushroomMixup", "ReportDeadBody");
@@ -704,8 +704,7 @@ class SetColorPatch
     {
         //色変更バグ対策
         if (!AmongUsClient.Instance.AmHost || __instance.CurrentOutfit.ColorId == bodyColor || IsAntiGlitchDisabled) return true;
-        if ((AmongUsClient.Instance.IsGameStarted && Options.CurrentGameMode == CustomGameMode.HideAndSeek)
-            || (AmongUsClient.Instance.IsGameStarted && Options.IsCCMode))
+        if (AmongUsClient.Instance.IsGameStarted && ModeCatalog.Current.KillsOnColorChange)
         {
             //ゲーム中に色を変えた場合
             __instance.RpcMurderPlayer(__instance);
@@ -720,7 +719,7 @@ class CoEnterVentPatch
     {
         if (AmongUsClient.Instance.AmHost)
         {
-            if (Options.CurrentGameMode == CustomGameMode.HideAndSeek && Options.IgnoreVent.GetBool())
+            if (ModeCatalog.Current.BootsFromVents)
                 __instance.RpcBootFromVent(id);
 
             // ホストが RpcEnterVent を呼んだ時は、その中で CoEnterVent も走る。役職へは RpcEnterVent の後置処理から 1 回だけ渡す
@@ -796,7 +795,7 @@ class PlayerControlCompleteTaskPatch
         ret &= Workhorse.OnCompleteTask(pc);
         CompreteCrew.OnCompleteTask(pc);
 
-        if (Options.IsCCMode) CatchCat.CatPlayer.OnCompleteTask(pc, taskState);
+        if (ModeCatalog.IsCatchCat) CatchCat.CatPlayer.OnCompleteTask(pc, taskState);
 
         Utils.NotifyRoles();
         return ret;

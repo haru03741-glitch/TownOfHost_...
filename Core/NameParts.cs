@@ -8,6 +8,8 @@ using TownOfHostL.Roles.Crewmate;
 using TownOfHostL.Roles.Impostor;
 using TownOfHostL.Roles.Neutral;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL.Core;
 
 /// <summary>
@@ -94,7 +96,7 @@ public static class NameParts
             || (Utils.IsActive(SystemTypes.Electrical) && CustomRoles.Mare.IsEnable())
             || (Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
             || EvilDyer.IsColorCamouflage
-            || Options.IsCCMode
+            || ModeCatalog.IsCatchCat
             || Options.GetNameChangeModes() == NameChange.Crew
             || (CustomRoles.Workaholic.IsEnable() && Workaholic.Seen)
             || CustomRoles.Rainbow.IsEnable();

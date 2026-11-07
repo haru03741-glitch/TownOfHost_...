@@ -186,11 +186,6 @@ namespace TownOfHostL
         /// <summary>機能の設定 (offsetId.FeatSpecial 以降の帯。役職とゲームモード以外の設定一覧に出す物)</summary>
         public bool IsFeatureOption => Id >= (int)Options.offsetId.FeatSpecial;
 
-        // Hidden判定
-        public virtual bool IsHiddenOn(CustomGameMode mode)
-        {
-            return IsHidden || (GameMode != CustomGameMode.All && GameMode != mode);
-        }
 
         public string ApplyFormat(string value)
         {

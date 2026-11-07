@@ -7,6 +7,8 @@ using TownOfHostL.Roles.Madmate;
 using TownOfHostL.Roles.Crewmate;
 using System.Diagnostics.Metrics;
 
+using TownOfHostL.Core.Modes;
+
 namespace TownOfHostL.Modules;
 
 public class MeetingVoteManager
@@ -206,7 +208,7 @@ public class MeetingVoteManager
         }
 
         // GameMode
-        if (Options.IsCCMode/* || (Options.IsONMode && !MeetingStates.FirstMeeting/*狩人投票ターン)*/)
+        if (ModeCatalog.IsCatchCat/* || (Options.IsONMode && !MeetingStates.FirstMeeting/*狩人投票ターン)*/)
         {
             ChangeSkipByGameMode();
         }

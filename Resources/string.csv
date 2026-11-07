@@ -1249,6 +1249,9 @@ DSchrodingerCatInfo,You are now on Team Darkhide,ダークハイドの味方に�
 "HideAndSeekWaitingTime","Impostor Standby Time(S)","インポスターの待機時間(秒)","内鬼阵营在游戏开始后的等待时间","偽裝者在遊戲開始後的等待時間(秒)","Время ожидания Предателей(Секунды)","Tempo de Espera do Impostor (S)"
 "IgnoreVent","Disable Vents","ベントの使用を禁止する","禁止使用管道","禁止使用管道","Отключить Вентиляцию","Desativar Dutos"
 "HideAndSeekRoles","Hide and Seek Roles","かくれんぼの役職","躲猫猫职业","躲貓貓職業","Роли в Прятках","Classes do Esconde-Esconde"
+"HideAndSeekRolePool","Roles","配る役職","职业","職業","Роли","Classes","Funções"
+"HideAndSeekRolePool.Own","Hide and Seek Roles","かくれんぼ専用の役職","躲猫猫专用职业","躲貓貓專用職業","Роли Пряток","Classes do Esconde-Esconde","Funções do Escondidas"
+"HideAndSeekRolePool.Standard","Standard Roles","通常モードの役職","普通模式的职业","一般模式的職業","Обычные роли","Classes do Modo Padrão","Funções do Modo Normal"
 
 "## 死因"
 "DeathReason.Kill","Kill","キル","被杀","被殺","Убит","Abatido"
@@ -1503,7 +1506,6 @@ PanAlive25,\nBread was served by the bakery.\nㅤ,\nパン屋は{0}に向けて�
 "FireworksReadyFirePhase","Fire!","打ち上げろ！","烟花来咯，大型烟花秀开始！","準備就緒，煙火秀開始!","Огонь!","Lançar!"
 "SelfBomberFirePhase","Fire by Vanish","消えるで自爆","","","",""
 "StandardHAS","Hide And Seek with Roles","役職入りでかくれんぼ","在躲猫猫模式中加入职业","在躲貓貓中加入多職業模式中的職業","Прятки с Ролями","Esconde-Esconde com Classes"
-"StandardHASWaitingTime","Standby","待機時間","躲猫猫猎人等待时间","躲貓貓偽裝者等待時間","Время ожидания","Tempo de Espera"
 "Prerelease","Pre-release","プレリリース","","","","",""
 "InvalidArgs","Invalid Args","無効な引数","无效参数","無效的參數","Недопустимые Аргументы","Argumento Inválido"
 "On","ON","オン","开启","開啟","ВКЛ","Ativado"
