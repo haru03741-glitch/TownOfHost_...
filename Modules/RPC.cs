@@ -44,7 +44,6 @@ namespace TownOfHostL
         SetEvilDiviner,
         SetLawyerTarget,
         SetRemoveLawyerTarget,
-        EvilHackerWarpSync,
         SyncPsychicResult,
         SetLoyalDoggyMaster,
     }
