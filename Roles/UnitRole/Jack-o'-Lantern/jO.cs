@@ -47,6 +47,8 @@ public sealed class JO : RoleBase, IKiller
     HashSet<byte> DetectPlayers = new(15);
     HashSet<byte> DidntDetectPlayers = new(15);
 
+    public override bool NeedsSeenNames => true;
+
     public override void Add()
     {
         Player.AddDoubleTrigger();

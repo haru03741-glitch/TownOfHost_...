@@ -44,20 +44,29 @@ public static class Revealer
             playerIdList.Add(playerId);
     }
 
-    public static void ChangeName(PlayerControl pc)
+    /// <param name="showOnExileScreen">追放の画面に追放者の名前が出る時だけ true。暗転対策で追放者を伏せた時は名前を書き換えない</param>
+    public static void OnExiled(PlayerControl pc, bool showOnExileScreen)
     {
-        if (!pc.Is(CustomRoles.Revealer)) return;
+        if (pc == null || !pc.Is(CustomRoles.Revealer)) return;
         pendingRevealList.Add(pc.PlayerId);
+        if (!showOnExileScreen) return;
 
         string exiledRole = Utils.GetRoleName(pc.GetCustomRole());
         string exiledName = pc.GetRealName(true);
 
         if (pc == PlayerControl.LocalPlayer && Main.nickName != "") exiledName = Main.nickName;
 
-        // 追放の画面に出す名前。見る人ごとの名前の覚え書きは書き換えないので、戻すまで NotifyRoles には上書きされない
-        pc.RpcSetName(string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName));
+        // 追放の画面に出す名前。会議の終わりに暗転対策が PlayerInfo を送り直しても戻らないよう、PlayerInfo の名前も揃える
+        string revealName = string.Format(Translator.GetString("RevealerExiledText"), exiledRole, exiledName);
+        GameDataSerializePatch.SharedNameOverride[pc.PlayerId] = revealName;
+        pc.RpcSetName(revealName);
         // 戻す時は覚え書きを捨てて NotifyRoles に組み直させる (素の名前を全員へ送ると、見る人ごとの名前が消える)
-        _ = new LateTask(() => ChatCommands.ForgetNotifiedNames(pc), 8f, "SetName");
+        byte id = pc.PlayerId;
+        _ = new LateTask(() =>
+        {
+            GameDataSerializePatch.SharedNameOverride.Remove(id);
+            ChatCommands.ForgetNotifiedNames(pc);
+        }, 8f, "SetName");
     }
 
     public static void OverrideDisplayRoleNameAsSeen(PlayerControl seen, bool isMeeting, ref bool enabled, ref string roleText)

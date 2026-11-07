@@ -8,6 +8,7 @@ using TownOfHostL.Roles.Core.Interfaces;
 namespace TownOfHostL.Roles.Neutral;
 public sealed class Egoist : RoleBase, ISidekickable, IKiller, ISchrodingerCatOwner
 {
+    public override bool SeesNamesInMushroomMixup => true;
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Egoist),

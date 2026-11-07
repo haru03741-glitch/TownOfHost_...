@@ -62,6 +62,8 @@ public sealed class Vendetta : RoleBase, IKiller, IAdditionalWinner
         OptionSelfKillRequired = BooleanOptionItem.Create(RoleInfo, 12, OptionName.VendettaSelfKillRequired, false, false);
     }
 
+    public override bool NeedsSeenNames => true;
+
     public override void Add()
     {
         isChooseTarget = false;

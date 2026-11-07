@@ -102,6 +102,7 @@ public static class AntiBlackout
 
         Logger.Info($"SetDummyImpostor type: {recognizeType}, count:{list.Count}", "AntiBlackout");
         var deadPlayers = Main.AllDeadPlayerControls.Where(x => !x.Data.Disconnected).ToList();
+        var exiledForFill = fillCrew ? GetExiledForFill(list) : null;
 
         foreach (var pc in Main.AllPlayerControls.Where(x => !x.Data.Disconnected))
         {
@@ -146,6 +147,13 @@ public static class AntiBlackout
                     .EndRpc();
                 count++;
             }
+            // 補える死者が足りない時 (追放前に死者がいない 1 対 1 など) は、追放者を数に入れる。
+            // 追放者を伏せて票を締めた時は、客の画面では追放者がまだ生きたクルーなので、その死を送るのを演出の後まで遅らせればよい
+            if (lacking > 0 && exiledForFill != null)
+            {
+                if (!filledCrew.TryGetValue(clientId, out var filled)) filledCrew[clientId] = filled = new();
+                filled.Add(exiledForFill);
+            }
 
             if (count > 0)
             {
@@ -159,6 +167,29 @@ public static class AntiBlackout
             Logger.Info($"SetDummyImpostor player: {pc?.name} ({count} rpc{(filledCrew.TryGetValue(clientId, out var f) ? $", 生きたクルーに見せた死者 {f.Count}" : "")})", "AntiBlackout");
         }
         ExiledPlayerId = -1;
+    }
+
+    // 追放者を伏せて票を締めた時だけ、客の画面で生きたクルーに見えている追放者を返す
+    private static PlayerControl GetExiledForFill(List<PlayerControl> impostorLike)
+    {
+        if (!OverrideExiledPlayer || ExiledPlayerId < 0) return null;
+        var exiled = Utils.GetPlayerById((byte)ExiledPlayerId);
+        if (exiled == null || !exiled.IsAlive() || exiled.Data.Disconnected || impostorLike.Contains(exiled)) return null;
+        var role = exiled.GetCustomRole();
+        bool seenAsImpostor = role.GetRoleInfo()?.IsDesyncImpostor != true
+            && role.GetRoleTypes() is RoleTypes.Impostor or RoleTypes.Shapeshifter or RoleTypes.Phantom;
+        return seenAsImpostor ? null : exiled;
+    }
+
+    /// <summary>
+    /// 生きたクルーに見せた人なら、死を送るのを RevertFilledCrew まで遅らせて true を返す。
+    /// 追放の締めで追放者の IsDead を立てる前に呼ぶ
+    /// </summary>
+    public static bool DeferDeathIfFilled(byte playerId)
+    {
+        if (!deferredDead.TryGetValue(playerId, out var val)) return false;
+        deferredDead[playerId] = (true, val.Disconnected);
+        return true;
     }
 
     // 追放の演出の締めで各クライアントが判定を終えた後に呼ぶ

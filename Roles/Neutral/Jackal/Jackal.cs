@@ -11,6 +11,7 @@ namespace TownOfHostL.Roles.Neutral
 {
     public sealed class Jackal : RoleBase, IKiller, ISchrodingerCatOwner
     {
+        public override bool SeesNamesInMushroomMixup => CanSeeNameMushroomMixup;
         public static readonly SimpleRoleInfo RoleInfo =
             SimpleRoleInfo.Create(
                 typeof(Jackal),

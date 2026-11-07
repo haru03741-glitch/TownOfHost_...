@@ -37,12 +37,10 @@ namespace TownOfHostL
         {
             return seer == target
                 || target.Is(CustomRoles.GM)
-                || (seer.Is(CustomRoleTypes.Impostor) && target.Is(CustomRoleTypes.Impostor) && !seer.Is(CustomRoles.StrayWolf) && !target.Is(CustomRoles.StrayWolf))
-                || Mare.KnowTargetRoleColor(target, isMeeting)
-                || (target.Is(CustomRoles.Workaholic) && Workaholic.Seen)
+                || (seer.Is(CustomRoleTypes.Impostor) && target.Is(CustomRoleTypes.Impostor) && !seer.GetCustomRole().IsLoneImpostor() && !target.GetCustomRole().IsLoneImpostor())
+                || (target.GetRoleClass()?.ShowsRoleColorToAll(isMeeting) ?? false)
                 || target.Is(CustomRoles.Rainbow)
-                || FortuneTeller.KnowTargetRoleColor(seer, target, isMeeting)
-                || (seer.Is(CustomRoles.Psychic) && ((Psychic)seer.GetRoleClass()).KnowTargetRoleColor(target) && isMeeting);
+                || (seer.GetRoleClass()?.KnowsRoleColorOf(target, isMeeting) ?? false);
         }
         public static bool TryGetData(PlayerControl seer, PlayerControl target, out string colorCode)
         {

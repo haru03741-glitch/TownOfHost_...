@@ -42,7 +42,11 @@ class EndGamePatch
                 if (date == DateTime.MinValue) continue;
                 var killerId = kvp.Value.GetRealKiller();
                 var targetId = kvp.Key;
-                sb.Append($"\n{date:T} {Main.AllPlayerNames[targetId]}({RoleText.GetRoleNameText(targetId, showSubRole:false)}) [{Utils.GetVitalText(kvp.Key)}]");
+                // イントロの後なら試合の経過時間 (分:秒) で、そうでなければ時刻で出す
+                string time = Main.IntroEndTime != DateTime.MinValue && date >= Main.IntroEndTime
+                    ? $"{(int)(date - Main.IntroEndTime).TotalMinutes:00}:{(date - Main.IntroEndTime).Seconds:00}"
+                    : date.ToString("T");
+                sb.Append($"\n{time} {Main.AllPlayerNames[targetId]}({RoleText.GetRoleNameText(targetId, showSubRole:false)}) [{Utils.GetVitalText(kvp.Key)}]");
                 if (killerId != byte.MaxValue && killerId != targetId)
                     sb.Append($"\n\t\t<size=75%>⇐ {Main.AllPlayerNames[killerId]}({RoleText.GetRoleNameText(killerId, showSubRole: false)})</size>");
             }

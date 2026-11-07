@@ -171,7 +171,8 @@ public sealed class Psychic : RoleBase
             roleText = GetString("TeamCrewmate").Color(Palette.CrewmateBlue);
         }
     }
-    public bool KnowTargetRoleColor(PlayerControl target)
+    public override bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => KnowTargetRoleColor(target) && isMeeting;
+    private bool KnowTargetRoleColor(PlayerControl target)
     {
         if (!VentSelect.IsShowTargetRole(Player, target)) return false;
         if (!ConfirmCamp.GetBool()) return false;   //役職表示

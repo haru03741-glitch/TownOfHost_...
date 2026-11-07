@@ -248,16 +248,23 @@ public abstract class RoleBase : IDisposable
     { }
 
     /// <summary>
-    /// 勝利処理がほぼ終わった後に処理される
-    /// </summary>
-    public virtual void CheckWinner(GameOverReason reason)
-    { }
-
-    /// <summary>
     /// タスクが一個完了するごとに呼ばれる関数
     /// </summary>
     /// <returns>falseを返すとバニラ処理をキャンセルする</returns>
     public virtual bool OnCompleteTask() => true;
+
+    /// <summary>停電・通信妨害を直せない (ドジ属性と同じ)。属性のドジは PlayerTraits.IsClumsy が別に見る</summary>
+    public virtual bool IsClumsy => false;
+    /// <summary>アドミン・カメラ・バイタルなどの情報機器を使えない (情報弱者属性と同じ)</summary>
+    public virtual bool IsInfoPoor => false;
+    /// <summary>投票で追放された時に誰かを道連れにする</summary>
+    public virtual bool RevengesOnExile => false;
+    /// <summary>この役職の人に、target の役職の色が見えるか</summary>
+    public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
+    /// <summary>この役職の人の役職の色が、全員に見えるか</summary>
+    public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
+    /// <summary>キノコカオスの間も、キルできる相手の名前が見える (インポスターは役職によらず見える)</summary>
+    public virtual bool SeesNamesInMushroomMixup => false;
 
     // == Sabotage関連処理 ==
     /// <summary>
@@ -277,6 +284,12 @@ public abstract class RoleBase : IDisposable
     public virtual bool OnSabotage(PlayerControl player, SystemTypes systemType) => true;
 
     // NameSystem
+    /// <summary>
+    /// 自分が見る他人の名前 (マーク・色・役職名など) を、NotifyRoles のたびに組み立て直す必要があるか。
+    /// false の役職は、死んでいる・インポスターなどの他の条件に当たらない限り、他人の名前を送り直さない。
+    /// </summary>
+    public virtual bool NeedsSeenNames => false;
+
     // 名前は下記の構成で表示される
     // [Role][Progress]
     // [Name][Mark]

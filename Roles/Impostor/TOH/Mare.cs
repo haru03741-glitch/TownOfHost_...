@@ -111,6 +111,5 @@ public sealed class Mare : RoleBase, IImpostor
         }
         return true;
     }
-    public static bool KnowTargetRoleColor(PlayerControl target, bool isMeeting)
-        => !isMeeting && IsActivateKill && target.Is(CustomRoles.Mare);
+    public override bool ShowsRoleColorToAll(bool isMeeting) => !isMeeting && IsActivateKill;
 }

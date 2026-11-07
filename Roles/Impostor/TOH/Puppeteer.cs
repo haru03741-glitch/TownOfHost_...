@@ -35,6 +35,8 @@ public sealed class Puppeteer : RoleBase, IImpostor
     /// Key: ターゲットのPlayerId, Value: パペッティア
     /// </summary>
     private static Dictionary<byte, Puppeteer> Puppets = new(15);
+    public override bool NeedsSeenNames => true;
+
     // 同じ役職が複数いる時に、1 人の作成や破棄で他の持ち主の分まで消さないよう、共有の一覧は試合の開始で空にし、破棄では自分の分だけ外す
     [TownOfHostL.Attributes.GameModuleInitializer]
     public static void Init() => Puppets.Clear();

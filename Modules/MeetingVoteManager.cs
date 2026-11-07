@@ -140,7 +140,7 @@ public class MeetingVoteManager
         //Y-anti
         var exiled = (antiCompId == byte.MaxValue) ? result.Exiled : Utils.GetPlayerInfoById(antiCompId);
 
-        var logName = exiled == null ? (result.IsTie ? "同数" : "スキップ") : exiled.Object.GetNameWithRole();
+        var logName = exiled == null ? (result.IsTie ? "同数" : "スキップ") : exiled.Object?.GetNameWithRole() ?? exiled.PlayerName;
         logger.Info($"追放者: {logName} で会議を終了します");
 
         var states = new List<MeetingHud.VoterState>();
@@ -153,7 +153,7 @@ public class MeetingVoteManager
                 logger.Warn($"{Utils.GetPlayerById(playerId).GetNameWithRole()} の投票データがありません");
                 continue;
             }
-            if (voteData.VotedFor == NoVote) continue;
+            if (voteData.VotedFor == NoVote || !CanBeVotedFor(voteData.VotedFor)) continue;
             for (var i = 0; i < voteData.NumVotes; i++)
             {
                 states.Add(new()
@@ -186,6 +186,8 @@ public class MeetingVoteManager
         }
         if (exiled != null)
         {
+            // 暗転対策で追放者を伏せて送った時も、本当の追放者で属性の処理を通す
+            Revealer.OnExiled(exiled.Object, showOnExileScreen: !AntiBlackout.OverrideExiledPlayer);
             MeetingHudPatch.CheckForDeathOnExile(CustomDeathReason.Vote, exiled.PlayerId);
         }
         Destroy();
@@ -237,6 +239,9 @@ public class MeetingVoteManager
                 overrideExiled = vote.JudgeExiledId;
                 overruleNonce = vote.JudgeNonce;
             }
+
+            // 会議中に死んだ・抜けた人への票は数えない。数えると、もういない人が追放者に選ばれる
+            if (!CanBeVotedFor(vote.VotedFor)) continue;
 
             votes[vote.VotedFor] += vote.NumVotes;
         }
@@ -313,6 +318,13 @@ public class MeetingVoteManager
     public void Destroy()
     {
         _instance = null;
+    }
+
+    private static bool CanBeVotedFor(byte target)
+    {
+        if (target == Skip) return true;
+        var info = Utils.GetPlayerInfoById(target);
+        return info != null && !info.Disconnected && !PlayerState.GetByPlayerId(target).IsDead;
     }
 
     public static string GetVoteName(byte num)

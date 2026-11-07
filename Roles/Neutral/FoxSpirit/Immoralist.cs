@@ -9,6 +9,7 @@ using TownOfHostL.Roles.Core.Interfaces;
 namespace TownOfHostL.Roles.Neutral;
 public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateHook
 {
+    public override bool RevengesOnExile => true;
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Immoralist),
@@ -76,6 +77,8 @@ public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateH
         Tasks = Options.OverrideTasksData.Create(RoleInfo, 20);
     }
     // 試合を跨いで前の試合のインスタンスが残らないようにする
+    public override bool NeedsSeenNames => true;
+
     public override void OnDestroy()
     {
         Immoralists.Remove(this);

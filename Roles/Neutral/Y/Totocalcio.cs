@@ -75,6 +75,8 @@ public sealed class Totocalcio : RoleBase, IKiller, IAdditionalWinner
         return CustomWinnerHolder.WinnerIds.Contains(BetTarget.PlayerId) ||
                CustomWinnerHolder.WinnerRoles.Any(team => BetTarget.Is(team));
     }
+    public override bool NeedsSeenNames => true;
+
     public override void Add()
     {
         var playerId = Player.PlayerId;

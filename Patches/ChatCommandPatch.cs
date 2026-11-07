@@ -210,6 +210,7 @@ namespace TownOfHostL
         private static void SendChunk(string SendName, string text, string name, PlayerControl sender)
         {
             var crs = CustomRpcSender.Create("AllSend");
+            var restoreName = GameStates.IsInGame ? TownOfHostL.Core.ChatSenderName.RestoreFor(sender) : name;
 
             crs.AutoStartRpc(sender.NetId, (byte)RpcCalls.SetName)
                 .Write(sender.Data.NetId)
@@ -220,18 +221,17 @@ namespace TownOfHostL
                 .EndRpc()
                 .AutoStartRpc(sender.NetId, (byte)RpcCalls.SetName)
                 .Write(sender.Data.NetId)
-                .Write(name)
+                .Write(restoreName)
                 .EndRpc()
                 .SendMessage();
+            TownOfHostL.Core.ChatSenderName.Restored(sender, restoreName, -1);
 
             sender.SetName(SendName);
             DestroyableSingleton<HudManager>.Instance.Chat.AddChat(sender, text);
             sender.SetName(name);
-            ForgetNotifiedNames(sender);
         }
 
-        // 発言用に名前を直接送って素の名前へ戻した後に呼ぶ。見る人ごとの名前の記録が送る前の装飾のまま残ると、
-        // 次に同じ装飾を作った時に「送り済み」と見なされ、素の名前のまま戻らない。記録を捨てて送り直させる
+        // 全員へ同じ名前を一時的に見せた後、見る人ごとの名前へ戻す。記録を捨てて NotifyRoles に全員分を組み直させる
         internal static void ForgetNotifiedNames(PlayerControl player)
         {
             if (player == null || !AmongUsClient.Instance.AmHost || Main.LastNotifyNames == null) return;
@@ -418,6 +418,17 @@ namespace TownOfHostL
             if (!AmongUsClient.Instance.AmHost) return;
             Utils.SendMessageAutoSplit(message, true, sendTo: player.PlayerId);
         }
+        // 客 1 人あたり、返事は ReplyInterval 秒に 1 回まで。連打の返事が溜まると、同じ宛先への送信が続いて公式サーバーに切られる恐れがある
+        private const float ReplyInterval = 2f;
+        private static readonly Dictionary<byte, float> lastReplyAt = new();
+        private static bool TryTakeReplySlot(PlayerControl player)
+        {
+            if (player == null || player.AmOwner) return true;
+            float now = UnityEngine.Time.realtimeSinceStartup;
+            if (lastReplyAt.TryGetValue(player.PlayerId, out var last) && now - last < ReplyInterval) return false;
+            lastReplyAt[player.PlayerId] = now;
+            return true;
+        }
         public static void OnReceiveChat(PlayerControl player, string text)
         {
             if (player != null)
@@ -428,8 +439,17 @@ namespace TownOfHostL
 
             if (!AmongUsClient.Instance.AmHost) return;
 
+            bool isNimrodMeeting = Nimrod.IsExecutionMeeting() || MadNimrod.IsExecutionMeeting();
+            // 返事をしない発言はここで終わる
+            if (!isNimrodMeeting && !text.StartsWith("/")) return;
+            if (!TryTakeReplySlot(player))
+            {
+                Logger.Info($"{player?.Data?.PlayerName} の発言は前の返事から {ReplyInterval} 秒以内なので返事をしません", "OnReceiveChat");
+                return;
+            }
+
             // ニムロッド会議中
-            if (Nimrod.IsExecutionMeeting() || MadNimrod.IsExecutionMeeting())
+            if (isNimrodMeeting)
             {
                 if (text.Length > 0)
                 {
@@ -498,14 +518,15 @@ namespace TownOfHostL
                 writer.StartRpc(player.NetId, (byte)RpcCalls.SendChat)
                     .Write(msg)
                     .EndRpc();
+                var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(player);
                 writer.StartRpc(player.NetId, (byte)RpcCalls.SetName)
                     .Write(player.Data.NetId)
-                    .Write(player.Data.PlayerName)
+                    .Write(restoreName)
                     .EndRpc();
                 writer.EndMessage();
                 writer.SendMessage();
+                TownOfHostL.Core.ChatSenderName.Restored(player, restoreName, clientId);
             }
-            ChatCommands.ForgetNotifiedNames(player);
             __instance.timeSinceLastMessage = 0f;
         }
         public static void SendCustomChat(string SendName, PlayerControl sender = null, byte sendTo = byte.MaxValue)
@@ -529,6 +550,7 @@ namespace TownOfHostL
             else
             {
                 var writer = CustomRpcSender.Create("CustomSend");
+                var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(sender);
                 writer.StartMessage(clientId);
                 writer.StartRpc(sender.NetId, (byte)RpcCalls.SetName)
                     .Write(sender.Data.NetId)
@@ -539,12 +561,12 @@ namespace TownOfHostL
                     .EndRpc()
                     .StartRpc(sender.NetId, (byte)RpcCalls.SetName)
                     .Write(sender.Data.NetId)
-                    .Write(name)
+                    .Write(restoreName)
                     .EndRpc()
                     .EndMessage()
                     .SendMessage();
+                TownOfHostL.Core.ChatSenderName.Restored(sender, restoreName, clientId);
             }
-            ChatCommands.ForgetNotifiedNames(sender);
         }
         private static void AddChatAsAlive(PlayerControl player, string msg)
         {
@@ -587,9 +609,10 @@ namespace TownOfHostL
                     writer.StartRpc(host.NetId, (byte)RpcCalls.SendChat)
                         .Write(msg)
                         .EndRpc();
+                    var restoreName = TownOfHostL.Core.ChatSenderName.RestoreFor(host);
                     writer.StartRpc(host.NetId, (byte)RpcCalls.SetName)
                         .Write(host.Data.NetId)
-                        .Write(host.Data.PlayerName)
+                        .Write(restoreName)
                         .EndRpc();
 
                     if (target.IsAlive())
@@ -603,6 +626,7 @@ namespace TownOfHostL
 
                     writer.EndMessage();
                     writer.SendMessage();
+                    TownOfHostL.Core.ChatSenderName.Restored(host, restoreName, targetClientId);
                 }
             }
             finally

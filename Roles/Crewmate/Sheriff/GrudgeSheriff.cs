@@ -115,6 +115,8 @@ public sealed class GrudgeSheriff : RoleBase
         SchrodingerCatKillTargetOptions[catType].ReplacementDictionary = replacementDic;
     }
 
+    public override bool NeedsSeenNames => true;
+
     public override void Add()
     {
         KillWaitPlayerSelect = null;
