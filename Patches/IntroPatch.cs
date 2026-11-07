@@ -27,9 +27,10 @@ class SetUpRoleTextPatch
         if (!GameStates.IsModHost) return;
         _ = new LateTask(() =>
         {
-            CustomRoles role = PlayerControl.LocalPlayer.GetCustomRole();
+            // 他の役職として見せる役職は、その役職のイントロにする
+            CustomRoles role = PlayerControl.LocalPlayer.GetRoleClass()?.DisplayedRole ?? PlayerControl.LocalPlayer.GetCustomRole();
 
-            if (!role.IsVanilla() && role != CustomRoles.Potentialist)
+            if (!role.IsVanilla())
             {
                 __instance.YouAreText.color = Utils.GetRoleColor(role);
                 __instance.RoleText.text = Utils.GetRoleName(role);

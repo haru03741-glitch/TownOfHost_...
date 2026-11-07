@@ -244,7 +244,7 @@ namespace TownOfHostL
                         // Color.clear や Color の比較演算子はゲーム側を呼ぶので、成分を直接比べる
                         (Color c, string t) = (default(Color), "");
                         var targetRoleClass = target.GetRoleClass();
-                        targetRoleClass?.OverrideShowMainRoleText(ref c, ref t);
+                        targetRoleClass?.ApplyShownMainRole(ref c, ref t);
                         if (c.r != 0f || c.g != 0f || c.b != 0f || c.a != 0f)
                         {
                             RealName = RealName.Color(c); // 既存の Color 拡張を利用

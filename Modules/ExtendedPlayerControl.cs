@@ -383,7 +383,7 @@ static class ExtendedPlayerControl
 
         (Color c, string t) = (Color.clear, "");
         //trueRoleNameでColor上書きあればそれになる
-        player.GetRoleClass()?.OverrideShowMainRoleText(ref c, ref t);//colorのみ
+        player.GetRoleClass()?.ApplyShownMainRole(ref c, ref t);//colorのみ
         if (c != Color.clear) return ColorUtility.ToHtmlStringRGB(c);
         else return Utils.GetRoleColorCode(role);
     }
@@ -398,7 +398,7 @@ static class ExtendedPlayerControl
 
         (Color c, string t) = (Color.clear, "");
         //trueRoleNameでColor上書きあればそれになる
-        player.GetRoleClass()?.OverrideShowMainRoleText(ref c, ref t);//colorのみ
+        player.GetRoleClass()?.ApplyShownMainRole(ref c, ref t);//colorのみ
         if (c != Color.clear) return c;
         else return Utils.GetRoleColor(role);
     }

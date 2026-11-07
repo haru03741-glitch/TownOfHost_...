@@ -493,13 +493,11 @@ public static class Utils
         string formatTag = "<size=70%><line-height=1.6pic>";
 
         var sb = new StringBuilder();
-        var myRole = player.GetCustomRole();
-        var roleInfoLong = player.GetRoleInfo(true);
-        if (myRole == CustomRoles.Potentialist)
-        {
-            myRole = CustomRoles.Crewmate;
-            roleInfoLong = GetString("PotentialistInfo");
-        }
+        // 他の役職として見せる役職は、名前・色・設定の一覧をその役職で出す。
+        // 長い説明は正体を書いているので、短い説明を出す
+        var displayedRole = player.GetRoleClass()?.DisplayedRole;
+        var myRole = displayedRole ?? player.GetCustomRole();
+        var roleInfoLong = player.GetRoleInfo(displayedRole == null);
 
         var roleName = player.GetRoleClass()?.GetRoleKey(true) ?? myRole.ToString();
 
@@ -1479,7 +1477,7 @@ public static class Utils
 
             string t = "";
             //trueRoleNameでColor上書きあればそれにする
-            seer.GetRoleClass()?.OverrideShowMainRoleText(ref SelfNameColor, ref t);//colorのみ
+            seer.GetRoleClass()?.ApplyShownMainRole(ref SelfNameColor, ref t);//colorのみ
 
             bool selfNameOriginal = true;
             if (TownOfHostL.Core.PlayerTraits.LearnsExiledTeam(seer))
