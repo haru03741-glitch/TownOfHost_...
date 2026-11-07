@@ -42,12 +42,16 @@ public sealed class FoxSpirit : RoleBase, ISystemTypeUpdateHook, ISoloWinner
     {
         KilledAfterFinishTask = OptionKilledAfterFinishTask.GetBool();
         IgnoreGhostTask = OptionIgnoreGhostTask.GetBool();
+        CustomRoleManager.TaskExemptionsOthers.Add(IsGhostTaskIgnored);
     }
     private static OptionItem OptionTaskCount;
     private static OptionItem OptionKilledAfterFinishTask;
     private static OptionItem OptionIgnoreGhostTask;
     private bool KilledAfterFinishTask;
-    public static bool IgnoreGhostTask;
+    private static bool IgnoreGhostTask;
+    /// <summary>妖狐が配られた試合で、死後のタスクを免除する設定なら、死んだ人のタスクを免除する</summary>
+    private static bool IsGhostTaskIgnored(NetworkedPlayerInfo p)
+        => IgnoreGhostTask && p.IsDead && CustomRoles.FoxSpirit.IsPresent() && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object);
     private enum OptionName
     {
         FoxSpiritTaskCount,

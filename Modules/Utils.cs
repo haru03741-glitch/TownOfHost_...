@@ -363,15 +363,9 @@ public static class Utils
             {
                 return false;
             }
-            // 死んでいて，妖狐がいるかつ無効化設定ならfalse
-            if (CustomRoles.FoxSpirit.IsPresent() && FoxSpirit.IgnoreGhostTask && p.IsDead && !TownOfHostL.Core.PlayerTraits.KeepsTasksWhenDead(p.Object))
-            {
-                return false;
-            }
-            if (LoyalDoggy.IgnoreTask(p))
-            {
-                return false;
-            }
+            // その試合の役職が登録した免除 (妖狐の死後タスクの免除・忠犬の主人の死後など)
+            foreach (var isExempt in CustomRoleManager.TaskExemptionsOthers)
+                if (isExempt(p)) return false;
             var role = States.GetNowMainRole();
             var roleClass = CustomRoleManager.GetByPlayerId(p.PlayerId);
             if (roleClass != null)
