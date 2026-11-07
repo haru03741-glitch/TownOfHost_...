@@ -20,8 +20,8 @@ namespace TownOfHostL
                 if (KnowTargetRoleColor(seer, target, isMeeting))
                     colorCode = target.GetRoleColorCode();
             }
-            // ジャニターターゲットの色上書き
-            colorCode = Godfather.OverrideNameColorByJanitorTarget(target, colorCode);
+            // 役職に関わらない色の上書き (ジャニターの対象など)。登録はその試合の役職が行う
+            colorCode = CustomRoleManager.ApplyNameColorOthers(seer, target, colorCode);
 
             string openTag = "", closeTag = "";
             if (colorCode != "")

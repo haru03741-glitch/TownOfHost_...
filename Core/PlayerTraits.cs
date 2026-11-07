@@ -42,7 +42,7 @@ public static class PlayerTraits
     /// <summary>キルできる人 (インポスター・キルできる第三陣営・シェリフ系)</summary>
     public static bool IsKiller(PlayerControl pc)
         => pc.GetCustomRole().IsImpostor() || pc.IsNeutralKiller() || pc.IsCrewKiller();
-    /// <summary>占い・霊媒の「キル役だけ」の設定で、キル役として数える (マッドシェリフ・グラッジシェリフを含む)</summary>
+    /// <summary>占い・霊媒の「キル役だけ」の設定で、キル役として数える (マッドシェリフ・グラージシェリフを含む)</summary>
     public static bool IsKillerForDivination(PlayerControl pc)
         => IsKiller(pc) || pc.Is(CustomRoles.MadSheriff) || pc.Is(CustomRoles.GrudgeSheriff);
 

@@ -63,10 +63,9 @@ public static class CustomRoleManager
 
         // インポスター同士のキル無効
         if (attemptKiller.GetCustomRole().IsImpostor() && attemptTarget.GetCustomRole().IsImpostor() && !attemptKiller.GetCustomRole().IsLoneImpostor()) return false;
-        // ゴッドファーザーのロックキル
-        if (CustomRoles.Godfather.IsPresent() && GodfatherAndJanitor.JanitorTarget.Contains(attemptKiller.PlayerId)) return false;
-        // ペンギンの拉致られ中キル
-        if (!Penguin.CanKilledByTarget(attemptKiller)) return false;
+        // 役職によって今キルできない状態 (ゴッドファーザーのロック・ペンギンの拉致など)
+        foreach (var isBlocked in KillBlockersOthers)
+            if (isBlocked(attemptKiller)) return false;
 
         var killerRole = attemptKiller.GetRoleClass();
         var targetRole = attemptTarget.GetRoleClass();
@@ -276,6 +275,8 @@ public static class CustomRoleManager
         MarkOthers.Clear();
         LowerOthers.Clear();
         SuffixOthers.Clear();
+        NameColorOthers.Clear();
+        KillBlockersOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
@@ -374,6 +375,22 @@ public static class CustomRoleManager
         return sb.ToString();
     }
     /// <summary>
+    /// seer,seenが役職であるかに関わらず、名前の色を上書きする (seer, seen, 今の色コード) → 新しい色コード。
+    /// 色が無い時の色コードは空文字。登録の順にすべて通す。
+    /// </summary>
+    public static HashSet<Func<PlayerControl, PlayerControl, string, string>> NameColorOthers = new();
+    /// <summary>
+    /// 役職に関わらず、キルしようとした人が今キルできない状態か (killer → true でキルを取り消す)。
+    /// ゴッドファーザーのロック・ペンギンの拉致など、その試合の役職が登録する
+    /// </summary>
+    public static HashSet<Func<PlayerControl, bool>> KillBlockersOthers = new();
+    public static string ApplyNameColorOthers(PlayerControl seer, PlayerControl seen, string colorCode)
+    {
+        foreach (var overrideColor in NameColorOthers)
+            colorCode = overrideColor(seer, seen, colorCode);
+        return colorCode;
+    }
+    /// <summary>
     /// オブジェクトの破棄
     /// </summary>
     public static void Dispose()
@@ -382,6 +399,8 @@ public static class CustomRoleManager
         MarkOthers.Clear();
         LowerOthers.Clear();
         SuffixOthers.Clear();
+        NameColorOthers.Clear();
+        KillBlockersOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
