@@ -350,7 +350,7 @@ public static class Utils
         if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
         {
             if (p.IsDead) hasTasks = false;
-            if (States.GetNowMainRole() is CustomRoles.HASFox or CustomRoles.HASTroll) hasTasks = false;
+            if (States.GetNowMainRole().HasRoleFlag(RoleFlags.NoTasks)) hasTasks = false;
         }
         else if (Options.IsCCMode)
         {
@@ -389,16 +389,8 @@ public static class Utils
                         break;
                 }
             }
-            switch (role)
-            {
-                case CustomRoles.GM:
-                case CustomRoles.SKMadmate:
-                    hasTasks = false;
-                    break;
-                default:
-                    if (role.IsImpostor()) hasTasks = false;
-                    break;
-            }
+            // クラスを持たない役職 (GM など) は表の印で、インポスターは陣営で、タスクを持たない
+            if (role.HasRoleFlag(RoleFlags.NoTasks) || role.IsImpostor()) hasTasks = false;
             //タスクを勝利用にカウントしない
             foreach (var subRole in States.SubRoles)
                 if (subRole.HasRoleFlag(RoleFlags.TasksNotCountedForWin))

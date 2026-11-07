@@ -44,17 +44,17 @@ public static class RoleCatalog
     private static readonly (CustomRoles role, CustomRoleTypes team, string color, RoleFlags flags)[] Unclassed =
     {
         (CustomRoles.NotAssigned, Crew, "#ffffff", RoleFlags.None),
-        (CustomRoles.GM, Crew, "#ff5b70", RoleFlags.None),
+        (CustomRoles.GM, Crew, "#ff5b70", RoleFlags.NoTasks),
         // 本編の役職のうち、役職クラスを持たない物 (Normal 版で配る)
         (CustomRoles.Phantom, Crew, null, RoleFlags.Vanilla),
         (CustomRoles.Tracker, Crew, null, RoleFlags.Vanilla),
-        (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption | RoleFlags.FakeTasksLabel),
+        (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption | RoleFlags.FakeTasksLabel | RoleFlags.NoTasks),
 
         (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn | RoleFlags.TasksNotCountedForWin),
 
         // HideAndSeek
-        (CustomRoles.HASFox, CustomRoleTypes.Neutral, "#e478ff", RoleFlags.None),
-        (CustomRoles.HASTroll, CustomRoleTypes.Neutral, "#00ff00", RoleFlags.None),
+        (CustomRoles.HASFox, CustomRoleTypes.Neutral, "#e478ff", RoleFlags.NoTasks),
+        (CustomRoles.HASTroll, CustomRoleTypes.Neutral, "#00ff00", RoleFlags.NoTasks),
 
         // CatchCat
         (CustomRoles.CCRedLeader, CustomRoleTypes.Impostor, "#ff0000", RoleFlags.CCLeader),
