@@ -277,7 +277,7 @@ public sealed class SchrodingerCatKiller : RoleBase, IKiller, IAdditionalWinner,
             roleTypes = RoleTypes.Scientist;
             if (sameTeam) roleTypes = RoleTypes.Impostor;
             else if (team == TeamType.Impostor &&
-                     !pc.GetCustomRole().GetRoleInfo().IsDesyncImpostor) roleTypes = RoleTypes.Impostor;
+                     pc.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor != true) roleTypes = RoleTypes.Impostor;
 
             if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) cat.SetRoleEx(roleTypes);
             else cat.RpcSetRoleDesync(roleTypes, pc.GetClientId());
