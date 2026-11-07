@@ -242,7 +242,14 @@ public static class VanillaHideAndSeek
     {
         if (GameStartManager.InstanceExists)
             GameStartManagerPatch.EnsureLobbyUi(GameStartManager.Instance);
-
+        // 休んでいる間に作られた HudManager とプレイヤーには、TOHL の Start の後置処理が走っていない
+        if (HudManager.InstanceExists) HudManagerPatch.EnsureOptionShower(HudManager.Instance);
+        foreach (var pc in PlayerControl.AllPlayerControls)
+        {
+            if (pc && pc.cosmetics && pc.cosmetics.nameText && !pc.cosmetics.nameText.transform.Find("RoleText"))
+                PlayerStartPatch.Postfix(pc);
+        }
+        Players.Invalidate();
         if (!AmongUsClient.Instance || !AmongUsClient.Instance.AmHost) return;
         // 休んでいる間に入ってきた人は、参加の時の確認 (BAN・名前) を通っていない
         foreach (var client in AmongUsClient.Instance.allClients)
