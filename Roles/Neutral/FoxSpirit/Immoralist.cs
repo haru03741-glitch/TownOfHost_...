@@ -10,6 +10,8 @@ namespace TownOfHostL.Roles.Neutral;
 public sealed class Immoralist : RoleBase, IAdditionalWinner, ISystemTypeUpdateHook
 {
     public override bool RevengesOnExile => true;
+    // 背徳者は妖狐を道連れにしない
+    public override bool CanRevengeOn(PlayerControl candidate) => !candidate.Is(CustomRoles.FoxSpirit);
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Immoralist),

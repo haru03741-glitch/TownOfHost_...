@@ -259,6 +259,8 @@ public abstract class RoleBase : IDisposable
     public virtual bool IsInfoPoor => false;
     /// <summary>投票で追放された時に誰かを道連れにする</summary>
     public virtual bool RevengesOnExile => false;
+    /// <summary>追放の道連れで、candidate を道連れの相手に選べるか</summary>
+    public virtual bool CanRevengeOn(PlayerControl candidate) => true;
     /// <summary>この役職の人に、target の役職の色が見えるか</summary>
     public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
     /// <summary>この役職の人の役職の色が、全員に見えるか</summary>

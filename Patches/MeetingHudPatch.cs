@@ -480,8 +480,8 @@ public static class MeetingHudPatch
                 if (candidate.Is(CustomRoleTypes.Impostor) && !Options.RevengeImpostorByImpostor.GetBool()) continue; //インポスター
                 if (candidate.Is(CustomRoleTypes.Madmate) && !Options.RevengeMadByImpostor.GetBool()) continue; //マッドメイト
             }
-            // 背徳者は妖狐を道連れしない
-            if (exiledplayer.Is(CustomRoles.Immoralist) && candidate.Is(CustomRoles.FoxSpirit)) continue;
+            // 役職ごとの除外 (背徳者は妖狐を道連れしない など)
+            if (!(exiledplayer.GetRoleClass()?.CanRevengeOn(candidate) ?? true)) continue;
 
             // 第三陣営を道連れするか（設定）
             if (candidate.Is(CustomRoleTypes.Neutral) && !Options.RevengeNeutral.GetBool()) continue;
