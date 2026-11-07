@@ -100,6 +100,8 @@ TOH_Yに搭載されている機能の説明は[TOH_Yのwikiwiki](https://wikiwi
   - 配布物に入れる Unity Doorstop と、pietro による修正版 Il2CppInterop
   - 他のプレイヤーの外見を、PlayerInfo の送信と本人への変身解除で着せ替える方式
   - 会議の後の暗転を防ぐため、生存クルーが足りない時に死者を見た目だけ生き返らせる方法
+- [More Roles Plus](https://github.com/haru03741-glitch/More-Roles-Plus)
+  - ロビーで本編のモード (通常 / かくれんぼ) を、GameManager を出し直して切り替える手順
 - [MoreGamemodes](https://github.com/Rabek009/MoreGamemodes)
   - 退出ペナルティで部屋を立てられなくなるのを防ぐ処理
 - [TownOfHost-K](https://github.com/KYMario/TownOfHost-K)

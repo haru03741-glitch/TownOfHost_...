@@ -22,6 +22,18 @@ namespace TownOfHostL
         public static TextMeshPro HideName;
         private static PassiveButton cancelButton;
 
+        /// <summary>TOHL を休ませている間に作られたロビーなら、Start の後置で足す物を今のロビーに足す。</summary>
+        public static void EnsureLobbyUi(GameStartManager instance)
+        {
+            if (instance == null) return;
+            if (HideName != null && instance.GameRoomNameCode != null && HideName.transform.parent == instance.GameRoomNameCode.transform)
+            {
+                instance.MinPlayers = 1;
+                return;
+            }
+            GameStartManagerStartPatch.Postfix(instance);
+        }
+
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
         public class GameStartManagerStartPatch
         {
@@ -171,7 +183,7 @@ namespace TownOfHostL
                         {
                             ErrorText.Instance.NotHostFlag = true;
                             ErrorText.Instance.AddError(ErrorCode.NotHostUnload);
-                            Harmony.UnpatchAll();
+                            TownOfHostL.Core.VanillaHideAndSeek.UnpatchForUnload();
                             Main.Instance?.Unload();
                         }
                     }

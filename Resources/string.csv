@@ -1821,4 +1821,12 @@ CCYellowCatInfo,You have become the YellowCat,黄陣営に所属した,你成为
 "Twin","Twins","ツイン",
 "SCM_NothingMeetingNameColor","Remove The Color Of The Name To Myself During Meeting(Excluding Impostors)","会議時、自身への名前の色を消す(インポスターを除く)",
 "SCM_RestoredDeadPlayer","Dead Players Restore","死亡したプレイヤーは姿を戻す"
-
+"ModeSwitch.Usage","/mode hns: switch to vanilla Hide and Seek (TOHL rests until you switch back)\n/mode normal: switch back to Classic","/mode hns: 本編のかくれんぼに切り替えます (戻すまで TOHL は休みます)\n/mode normal: 通常のモードに戻します","","","","",""
+"ModeSwitch.HostOnly","Only the host can switch the mode.","モードを切り替えられるのはホストだけです。","","","","",""
+"ModeSwitch.LobbyOnly","The mode can only be switched in the lobby.","モードはロビーでしか切り替えられません。","","","","",""
+"ModeSwitch.Starting","The mode cannot be switched while the game is starting.","ゲーム開始のカウントダウン中はモードを切り替えられません。","","","","",""
+"ModeSwitch.Busy","The mode is already being switched.","モードの切り替え中です。","","","","",""
+"ModeSwitch.Already","The room is already in that mode.","すでにそのモードです。","","","","",""
+"ModeSwitch.Failed","Could not switch the mode. The room stays in the previous mode.","モードを切り替えられませんでした。前のモードのままです。","","","","",""
+"ModeSwitch.DoneHns","Switched to Hide and Seek. TOHL is resting. Type /mode normal to switch back.","かくれんぼに切り替えました。TOHL は休んでいます。/mode normal で通常のモードに戻せます。","","","","",""
+"ModeSwitch.DoneNormal","Switched back to Classic. TOHL is active again.","通常のモードに戻しました。TOHL が再び動いています。","","","","",""
