@@ -174,6 +174,9 @@ public static class AntiBlackout
             }
             deferredDead.Clear();
             SendGameData();
+            // 追放の締めの NotifyRoles はこの人をまだ生きているものとして組んだので、死者として見える名前 (他人の役職など) を送り直す。
+            // 試合が終わっていれば、結果画面向けの名前を上書きしないよう送らない
+            if (CustomWinnerHolder.WinnerTeam == CustomWinner.Default && GameStates.IsInGame) Utils.NotifyRoles();
         }
         if (filledCrew.Count == 0) return;
         // 試合が終わっていれば、結果画面へ向かうクライアントに役職を送り直さない
