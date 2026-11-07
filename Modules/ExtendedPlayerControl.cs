@@ -632,61 +632,19 @@ static class ExtendedPlayerControl
     }
     public static string GetRoleInfo(this PlayerControl player, bool InfoLong = false)
     {
-        var roleClass = player.GetRoleClass();
-        var role = player.GetCustomRole();
-
-        role = role.VanillaRoleConversion();//変換
-
-        var Prefix = "";
+        var role = player.GetCustomRole().VanillaRoleConversion();
         var text = role.ToString();
-        var Info = "";
-        switch (role)
-        {
-            case CustomRoles.Crewmate:
-            case CustomRoles.Impostor:
-                if (InfoLong)
-                {
-                    return "\n" + GetString($"{text}Blurb");
-                }
-                break;
-            case CustomRoles.Mafia:
-                if (InfoLong) break;
-                if (roleClass is not Mafia mafia) break;
-                Prefix = mafia.CanUseKillButton() ? "After" : "Before";
-                break;
-            case CustomRoles.MadSnitch:
-            case CustomRoles.MadGuesser:
-            case CustomRoles.MadGuardian:
-                if (InfoLong) break;
-                text = CustomRoles.Madmate.ToString();
-                Prefix = player.GetPlayerTaskState().IsTaskFinished ? "" : "Before";
-                break;
-            case CustomRoles.Bakery:
-                if (Bakery.IsNeutral(player))
-                    text = "NBakery";
-                break;
-            case CustomRoles.BestieWolf:
-                if (InfoLong) break;
-                Prefix = Main.AliveImpostorCount >= 2 ? "" : "After";
-                break;
-        }
 
         if (role.IsVanilla())
         {
-            if (InfoLong)
-            {
-                Info = "BlurbLong";
-                return "\n" + GetString($"{Prefix}{text}{Info}");
-            }
-
-            Info = "Blurb";
-        }
-        else
-        {
-            Info = InfoLong ? "InfoLong" : "Info";
+            if (!InfoLong) return GetString($"{text}Blurb");
+            // クルーメイトとインポスターは長い説明を持たないので、短い説明を出す
+            return "\n" + GetString(role is CustomRoles.Crewmate or CustomRoles.Impostor ? $"{text}Blurb" : $"{text}BlurbLong");
         }
 
-        return GetString($"{Prefix}{text}{Info}");
+        // 状態で説明が変わる役職は、翻訳キーの根を役職側が決める
+        text = player.GetRoleClass()?.GetRoleKey(InfoLong) ?? text;
+        return GetString($"{text}{(InfoLong ? "InfoLong" : "Info")}");
     }
     public static void SetRoleEx(this PlayerControl player, RoleTypes role)
     {

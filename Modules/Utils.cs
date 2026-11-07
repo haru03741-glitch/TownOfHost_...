@@ -501,11 +501,7 @@ public static class Utils
             roleInfoLong = GetString("PotentialistInfo");
         }
 
-        var roleName = myRole.ToString();
-        if (myRole == CustomRoles.Bakery && Bakery.IsNeutral(player))
-        {
-            roleName = "NBakery";
-        }
+        var roleName = player.GetRoleClass()?.GetRoleKey(true) ?? myRole.ToString();
 
         string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
         string RoleInfoTitle = $"{ColorString(GetRoleColor(myRole), RoleInfoTitleString)}";

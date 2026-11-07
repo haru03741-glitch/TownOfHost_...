@@ -331,6 +331,17 @@ public abstract class RoleBase : IDisposable
     public virtual void OverrideShowMainRoleText(ref Color roleColor, ref string roleText)
     { }
     /// <summary>
+    /// 役職の名前・色・説明・設定の一覧で、この役職の代わりに見せる役職 (潜在能力者がクルーメイトに見えるなど)。
+    /// null ならこの役職のまま。イントロ・/m・役職名の表示はここから引く。
+    /// </summary>
+    public virtual CustomRoles? DisplayedRole => null;
+    /// <summary>
+    /// 役職の翻訳キーの根を差し替える。名前は「根」、説明は「根Info」「根InfoLong」で引く。
+    /// null なら役職名そのまま。状態で説明が変わる役職 (マフィアの Before/After・覚醒したパン屋の NBakery など) が上書きする。
+    /// </summary>
+    /// <param name="infoLong">長い説明 (/m) を引く時 true</param>
+    public virtual string GetRoleKey(bool infoLong) => null;
+    /// <summary>
     /// seerによるProgressTextの書き換え
     /// </summary>
     /// <param name="seen">見られる側</param>
