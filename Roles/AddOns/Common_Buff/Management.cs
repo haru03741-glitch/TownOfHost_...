@@ -14,7 +14,8 @@ public static class Management
         "#80ffdd",
         "Ｍ",
         setupOptions: SetupCustomOption,
-        onAdd: Add);
+        onAdd: Add,
+        flags: RoleFlags.RefreshesNameOnMeetingStart);
 
     private static readonly int Id = (int)offsetId.AddonBuff + 100;
     private static List<byte> playerIdList = new();

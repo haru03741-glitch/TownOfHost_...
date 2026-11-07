@@ -111,7 +111,7 @@ public static class MeetingHudPatch
             GameStates.AlreadyDied |= !Utils.IsAllAlive;
             Main.AllPlayerControls.Do(x => ReportDeadBodyPatch.WaitReport[x.PlayerId].Clear());
             ChainShifterAddon.OnStartMeeting();
-            foreach (var tm in Main.AllAlivePlayerControls.Where(p => p.Is(CustomRoles.TaskManager) || p.Is(CustomRoles.Management)))
+            foreach (var tm in Main.AllAlivePlayerControls.Where(TownOfHostL.Core.PlayerTraits.RefreshesNameOnMeetingStart))
                 Utils.NotifyRoles(true, tm);
             TargetDeadArrow.OnStartMeeting();
 

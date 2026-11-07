@@ -51,4 +51,10 @@ public enum RoleFlags : uint
     ReportableByAll = 1 << 20,
     /// <summary>死んでもタスクが免除されない</summary>
     KeepsTasksWhenDead = 1 << 21,
+    /// <summary>タスクの一覧の頭に「偽のタスク」と出す</summary>
+    FakeTasksLabel = 1 << 22,
+    /// <summary>会議の始めに、自分の名前を送り直す (タスクの進み具合などを会議の時点の値にする)</summary>
+    RefreshesNameOnMeetingStart = 1 << 23,
+    /// <summary>タスクを持っていても、クルーの勝利のタスク数に数えない</summary>
+    TasksNotCountedForWin = 1 << 24,
 }

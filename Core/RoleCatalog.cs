@@ -48,9 +48,9 @@ public static class RoleCatalog
         // 本編の役職のうち、役職クラスを持たない物 (Normal 版で配る)
         (CustomRoles.Phantom, Crew, null, RoleFlags.Vanilla),
         (CustomRoles.Tracker, Crew, null, RoleFlags.Vanilla),
-        (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption),
+        (CustomRoles.SKMadmate, CustomRoleTypes.Madmate, "#ff1919", RoleFlags.DontShowOption | RoleFlags.FakeTasksLabel),
 
-        (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn),
+        (CustomRoles.Archenemy, Crew, "#ff6347", RoleFlags.FirstWriteAddOn | RoleFlags.TasksNotCountedForWin),
 
         // HideAndSeek
         (CustomRoles.HASFox, CustomRoleTypes.Neutral, "#e478ff", RoleFlags.None),

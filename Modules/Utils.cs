@@ -401,14 +401,8 @@ public static class Utils
             }
             //タスクを勝利用にカウントしない
             foreach (var subRole in States.SubRoles)
-                switch (subRole)
-                {
-                    case CustomRoles.Lovers:
-                    case CustomRoles.Archenemy:
-                    case CustomRoles.ChainShifterAddon:
-                        hasTasks &= !ForRecompute;
-                        break;
-                }
+                if (subRole.HasRoleFlag(RoleFlags.TasksNotCountedForWin))
+                    hasTasks &= !ForRecompute;
         }
         return hasTasks;
     }

@@ -14,7 +14,7 @@ public static class Lovers
         "#ff6be4",
         setupOptions: SetupCustomOption,
         onAdd: Add,
-        flags: RoleFlags.FirstWriteAddOn | RoleFlags.Pair);
+        flags: RoleFlags.FirstWriteAddOn | RoleFlags.Pair | RoleFlags.TasksNotCountedForWin);
 
     private static Color RoleColor => Utils.GetRoleColor(CustomRoles.Lovers);
     private static readonly int Id = (int)offsetId.AddonNeu + 0;

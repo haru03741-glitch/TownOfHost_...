@@ -36,6 +36,8 @@ public static class PlayerTraits
         => Has(reporter, RoleFlags.CannotReport) && !Has(target, RoleFlags.ReportableByAll);
     /// <summary>死んでもタスクが免除されない</summary>
     public static bool KeepsTasksWhenDead(PlayerControl pc) => Has(pc, RoleFlags.KeepsTasksWhenDead);
+    /// <summary>会議の始めに、自分の名前を送り直す</summary>
+    public static bool RefreshesNameOnMeetingStart(PlayerControl pc) => Has(pc, RoleFlags.RefreshesNameOnMeetingStart);
 
     /// <summary>役職か、付いている属性のどれかがその印を持つ</summary>
     private static bool Has(PlayerControl pc, RoleFlags flag)

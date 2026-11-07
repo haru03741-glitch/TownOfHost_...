@@ -15,7 +15,8 @@ public sealed class Madmate : RoleBase
             (int)Options.offsetId.MadTOH + 0,
             SetupOptionItem,
             "マッドメイト",
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            flags: RoleFlags.FakeTasksLabel
         );
     public Madmate(PlayerControl player)
     : base(
