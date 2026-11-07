@@ -76,4 +76,6 @@ public enum RoleFlags : ulong
     Spectator = 1UL << 29,
     /// <summary>人数の勝敗のどの陣営にも数えない (役職クラスを持たない役職用。クラスを持つ役職は CountType で決める)</summary>
     NotCounted = 1UL << 30,
+    /// <summary>会議の名前の CO 可否の表示に、役職ごとの設定を作らない</summary>
+    NoComingOutOption = 1UL << 31,
 }
