@@ -419,7 +419,7 @@ public static class Utils
         //seer側による変更
         bool enabled = seer == seen
                     || (Main.VisibleTasksCount && !seer.IsAlive() && !Options.GhostCantSeeOtherTasks.GetBool())
-                    || (seen.Is(CustomRoles.Workaholic) && Workaholic.Seen && Workaholic.TaskSeen);
+                    || (seen.GetRoleClass()?.ShowsTaskProgressToAll ?? false);
         string text = GetProgressText(seen.PlayerId, comms);
 
         seer.GetRoleClass()?.OverrideProgressTextAsSeer(seen, ref enabled, ref text);
@@ -1478,9 +1478,9 @@ public static class Utils
             string SelfDeathReason = TownOfHostL.Core.NameParts.DeathReason(seer, seer);
 
             StringBuilder SelfName = new();
+            bool keepsOwnNameInSyncColor = seer.GetRoleClass()?.KeepsOwnNameInSyncColorMeeting ?? false;
             if (!(Options.IsSyncColorMode && isForMeeting && seer.IsAlive())
-                || seer.Is(CustomRoles.Rainbow)
-                || seer.Is(CustomRoles.Workaholic))
+                || keepsOwnNameInSyncColor)
             {
                 SelfName.Append(SelfRoleName).Append("\r\n");
             }
@@ -1503,8 +1503,7 @@ public static class Utils
             }
             if (Options.IsSyncColorMode && isForMeeting && seer.IsAlive() &&
                 !seer.Is(CustomRoleTypes.Impostor) &&
-                !seer.Is(CustomRoles.Rainbow) &&
-                !seer.Is(CustomRoles.Workaholic))
+                !keepsOwnNameInSyncColor)
             {
                 SelfName.Append($"{ColorString(Color.white, SeerRealName)}{SelfDeathReason}{SelfMark}");
             }

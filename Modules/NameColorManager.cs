@@ -39,7 +39,6 @@ namespace TownOfHostL
                 || target.Is(CustomRoles.GM)
                 || (seer.Is(CustomRoleTypes.Impostor) && target.Is(CustomRoleTypes.Impostor) && !seer.GetCustomRole().IsLoneImpostor() && !target.GetCustomRole().IsLoneImpostor())
                 || (target.GetRoleClass()?.ShowsRoleColorToAll(isMeeting) ?? false)
-                || target.Is(CustomRoles.Rainbow)
                 || (seer.GetRoleClass()?.KnowsRoleColorOf(target, isMeeting) ?? false);
         }
         public static bool TryGetData(PlayerControl seer, PlayerControl target, out string colorCode)

@@ -265,6 +265,10 @@ public abstract class RoleBase : IDisposable
     public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
     /// <summary>キノコカオスの間も、キルできる相手の名前が見える (インポスターは役職によらず見える)</summary>
     public virtual bool SeesNamesInMushroomMixup => false;
+    /// <summary>この役職の人のタスクの進み具合が、全員に見えるか</summary>
+    public virtual bool ShowsTaskProgressToAll => false;
+    /// <summary>色の統一モードの会議でも、自分の名前を白で塗りつぶさず役職付きで出す</summary>
+    public virtual bool KeepsOwnNameInSyncColorMeeting => false;
 
     // == Sabotage関連処理 ==
     /// <summary>
