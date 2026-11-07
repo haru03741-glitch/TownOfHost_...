@@ -515,19 +515,13 @@ class SelectRolesPatch
         List<PlayerControl> allPlayersbySub = new();
         foreach (var pc in Main.AllPlayerControls)
         {
-            if (!pc.Is(CustomRoles.GM)) allPlayersbySub.Add(pc);
+            if (!pc.GetCustomRole().IsSpectator()) allPlayersbySub.Add(pc);
         }
         if (!CustomRoles.PlatonicLover.IsEnable() && CustomRoles.Lovers.IsEnable())
             AssignCustomSubRolesFromList(CustomRoles.Lovers, allPlayersbySub, 2);
-        foreach (var role in new CustomRoles[] {
-            CustomRoles.AddWatch, CustomRoles.Sunglasses, CustomRoles.AddLight,
-            CustomRoles.AddSeer, CustomRoles.Autopsy, CustomRoles.VIP,
-            CustomRoles.Clumsy, CustomRoles.Revenger, CustomRoles.Management,
-            CustomRoles.InfoPoor, CustomRoles.Sending, CustomRoles.TieBreaker,
-            CustomRoles.NonReport, CustomRoles.PlusVote, CustomRoles.Guarding,
-            CustomRoles.AddBait, CustomRoles.Refusing, CustomRoles.Revealer })
+        foreach (var info in TownOfHostL.Roles.AddOns.AddOnList.All)
         {
-            AssignCustomSubRolesDuplicatable(role, allPlayersbySub);
+            if (info.AssignAtRandom) AssignCustomSubRolesDuplicatable(info.Role, allPlayersbySub);
         }
 
         foreach (var pair in PlayerState.AllPlayerStates)
@@ -560,14 +554,14 @@ class SelectRolesPatch
                 foreach (var seer in Main.AllPlayerControls)
                 {
                     if (seer == pc) continue;
-                    if (pc.GetCustomRole().IsImpostor() || pc.IsNeutralKiller())
+                    if (pc.GetCustomRole().IsImpostor() || pc.IsCountedNeutralKiller())
                         NameColorManager.Add(seer.PlayerId, pc.PlayerId);
                 }
             }
             foreach (var seer in Main.AllPlayerControls)
             {
                 if (seer == pc) continue;
-                if (pc.Is(CustomRoles.GM)
+                if (pc.GetCustomRole().IsSpectator()
                     || (pc.Is(CustomRoles.Workaholic) && Workaholic.Seen)
                     || pc.Is(CustomRoles.Rainbow))
                     NameColorManager.Add(seer.PlayerId, pc.PlayerId, pc.GetRoleColorCode());

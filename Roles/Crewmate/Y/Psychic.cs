@@ -150,26 +150,13 @@ public sealed class Psychic : RoleBase
     {
         if (!VentSelect.IsShowTargetRole(Player, seen)) return;
         if (KillerOnly.GetBool() &&
-            !(seen.GetCustomRole().IsImpostor() || seen.IsNeutralKiller() || seen.IsCrewKiller()
-            || seen.Is(CustomRoles.MadSheriff) || seen.Is(CustomRoles.GrudgeSheriff))) return;
+            !TownOfHostL.Core.PlayerTraits.IsKillerForDivination(seen)) return;
 
         enabled = true;
 
         if (!ConfirmCamp.GetBool()) return;   //役職表示
 
-        //陣営表示
-        if (seen.GetCustomRole().IsImpostor() || seen.GetCustomRole().IsMadmate())
-        {
-            roleText = GetString("TeamImpostor").Color(Palette.ImpostorRed);
-        }
-        else if (seen.GetCustomRole().IsNeutral())
-        {
-            roleText = GetString("Neutral").Color(Palette.Orange);
-        }
-        else
-        {
-            roleText = GetString("TeamCrewmate").Color(Palette.CrewmateBlue);
-        }
+        roleText = TownOfHostL.Core.NameParts.TeamText(seen);   //陣営表示
     }
     public override bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => KnowTargetRoleColor(target) && isMeeting;
     private bool KnowTargetRoleColor(PlayerControl target)
@@ -177,8 +164,7 @@ public sealed class Psychic : RoleBase
         if (!VentSelect.IsShowTargetRole(Player, target)) return false;
         if (!ConfirmCamp.GetBool()) return false;   //役職表示
         if (KillerOnly.GetBool() &&
-        !(target.GetCustomRole().IsImpostor() || target.IsNeutralKiller() || target.IsCrewKiller()
-        || target.Is(CustomRoles.MadSheriff) || target.Is(CustomRoles.GrudgeSheriff))) return false;
+        !TownOfHostL.Core.PlayerTraits.IsKillerForDivination(target)) return false;
         return true;
     }
 

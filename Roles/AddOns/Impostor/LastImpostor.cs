@@ -14,7 +14,8 @@ namespace TownOfHostL.Roles.AddOns.Impostor
             AddOnGroup.Impostor,
             "#ff1919",
             setupOptions: SetupCustomOption,
-            flags: RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty);
+            flags: RoleFlags.FirstWriteAddOn | RoleFlags.DontSelectLoyalty,
+            chatCommand: "ラストインポスター");
 
         private static readonly int Id = (int)offsetId.AddonImp + 0;
         public static byte currentId = byte.MaxValue;

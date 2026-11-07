@@ -26,9 +26,7 @@ class CheckProtectPatch
     {
         if (!AmongUsClient.Instance.AmHost) return false;
         Logger.Info("CheckProtect発生: " + __instance.GetNameWithRole() + "=>" + target.GetNameWithRole(), "CheckProtect");
-        if (__instance.Is(CustomRoles.Sheriff)
-            || __instance.Is(CustomRoles.SillySheriff)
-            || __instance.Is(CustomRoles.Hunter)
+        if (__instance.IsCountedCrewKiller()
             || __instance.Is(CustomRoles.MadSheriff))
         {
             if (__instance.Data.IsDead)
@@ -70,7 +68,7 @@ class CheckMurderPatch
     private static void RevealVisualRoleBeforeMurder(PlayerControl killer, PlayerControl target)
     {
 
-        bool killerIsViper = killer.Is(CustomRoles.Viper) || killer.Is(CustomRoles.NormalViper);
+        bool killerIsViper = killer.Is(RoleTypes.Viper);
         if (killerIsViper)
         {
             foreach (var seer in Main.AllPlayerControls)
@@ -93,7 +91,7 @@ class CheckMurderPatch
             }, 2f, "RevertViperVisualReveal");
         }
 
-        bool targetIsNoisemaker = target.Is(CustomRoles.Noisemaker) || target.Is(CustomRoles.NormalNoisemaker);
+        bool targetIsNoisemaker = target.Is(RoleTypes.Noisemaker);
         if (targetIsNoisemaker)
         {
             foreach (var seer in Main.AllPlayerControls)
@@ -240,7 +238,7 @@ class MurderPlayerPatch
             AntiBlackout.SetRoleChange(__instance);
         }, 0.5f, "PostMurderSetRoleChange");
         var killer = __instance;
-        bool killerIsViper = killer.Is(CustomRoles.Viper) || killer.Is(CustomRoles.NormalViper);
+        bool killerIsViper = killer.Is(RoleTypes.Viper);
         if (killerIsViper)
         {
             foreach (var seer in Main.AllPlayerControls)
@@ -557,8 +555,7 @@ class ReportDeadBodyPatch
             Logger.Info("DisableButton InMushroomMixup", "ReportDeadBody");
             return false;
         }
-        if ((reporter.Object.Is(CustomRoles.NonReport) || reporter.Object.Is(CustomRoles.FoxSpirit)) &&
-            target != null && !target.Object.Is(CustomRoles.Bait) && !target.Object.Is(CustomRoles.AddBait))
+        if (target != null && TownOfHostL.Core.PlayerTraits.CannotReport(reporter.Object, target.Object))
         {
             DontReportMarkList.Add(reporter.PlayerId);
             Utils.NotifyRoles(SpecifySeer: reporter.Object);

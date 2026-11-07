@@ -224,7 +224,7 @@ namespace TownOfHostL
 
             bool PcIsPoor = DisableDevice.IsInfoPoor(player);
 
-            bool ignore = player.Is(CustomRoles.GM) ||
+            bool ignore = player.GetCustomRole().IsSpectator() ||
                 !player.IsAlive() ||
                 ((Options.DisableDevicesIgnoreImpostors?.GetBool() ?? false) && player.Is(CustomRoleTypes.Impostor)) ||
                 ((Options.DisableDevicesIgnoreMadmates?.GetBool() ?? false) && player.Is(CustomRoleTypes.Madmate)) ||

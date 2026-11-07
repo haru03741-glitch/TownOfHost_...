@@ -259,12 +259,20 @@ public abstract class RoleBase : IDisposable
     public virtual bool IsInfoPoor => false;
     /// <summary>投票で追放された時に誰かを道連れにする</summary>
     public virtual bool RevengesOnExile => false;
+    /// <summary>追放の道連れで、candidate を道連れの相手に選べるか</summary>
+    public virtual bool CanRevengeOn(PlayerControl candidate) => true;
     /// <summary>この役職の人に、target の役職の色が見えるか</summary>
     public virtual bool KnowsRoleColorOf(PlayerControl target, bool isMeeting) => false;
+    /// <summary>この役職の人には、会議で target の名前を色なしで見せる (他の色の決まりより先に効く)</summary>
+    public virtual bool HidesNameColorInMeeting(PlayerControl target) => false;
     /// <summary>この役職の人の役職の色が、全員に見えるか</summary>
     public virtual bool ShowsRoleColorToAll(bool isMeeting) => false;
     /// <summary>キノコカオスの間も、キルできる相手の名前が見える (インポスターは役職によらず見える)</summary>
     public virtual bool SeesNamesInMushroomMixup => false;
+    /// <summary>この役職の人のタスクの進み具合が、全員に見えるか</summary>
+    public virtual bool ShowsTaskProgressToAll => false;
+    /// <summary>色の統一モードの会議でも、自分の名前を白で塗りつぶさず役職付きで出す</summary>
+    public virtual bool KeepsOwnNameInSyncColorMeeting => false;
 
     // == Sabotage関連処理 ==
     /// <summary>
@@ -289,6 +297,9 @@ public abstract class RoleBase : IDisposable
     /// false の役職は、死んでいる・インポスターなどの他の条件に当たらない限り、他人の名前を送り直さない。
     /// </summary>
     public virtual bool NeedsSeenNames => false;
+
+    /// <summary>元の陣営 (クルー・インポスター) の勝利に入るか。印の NoTeamWin と違い、試合中に変わってよい</summary>
+    public virtual bool WinsWithBaseTeam => true;
 
     // 名前は下記の構成で表示される
     // [Role][Progress]
@@ -324,6 +335,30 @@ public abstract class RoleBase : IDisposable
     /// <param name="roleText">RoleNameのテキスト</param>
     public virtual void OverrideShowMainRoleText(ref Color roleColor, ref string roleText)
     { }
+    /// <summary>
+    /// 役職の名前・色・設定の一覧で、この役職の代わりに見せる役職 (ポテンシャリストがクルーメイトに見えるなど)。
+    /// null ならこの役職のまま。イントロ・/m・役職名の表示はここから引く。/m の説明は、正体を明かさないよう短い説明を出す。
+    /// </summary>
+    public virtual CustomRoles? DisplayedRole => null;
+    /// <summary>
+    /// 役職名の表示の上書きを、DisplayedRole → OverrideShowMainRoleText の順にかける。
+    /// 役職名や名前の色を取る所はみなここを通す (OverrideShowMainRoleText を直接呼ばない)
+    /// </summary>
+    public void ApplyShownMainRole(ref Color roleColor, ref string roleText)
+    {
+        if (DisplayedRole is CustomRoles shown)
+        {
+            roleColor = Utils.GetRoleColor(shown);
+            roleText = Utils.GetRoleName(shown);
+        }
+        OverrideShowMainRoleText(ref roleColor, ref roleText);
+    }
+    /// <summary>
+    /// 役職の翻訳キーの根を差し替える。名前は「根」、説明は「根Info」「根InfoLong」で引く。
+    /// null なら役職名そのまま。状態で説明が変わる役職 (マフィアの Before/After・覚醒したパン屋の NBakery など) が上書きする。
+    /// </summary>
+    /// <param name="infoLong">長い説明 (/m) を引く時 true</param>
+    public virtual string GetRoleKey(bool infoLong) => null;
     /// <summary>
     /// seerによるProgressTextの書き換え
     /// </summary>

@@ -24,7 +24,7 @@ public sealed class Vendetta : RoleBase, IKiller, IAdditionalWinner
             {
                 AssignCountRule = new(1, 1, 1)
             },
-            flags: RoleFlags.FixedCount
+            flags: RoleFlags.FixedCount | RoleFlags.NeutralKiller
         );
     public Vendetta(PlayerControl player)
     : base(

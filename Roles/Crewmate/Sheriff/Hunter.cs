@@ -24,7 +24,8 @@ public sealed class Hunter : RoleBase, IKiller, ISchrodingerCatOwner
             "ハンター",
             "#f8cd46",
             true,
-            introSound: () => GetIntroSound(RoleTypes.Crewmate)
+            introSound: () => GetIntroSound(RoleTypes.Crewmate),
+            flags: RoleFlags.CrewKiller | RoleFlags.CountedAsKiller
         );
     public Hunter(PlayerControl player)
     : base(

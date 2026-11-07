@@ -63,10 +63,9 @@ public static class CustomRoleManager
 
         // インポスター同士のキル無効
         if (attemptKiller.GetCustomRole().IsImpostor() && attemptTarget.GetCustomRole().IsImpostor() && !attemptKiller.GetCustomRole().IsLoneImpostor()) return false;
-        // ゴッドファーザーのロックキル
-        if (CustomRoles.Godfather.IsPresent() && GodfatherAndJanitor.JanitorTarget.Contains(attemptKiller.PlayerId)) return false;
-        // ペンギンの拉致られ中キル
-        if (!Penguin.CanKilledByTarget(attemptKiller)) return false;
+        // 役職によって今キルできない状態 (ゴッドファーザーのロック・ペンギンの拉致など)
+        foreach (var isBlocked in KillBlockersOthers)
+            if (isBlocked(attemptKiller)) return false;
 
         var killerRole = attemptKiller.GetRoleClass();
         var targetRole = attemptTarget.GetRoleClass();
@@ -77,7 +76,7 @@ public static class CustomRoleManager
             if (killer.IsKiller)
             {
                 // イビルディバイナーのみ占いのためここで先に処理
-                if (killerRole is EvilDiviner && !EvilDiviner.OnCheckMurder(info)) return false;
+                if (killerRole is EvilDiviner diviner && !diviner.OnCheckMurder(info)) return false;
                 // ガーディング属性によるガード
                 if (Guarding.OnCheckMurder(info)) { }
                 // メディックの対象プレイヤー
@@ -113,7 +112,7 @@ public static class CustomRoleManager
         {
             //MurderPlayer用にinfoを保存
             CheckMurderInfos[appearanceKiller.PlayerId] = info;
-            bool killerIsViper = appearanceKiller.Is(CustomRoles.Viper) || appearanceKiller.Is(CustomRoles.NormalViper);
+            bool killerIsViper = appearanceKiller.Is(RoleTypes.Viper);
             if (killerIsViper)
             {
                 var capKiller = appearanceKiller;
@@ -197,27 +196,9 @@ public static class CustomRoleManager
             targetState.DeathReason = CustomDeathReason.Kill;
         }
 
+        // ホストの死後のタスク免除は SetDead の中で行う (キル以外の死に方でも効かせるため)
         targetState.SetDead();
         attemptTarget.SetRealKiller(attemptKiller, true);
-
-        //ホストの死後タスク免除
-        if (attemptTarget == PlayerControl.LocalPlayer && Options.HostGhostIgnoreTasks.GetBool()
-            && !attemptTarget.Is(CustomRoles.Gang) && Utils.HasTasks(attemptTarget.Data))
-        {
-            var taskState = PlayerControl.LocalPlayer.GetPlayerTaskState();
-            taskState.CompletedTasksCount = taskState.AllTasksCount;
-            Logger.Info($"{PlayerControl.LocalPlayer.GetNameWithRole()}: TaskCounts = {taskState.CompletedTasksCount}/{taskState.AllTasksCount}", "OnMurderPlayer/HostGhostIgnoreTasks");
-
-            foreach (var task in PlayerControl.LocalPlayer.Data.Tasks)
-            {
-                if (!task.Complete)
-                {
-                    task.Complete = true;
-                    GameData.Instance.CompletedTasks++;
-                }
-            }
-            Logger.Info($"{PlayerControl.LocalPlayer.GetNameWithRole()}.Dead TotalTaskCounts = {GameData.Instance.CompletedTasks}/{GameData.Instance.TotalTasks}", "OnMurderPlayer/HostGhostIgnoreTasks");
-        }
 
         Utils.CountAlivePlayers(true);
 
@@ -276,6 +257,9 @@ public static class CustomRoleManager
         MarkOthers.Clear();
         LowerOthers.Clear();
         SuffixOthers.Clear();
+        NameColorOthers.Clear();
+        KillBlockersOthers.Clear();
+        TaskExemptionsOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
@@ -374,6 +358,26 @@ public static class CustomRoleManager
         return sb.ToString();
     }
     /// <summary>
+    /// seer,seenが役職であるかに関わらず、名前の色を上書きする (seer, seen, 今の色コード) → 新しい色コード。
+    /// 色が無い時の色コードは空文字。登録の順にすべて通す。
+    /// </summary>
+    public static HashSet<Func<PlayerControl, PlayerControl, string, string>> NameColorOthers = new();
+    /// <summary>
+    /// 役職に関わらず、キルしようとした人が今キルできない状態か (killer → true でキルを取り消す)。
+    /// ゴッドファーザーのロック・ペンギンの拉致など、その試合の役職が登録する
+    /// </summary>
+    public static HashSet<Func<PlayerControl, bool>> KillBlockersOthers = new();
+    /// <summary>
+    /// 役職に関わらず、その人のタスクを免除するか (true で免除)。死後のタスク免除の設定など、その試合の役職が登録する
+    /// </summary>
+    public static HashSet<Func<NetworkedPlayerInfo, bool>> TaskExemptionsOthers = new();
+    public static string ApplyNameColorOthers(PlayerControl seer, PlayerControl seen, string colorCode)
+    {
+        foreach (var overrideColor in NameColorOthers)
+            colorCode = overrideColor(seer, seen, colorCode);
+        return colorCode;
+    }
+    /// <summary>
     /// オブジェクトの破棄
     /// </summary>
     public static void Dispose()
@@ -382,6 +386,9 @@ public static class CustomRoleManager
         MarkOthers.Clear();
         LowerOthers.Clear();
         SuffixOthers.Clear();
+        NameColorOthers.Clear();
+        KillBlockersOthers.Clear();
+        TaskExemptionsOthers.Clear();
         CheckMurderInfos.Clear();
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();

@@ -47,6 +47,8 @@ public sealed class Workaholic : RoleBase
     public static bool Seen;
     public override bool ShowsRoleColorToAll(bool isMeeting) => Seen;
     public static bool TaskSeen;
+    public override bool ShowsTaskProgressToAll => Seen && TaskSeen;
+    public override bool KeepsOwnNameInSyncColorMeeting => true;
     private static bool CannotWinAtDeath;
     private static float ventCooldown;
 

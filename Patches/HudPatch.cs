@@ -168,14 +168,8 @@ class HudManagerPatch
                     __instance.KillButton.SetDisabled();
                     __instance.KillButton.ToggleVisible(false);
                 }
-                switch (player.GetCustomRole())
-                {
-                    case CustomRoles.Madmate:
-                    case CustomRoles.SKMadmate:
-                    case CustomRoles.Jester:
-                        TaskTextPrefix += GetString(StringNames.FakeTasks);
-                        break;
-                }
+                if (player.GetCustomRole().HasRoleFlag(RoleFlags.FakeTasksLabel))
+                    TaskTextPrefix += GetString(StringNames.FakeTasks);
 
                 bool CanUseVent = player.CanUseImpostorVentButton();
                 __instance.ImpostorVentButton.ToggleVisible(CanUseVent);

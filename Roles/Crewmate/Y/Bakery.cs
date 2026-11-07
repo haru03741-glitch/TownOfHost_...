@@ -6,10 +6,12 @@ using UnityEngine;
 using AmongUs.GameOptions;
 using static TownOfHostL.Translator;
 using static TownOfHostL.Utils;
+using TownOfHostL.Core.Win;
 using TownOfHostL.Roles.Core;
+using TownOfHostL.Roles.Core.Interfaces;
 
 namespace TownOfHostL.Roles.Crewmate;
-public sealed class Bakery : RoleBase
+public sealed class Bakery : RoleBase, ISoloWinner
 {
     public static readonly SimpleRoleInfo RoleInfo =
          SimpleRoleInfo.Create(
@@ -23,6 +25,7 @@ public sealed class Bakery : RoleBase
             "パン屋",
             "#b58428"
         );
+    public override string GetRoleKey(bool infoLong) => IsNeutral(Player) ? "NBakery" : null;
     public Bakery(PlayerControl player)
     : base(
         RoleInfo,
@@ -90,6 +93,18 @@ public sealed class Bakery : RoleBase
             if (target != null && nBakery.PoisonPlayer == target) return true;
         }
         return false;
+    }
+    public override bool WinsWithBaseTeam => !IsNeutral(Player);
+    public SoloWinTier SoloWinTier => SoloWinTier.Steal;
+    /// <summary>闇パン屋は、インポスターの勝ち (妨害を除く) とクルーの勝ち (タスクを除く) を横取りする</summary>
+    public bool CheckSoloWin(WinnerResolver.Context ctx, out CustomWinner winner)
+    {
+        winner = CustomWinner.NBakery;
+        var original = ctx.Original;
+        return IsNeutral(Player) && Player.IsAlive()
+            && ((original == CustomWinner.Impostor && ctx.Reason != GameOverReason.ImpostorsBySabotage)
+                || original == CustomWinner.NBakery
+                || (original == CustomWinner.Crewmate && ctx.Reason != GameOverReason.CrewmatesByTask));
     }
     public static bool IsNeutral(PlayerControl bakery)
     {
